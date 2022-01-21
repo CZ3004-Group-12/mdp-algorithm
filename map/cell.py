@@ -3,7 +3,7 @@
 # 1 is starting area
 # 2 is restricted area around obstacle
 # 3 is obstacle
-from Map.Obstacle import Obstacle
+from map.obstacle import Obstacle
 
 
 class Cell:
@@ -11,16 +11,20 @@ class Cell:
         self.direction = None
         self.x_coordinate = x_coordinate
         self.y_coordinate = y_coordinate
+        self.status = status
         self.obstacle = None
 
-    def clickcell(self):
+    def cell_clicked(self):
         if self.obstacle is None:
             self.obstacle = Obstacle()
             return
-        self.obstacle.click_obstacle()
-        return self.obstacle.check_direction()
+        self.obstacle.obstacle_clicked()
+        return self.obstacle.get_direction()
 
-    def checkdirection(self):
+    def get_obstacle_direction(self):
         if self.obstacle is None:
             return None
-        return self.obstacle.check_direction()
+        return self.obstacle.get_direction()
+
+    def get_cell_status(self):
+        return self.status

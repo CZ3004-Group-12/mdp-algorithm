@@ -2,9 +2,9 @@ class Obstacle:
     def __init__(self):
         self.direction = "N"
 
-    def click_obstacle(self):
-        if self.direction == None:
-            self.direction="N"
+    def obstacle_clicked(self):
+        if self.direction is None:
+            self.direction = "N"
             return
 
         if self.direction == "N":
@@ -23,5 +23,5 @@ class Obstacle:
             self.direction = None
             return
 
-    def check_direction(self):
+    def get_direction(self):
         return self.direction

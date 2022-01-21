@@ -1,6 +1,6 @@
-
 starting_position_x = 0
 starting_position_y = 0
+
 
 class Robot(object):
 
@@ -9,8 +9,8 @@ class Robot(object):
         self.screen_height = grid_height
         self.robot_w = robot_w
         self.robot_h = robot_h
-        self.xs = grid_width / grid.getblock_size()
-        self.ys = grid_height / grid.getblock_size()
+        self.xs = grid_width / grid.get_block_size()
+        self.ys = grid_height / grid.get_block_size()
         self.x = self.xs
         self.y = self.ys
         self.grid = grid
@@ -90,4 +90,3 @@ class Robot(object):
     #             p[1] -= self.screen_height
     #     index_pairs = set([self.grid.pixel_to_grid(*e) for e in offsets])
     #     return any([self.grid.value(*e) == 'x' for e in index_pairs])
-
