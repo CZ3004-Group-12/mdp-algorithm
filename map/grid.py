@@ -1,4 +1,5 @@
-import pygame, logging
+import logging
+import pygame
 
 from map.cell import Cell
 
@@ -55,7 +56,7 @@ class Grid(object):
         cell = self.get_cell(row, column)
         cell.cell_clicked()
         logging.info("Clicked (x,y): (" + str(x_coordinate) + "," + str(y_coordinate) + "); Grid coordinates: "
-                     + str(row) + " " + str(column))
+                     + str(column) + "," + str(row))
 
     def draw_grid(self, screen):
         # Draw the grid
