@@ -56,31 +56,16 @@
 import pygame
 
 # Define some colors
+from grid import Grid
+
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 
-# This sets the WIDTH and HEIGHT of each grid location
-WIDTH = 20
-HEIGHT = 20
-
-# This sets the margin between each cell
-MARGIN = 5
-
 # Create a 2 dimensional array. A two dimensional
 # array is simply a list of lists.
-grid = []
-for row in range(20):
-    # Add an empty array that will hold each cell
-    # in this row
-    grid.append([])
-    for column in range(20):
-        grid[row].append(0)  # Append a cell
-
-# Set row 1, cell 5 to one. (Remember rows and
-# column numbers start at zero.)
-grid[1][5] = 1
+grid = Grid(20,20)
 
 # Initialize pygame
 pygame.init()
@@ -106,28 +91,11 @@ while not done:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             # User clicks the mouse. Get the position
             pos = pygame.mouse.get_pos()
-            # Change the x/y screen coordinates to grid coordinates
-            column = pos[0] // (WIDTH + MARGIN)
-            row = pos[1] // (HEIGHT + MARGIN)
-            # Set that location to one
-            grid[row][column] = 1
-            print("Click ", pos, "Grid coordinates: ", row, column)
+            grid.click_grid(pos[0], pos[1])
 
     # Set the screen background
     screen.fill(BLACK)
-
-    # Draw the grid
-    for row in range(20):
-        for column in range(20):
-            color = WHITE
-            if grid[row][column] == 1:
-                color = GREEN
-            pygame.draw.rect(screen,
-                             color,
-                             [(MARGIN + WIDTH) * column + MARGIN,
-                              (MARGIN + HEIGHT) * row + MARGIN,
-                              WIDTH,
-                              HEIGHT])
+    grid.draw_grid(screen)
 
     # Limit to 60 frames per second
     clock.tick(60)
