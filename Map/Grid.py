@@ -8,7 +8,6 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 LIGHTBLUE = (50, 100, 150)
 
-
 # This sets the margin between each Cell
 MARGIN = 2
 
@@ -21,7 +20,7 @@ class Grid(object):
     def __init__(self, grid_x, grid_y, block_size):
         self.x_size = grid_x
         self.size_y = grid_y
-        self.block_size=block_size
+        self.block_size = block_size
         self.grid = []
         for row in range(grid_x):
             # Add an empty array that will hold each Cell
@@ -33,15 +32,19 @@ class Grid(object):
                 else:
                     self.grid[row].append(Cell(grid_x, grid_y, 0))  # Append a Cell
 
-    def value(self, x, y):
-        return self.cell[x][y].getstatus()
+    # TODO return value of checking obstacle and to check if a cell can be used to cross
+    def check_obstacle(self, x, y):
+        if self.cell[x][y].checkdirection() is not None:
+            return True
+        else:
+            return False
 
     def click_grid(self, x_coordinate, y_coordinate):
         # Change the x/y screen coordinates to grid coordinates
         column = x_coordinate // (self.block_size + MARGIN)
         row = y_coordinate // (self.block_size + MARGIN)
         # Set that location to one
-        self.grid[row][column].clickcell();
+        self.grid[row][column].clickcell()
         print("Click ", x_coordinate, " ", y_coordinate, "Grid coordinates: ", row, column)
 
     def getblock_size(self):
@@ -62,31 +65,34 @@ class Grid(object):
                                   OuterMargin + (MARGIN + self.block_size) * row + MARGIN,
                                   self.block_size,
                                   self.block_size])
-                if self.grid[row][column].checkdirection() == "N":
-                    pygame.draw.rect(screen,
-                                     RED,
-                                     [OuterMargin + (MARGIN + self.block_size) * column + MARGIN,
-                                      OuterMargin + (MARGIN + self.block_size) * row + MARGIN,
-                                      self.block_size,
-                                      2])
-                if self.grid[row][column].checkdirection() == "E":
-                    pygame.draw.rect(screen,
-                                     RED,
-                                     [OuterMargin + (MARGIN + self.block_size) * column + MARGIN + 18,
-                                      OuterMargin + (MARGIN + self.block_size) * row + MARGIN,
-                                      2,
-                                      self.block_size])
-                if self.grid[row][column].checkdirection() == "S":
-                    pygame.draw.rect(screen,
-                                     RED,
-                                     [OuterMargin + (MARGIN + self.block_size) * column + MARGIN,
-                                      OuterMargin + (MARGIN + self.block_size) * row + MARGIN + 18,
-                                      self.block_size,
-                                      2])
-                if self.grid[row][column].checkdirection() == "W":
-                    pygame.draw.rect(screen,
-                                     RED,
-                                     [OuterMargin + (MARGIN + self.block_size) * column + MARGIN,
-                                      OuterMargin + (MARGIN + self.block_size) * row + MARGIN,
-                                      2,
-                                      self.block_size])
+                self.draw_obstacle_direction(row, column, screen)
+
+    def draw_obstacle_direction(self, row, column, screen):
+        if self.grid[row][column].checkdirection() == "N":
+            pygame.draw.rect(screen,
+                             RED,
+                             [OuterMargin + (MARGIN + self.block_size) * column + MARGIN,
+                              OuterMargin + (MARGIN + self.block_size) * row + MARGIN,
+                              self.block_size,
+                              2])
+        if self.grid[row][column].checkdirection() == "E":
+            pygame.draw.rect(screen,
+                             RED,
+                             [OuterMargin + (MARGIN + self.block_size) * column + MARGIN + 18,
+                              OuterMargin + (MARGIN + self.block_size) * row + MARGIN,
+                              2,
+                              self.block_size])
+        if self.grid[row][column].checkdirection() == "S":
+            pygame.draw.rect(screen,
+                             RED,
+                             [OuterMargin + (MARGIN + self.block_size) * column + MARGIN,
+                              OuterMargin + (MARGIN + self.block_size) * row + MARGIN + 18,
+                              self.block_size,
+                              2])
+        if self.grid[row][column].checkdirection() == "W":
+            pygame.draw.rect(screen,
+                             RED,
+                             [OuterMargin + (MARGIN + self.block_size) * column + MARGIN,
+                              OuterMargin + (MARGIN + self.block_size) * row + MARGIN,
+                              2,
+                              self.block_size])

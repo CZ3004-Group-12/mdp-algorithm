@@ -7,8 +7,6 @@
     <list default="true" id="8fa28666-9fca-4e19-962b-abf160de1a3c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Map/Grid.py" beforeDir="false" afterPath="$PROJECT_DIR$/Map/Grid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Robot/Robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/Robot/Robot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/User Interface/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/User Interface/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
