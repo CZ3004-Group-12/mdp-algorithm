@@ -1,11 +1,4 @@
-# -*- coding: cp1252 -*-
-# /usr/bin/env python
-# Simon H. Larsen
-# Buttons
-# Project startet: d. 26. august 2012
 import pygame
-
-pygame.init()
 
 
 def draw_button(surface, color, length, height, x, y, width):
@@ -24,7 +17,7 @@ def draw_button(surface, color, length, height, x, y, width):
 
 
 def write_text(surface, text, text_color, length, height, x, y):
-    font_size = int(length // len(text))
+    font_size = int(length // len(text) * 2)
     my_font = pygame.font.SysFont("Calibri", font_size)
     my_text = my_font.render(text, 1, text_color)
     surface.blit(my_text, ((x + length / 2) - my_text.get_width() / 2, (y + height / 2) - my_text.get_height() / 2))

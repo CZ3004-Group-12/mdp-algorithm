@@ -1,14 +1,9 @@
 import pygame
 import logging
 
-# Define some colors
+from map import colours
 from map.grid import Grid
-
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
-LIGHT_PINK = (192, 192, 192)
+from simulator.panel import Panel
 
 # Logging
 logging.basicConfig(level=logging.INFO)
@@ -22,15 +17,18 @@ def main():
     WINDOW_SIZE = [1280, 720]
     screen = pygame.display.set_mode(WINDOW_SIZE)
     # Set the screen background
-    screen.fill(LIGHT_PINK)
+    screen.fill(colours.GRAY)
 
-    # Create 20 by 20 Grid
+    # Initialise 20 by 20 Grid
     grid = Grid(20, 20, 20)
     grid.draw_grid(screen)
     # Outline Grid
     grid_surface = pygame.Surface((442, 442))
-    grid_surface.fill(BLACK)
+    grid_surface.fill(colours.BLACK)
     screen.blit(grid_surface, (120, 120))
+
+    # Initialise side panel with buttons
+    panel = Panel(screen)
 
     # Set title of screen
     pygame.display.set_caption("MDP Algorithm Simulator")
