@@ -5,10 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8fa28666-9fca-4e19-962b-abf160de1a3c" name="Changes" comment="">
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Map/Grid.py" beforeDir="false" afterPath="$PROJECT_DIR$/Map/Grid.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Robot/Robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/Robot/Robot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/User Interface/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/User Interface/main.py" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/mdp-algorithm.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mdp-algorithm.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,6 +102,7 @@
       <workItem from="1642726253798" duration="1792000" />
       <workItem from="1642728415423" duration="15000" />
       <workItem from="1642729018890" duration="298000" />
+      <workItem from="1642756482423" duration="693000" />
     </task>
     <servers />
   </component>
@@ -113,7 +120,12 @@
       </map>
     </option>
   </component>
+<<<<<<< Updated upstream
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+=======
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/mdp_algorithm$main.coverage" NAME="main Coverage Results" MODIFIED="1642756579312" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+>>>>>>> Stashed changes
   </component>
 </project>
