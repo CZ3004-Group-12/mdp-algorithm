@@ -10,7 +10,7 @@ RED = (255, 0, 0)
 
 # Create a 2 dimensional array. A two dimensional
 # array is simply a list of lists.
-grid = Grid(20,20)
+grid = Grid(20,20,20)
 
 # Initialize pygame
 pygame.init()
