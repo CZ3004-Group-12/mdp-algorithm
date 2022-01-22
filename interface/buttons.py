@@ -26,7 +26,7 @@ def write_text(surface, text, text_color, length, height, x, y):
 
 class Button:
 
-    def __init__(self, surface, color, x, y, length, height, text, text_color):
+    def __init__(self, surface, color, x, y, length, height, text, text_color, function):
         self.surface = surface
         self.color = color
         self.x = x
@@ -36,20 +36,22 @@ class Button:
         self.width = 0
         self.text = text
         self.text_color = text_color
+        self.function = function
 
         surface = draw_button(self.surface, self.color, self.length, self.height, self.x, self.y, self.width)
         surface = write_text(self.surface, self.text, self.text_color, self.length, self.height, self.x, self.y)
         self.rect = pygame.Rect(x, y, length, height)
 
-    def pressed(self, mouse):
-        if self.rect.bottomright[0] > mouse[0] > self.rect.topleft[0]:
-            if self.rect.bottomright[1] > mouse[1] > self.rect.topleft[1]:
-                print("Some button was pressed!")
-                return True
-            else:
-                return False
+    def pressed(self):
+        func = self.function
+        if func == "CONNECT":
+            print("Connect button pressed.")
+        elif func == "DISCONNECT":
+            print("Disconnect button pressed.")
         else:
-            return False
+            return
 
     def get_xy_and_lh(self):
         return self.x, self.y, self.length, self.height
+
+
