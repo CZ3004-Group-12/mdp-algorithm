@@ -24,9 +24,9 @@ class Grid(object):
         for row in range(grid_row):
             for column in range(grid_column):
                 if column < 4 and row > 15:
-                    self.cells[row][column] = Cell(column, (19-row), 1)  # 19 is to correct the positive direction
+                    self.cells[row][column] = Cell(column, (19 - row), 1)  # 19 is to correct the positive direction
                 else:
-                    self.cells[row][column] = Cell(column, (19-row), 0)
+                    self.cells[row][column] = Cell(column, (19 - row), 0)
 
     # TODO: write function to get coordinates of object on grid
     # def value(self, x, y):
@@ -44,13 +44,14 @@ class Grid(object):
 
     def grid_clicked(self, x_coordinate, y_coordinate):
         # Change the x/y screen coordinates to grid coordinates
-        column = (x_coordinate-120) // (self.block_size + MARGIN)
-        row = (y_coordinate-120) // (self.block_size + MARGIN)
+        column = (x_coordinate - 120) // (self.block_size + MARGIN)
+        row = (y_coordinate - 120) // (self.block_size + MARGIN)
         # Set that location to one
         cell = self.get_cell(row, column)
         cell.cell_clicked()
         logging.info("Clicked (x,y): (" + str(x_coordinate) + "," + str(y_coordinate) + "); column, row: " + str(column)
                      + "," + str(row) + "; Grid coordinates: " + str(cell.get_xcoord()) + " " + str(cell.get_ycoord()))
+        logging.info(self.grid_to_pixel([column,row]))
 
     def draw_grid(self, screen):
         # Draw the grid
@@ -97,3 +98,7 @@ class Grid(object):
                                       2,
                                       self.block_size])
 
+    def grid_to_pixel(self, pos):
+        x_pixel = (pos[0]) * (self.block_size + MARGIN) + 120 + (self.block_size + MARGIN) / 2
+        y_pixel = pos[1] * (self.block_size + MARGIN) + 120 + (self.block_size + MARGIN) / 2
+        return [x_pixel, y_pixel]
