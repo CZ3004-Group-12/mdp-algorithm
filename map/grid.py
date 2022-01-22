@@ -44,8 +44,8 @@ class Grid(object):
 
     def grid_clicked(self, x_coordinate, y_coordinate):
         # Change the x/y screen coordinates to grid coordinates
-        column = x_coordinate // (self.block_size + MARGIN)
-        row = y_coordinate // (self.block_size + MARGIN)
+        column = (x_coordinate-120) // (self.block_size + MARGIN)
+        row = (y_coordinate-120) // (self.block_size + MARGIN)
         # Set that location to one
         cell = self.get_cell(row, column)
         cell.cell_clicked()
@@ -96,3 +96,4 @@ class Grid(object):
                                       OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN,
                                       2,
                                       self.block_size])
+

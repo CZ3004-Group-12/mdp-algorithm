@@ -45,7 +45,7 @@ class Simulator:
                     # User clicks the mouse. Get the position
                     pos = pygame.mouse.get_pos()
                     if (120 < pos[0] < 560) and (120 < pos[1] < 560):  # if area clicked is within grid
-                        self.grid.grid_clicked(pos[0] - 120, pos[1] - 120)
+                        self.grid.grid_clicked(pos[0], pos[1])
                     else:  # otherwise, area clicked is outside of grid
                         self.check_button_clicked(pos)
 
