@@ -13,20 +13,20 @@ OUTER_MARGIN = 120
 
 class Grid(object):
 
-    def __init__(self, grid_x, grid_y, block_size):
-        self.x_size = grid_x
-        self.size_y = grid_y
+    def __init__(self, grid_column, grid_row, block_size):
+        self.grid_column = grid_column
+        self.grid_row = grid_row
         self.block_size = block_size
-        self.cells = [[0 for x in range(grid_x)] for y in range(grid_y)]
+        self.cells = [[0 for x in range(grid_column)] for y in range(grid_row)]
 
-        for row in range(grid_y):
-            # Add an empty array that will hold each Cell
-            # in this row
-            for column in range(grid_x):
+        # NOTE!! row and columns start from the top right, but coordinates have to start from the bottom left
+        # x-coord = column; y-coord = 19-row
+        for row in range(grid_row):
+            for column in range(grid_column):
                 if column < 4 and row > 15:
-                    self.cells[row][column] = Cell(grid_x, grid_y, 1)
+                    self.cells[row][column] = Cell(column, (19-row), 1)  # 19 is to correct the positive direction
                 else:
-                    self.cells[row][column] = Cell(grid_x, grid_y, 0)  # Append a Cell
+                    self.cells[row][column] = Cell(column, (19-row), 0)
 
     # TODO: write function to get coordinates of object on grid
     # def value(self, x, y):
@@ -49,8 +49,8 @@ class Grid(object):
         # Set that location to one
         cell = self.get_cell(row, column)
         cell.cell_clicked()
-        logging.info("Clicked (x,y): (" + str(x_coordinate) + "," + str(y_coordinate) + "); Grid coordinates: "
-                     + str(column) + "," + str(row))
+        logging.info("Clicked (x,y): (" + str(x_coordinate) + "," + str(y_coordinate) + "); column, row: " + str(column)
+                     + "," + str(row) + "; Grid coordinates: " + str(cell.get_xcoord()) + " " + str(cell.get_ycoord()))
 
     def draw_grid(self, screen):
         # Draw the grid
@@ -59,7 +59,7 @@ class Grid(object):
                 cell = self.cells[row][column]
                 color = colours.WHITE
                 if cell.get_cell_status() == 1:  # cell is part of starting area
-                    color = colours.LIGHT_BLUE
+                    color = colours.BLUE
                 if cell.get_obstacle_direction() is not None:
                     color = colours.GREEN
                 pygame.draw.rect(screen,

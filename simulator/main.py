@@ -14,7 +14,7 @@ def main():
     pygame.init()
 
     # Set the HEIGHT and WIDTH of the screen
-    WINDOW_SIZE = [1280, 720]
+    WINDOW_SIZE = [1020, 720]
     screen = pygame.display.set_mode(WINDOW_SIZE)
     # Set the screen background
     screen.fill(colours.GRAY)
@@ -49,7 +49,9 @@ def main():
                 pos = pygame.mouse.get_pos()
                 if (120 < pos[0] < 560) and (120 < pos[1] < 560):  # if area clicked is within grid
                     grid.grid_clicked(pos[0] - 120, pos[1] - 120)
-
+                else:
+                    # TODO: Sense the clicking of buttons in panel
+                    pass
         # Draw the grid
         grid.draw_grid(screen)
 

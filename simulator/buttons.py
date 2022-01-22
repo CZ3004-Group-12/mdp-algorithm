@@ -2,7 +2,7 @@ import pygame
 
 
 def draw_button(surface, color, length, height, x, y, width):
-    for i in range(1, 10):
+    for i in range(1, 3):
         s = pygame.Surface((length + (i * 2), height + (i * 2)))
         s.fill(color)
         alpha = (255 / (i + 2))
@@ -26,19 +26,19 @@ def write_text(surface, text, text_color, length, height, x, y):
 
 class Button:
 
-    def __init__(self, surface, color, x, y, length, height, width, text, text_color):
+    def __init__(self, surface, color, x, y, length, height, text, text_color):
         self.surface = surface
         self.color = color
         self.x = x
         self.y = y
         self.length = length
         self.height = height
-        self.width = width
+        self.width = 0
         self.text = text
         self.text_color = text_color
 
-        surface = draw_button(surface, color, length, height, x, y, width)
-        surface = write_text(surface, text, text_color, length, height, x, y)
+        surface = draw_button(self.surface, self.color, self.length, self.height, self.x, self.y, self.width)
+        surface = write_text(self.surface, self.text, self.text_color, self.length, self.height, self.x, self.y)
         self.rect = pygame.Rect(x, y, length, height)
 
     def pressed(self, mouse):
@@ -50,3 +50,6 @@ class Button:
                 return False
         else:
             return False
+
+    def get_xy_and_lh(self):
+        return self.x, self.y, self.length, self.height

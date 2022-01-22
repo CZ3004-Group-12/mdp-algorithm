@@ -28,3 +28,9 @@ class Cell:
 
     def get_cell_status(self):
         return self.status
+
+    def get_xcoord(self):
+        return self.x_coordinate
+
+    def get_ycoord(self):
+        return self.y_coordinate
