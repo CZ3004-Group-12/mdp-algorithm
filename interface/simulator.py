@@ -36,11 +36,17 @@ class Simulator:
         self.clock = pygame.time.Clock()
 
 
+        #car printing process
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_path = os.path.join(current_dir, "car.png")
         car_image = pygame.image.load(image_path)
         car = Robot(self.grid, pygame, 30, 30)
         ppu=32
+
+        rotated = pygame.transform.rotate(car_image, 0)
+        rect = rotated.get_rect()
+        self.screen.blit(rotated, car.get_pixel_pos()  - (rect.width / 2, rect.height / 2))
+        pygame.display.flip()
         # Loop until the user clicks the close button.
         done = False
 
