@@ -28,9 +28,6 @@ class Grid(object):
                 else:
                     self.cells[row][column] = Cell(column, (19 - row), 0)
 
-
-
-
     def get_block_size(self):
         return self.block_size
 
@@ -49,9 +46,24 @@ class Grid(object):
         cell.cell_clicked()
         logging.info("Clicked (x,y): (" + str(x_coordinate) + "," + str(y_coordinate) + "); column, row: " + str(column)
                      + "," + str(row) + "; Grid coordinates: " + str(cell.get_xcoord()) + " " + str(cell.get_ycoord()))
-        logging.info(self.pixel_to_grid([x_coordinate,y_coordinate]))
+        logging.info(self.pixel_to_grid([x_coordinate, y_coordinate]))
 
     def draw_grid(self, screen):
+        # Draw the grid
+        for row in range(20):
+            for column in range(20):
+                cell = self.cells[row][column]
+                color = colours.WHITE
+                if cell.get_cell_status() == 1:  # cell is part of starting area
+                    color = colours.BLUE
+                pygame.draw.rect(screen,
+                                 color,
+                                 [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,
+                                  OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN,
+                                  self.block_size,
+                                  self.block_size])
+
+    def update_grid(self, screen):
         # Draw the grid
         for row in range(20):
             for column in range(20):
@@ -103,8 +115,8 @@ class Grid(object):
         y_pixel = (19 - pos[1]) * (self.block_size + MARGIN) + 120 + (self.block_size + MARGIN) / 2
         return [x_pixel, y_pixel]
 
-    def pixel_to_grid(self,pos):
+    def pixel_to_grid(self, pos):
         x_grid = (pos[0] - 120) // (self.block_size + MARGIN)
         y_grid = 19 - ((pos[1] - 120) // (self.block_size + MARGIN))
-        return [x_grid , y_grid]
+        return [x_grid, y_grid]
 

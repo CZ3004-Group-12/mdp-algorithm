@@ -6,10 +6,14 @@ from map.grid import Grid
 from interface.panel import Panel
 from robot.robot import Robot
 import pygame
+from math import pi
 
 # Set the HEIGHT and WIDTH of the screen
 WINDOW_SIZE = [1020, 720]
 
+# Starting grid positions of car
+starting_position_x = 1
+starting_position_y = 1
 
 class Simulator:
 
@@ -28,6 +32,8 @@ class Simulator:
         self.grid_surface = self.root.Surface((442, 442))
         self.grid_surface.fill(colours.BLACK)
         self.screen.blit(self.grid_surface, (120, 120))
+        # Draw the grid
+        self.grid.draw_grid(self.screen)
 
         # Initialise side panel with buttons
         self.panel = Panel(self.screen)
@@ -35,14 +41,14 @@ class Simulator:
         # Used to manage how fast the screen updates
         self.clock = pygame.time.Clock()
 
-
-        #car printing process
+        # Car printing process
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_path = os.path.join(current_dir, "car.png")
         car_image = pygame.image.load(image_path)
-        car = Robot(self.grid, pygame, 30, 30)
+        self.car = Robot(self.screen, self.grid, self.grid_surface, 30, 30, starting_position_x, starting_position_y, 0, car_image)
+        # Draw the car
+        self.car.draw_car()
         ppu=32
-
 
 
         # Loop until the user clicks the close button.
@@ -58,16 +64,11 @@ class Simulator:
                     pos = pygame.mouse.get_pos()
                     if (120 < pos[0] < 560) and (120 < pos[1] < 560):  # if area clicked is within grid
                         self.grid.grid_clicked(pos[0], pos[1])
+                        self.screen.blit(self.grid_surface, (120, 120))
+                        self.grid.update_grid(self.screen)             # Update grid if obstacles added
+                        self.car.draw_car()      # Redraw the car
                     else:  # otherwise, area clicked is outside of grid
                         self.check_button_clicked(pos)
-
-            # Draw the grid
-            self.grid.draw_grid(self.screen)
-            # Draw the car
-            rotated = pygame.transform.rotate(car_image, 0)
-            rect = rotated.get_rect()
-            self.screen.blit(rotated, car.get_pixel_pos() - (rect.width / 2, rect.height / 2))
-            pygame.display.flip()
 
 
             # Limit to 60 frames per second
@@ -80,10 +81,21 @@ class Simulator:
         self.root.quit()
 
     def check_button_clicked(self, pos):
-        for button in self.panel.buttons:
+        # Check if start button was pressed first:
+        start_button = self.panel.buttons[0]
+        x, y, l, h = start_button.get_xy_and_lh()
+        if (x < pos[0] < (l + x)) and (y < pos[1] < (h + y)):
+            self.start_button_clicked()
+
+        for button in self.panel.buttons[1:]:
             x, y, l, h = button.get_xy_and_lh()
             if (x < pos[0] < (l+x)) and (y < pos[1] < (h+y)):
                 self.panel.button_clicked(button)
             else:
                 pass
+
+    def start_button_clicked(self):
+        print("START button clicked!")
+        self.car.move_up()
+
 
