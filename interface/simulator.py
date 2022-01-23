@@ -1,9 +1,11 @@
 import pygame
 import logging
-
+import os
 from map import colours
 from map.grid import Grid
 from interface.panel import Panel
+from robot.robot import Robot
+import pygame
 
 # Set the HEIGHT and WIDTH of the screen
 WINDOW_SIZE = [1020, 720]
@@ -33,6 +35,12 @@ class Simulator:
         # Used to manage how fast the screen updates
         self.clock = pygame.time.Clock()
 
+
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        image_path = os.path.join(current_dir, "car.png")
+        car_image = pygame.image.load(image_path)
+        car = Robot(self.grid, pygame, 30, 30)
+        ppu=32
         # Loop until the user clicks the close button.
         done = False
 
@@ -51,6 +59,8 @@ class Simulator:
 
             # Draw the grid
             self.grid.draw_grid(self.screen)
+
+
 
             # Limit to 60 frames per second
             self.clock.tick(60)

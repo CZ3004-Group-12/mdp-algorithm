@@ -28,10 +28,8 @@ class Grid(object):
                 else:
                     self.cells[row][column] = Cell(column, (19 - row), 0)
 
-    # TODO: write function to get coordinates of object on grid
-    # def value(self, x, y):
-    #     cell = self.get_cell(x, y)
-    #     return cell.getstatus()
+
+
 
     def get_block_size(self):
         return self.block_size
@@ -51,7 +49,7 @@ class Grid(object):
         cell.cell_clicked()
         logging.info("Clicked (x,y): (" + str(x_coordinate) + "," + str(y_coordinate) + "); column, row: " + str(column)
                      + "," + str(row) + "; Grid coordinates: " + str(cell.get_xcoord()) + " " + str(cell.get_ycoord()))
-        logging.info(self.grid_to_pixel([column,row]))
+        logging.info(self.pixel_to_grid([x_coordinate,y_coordinate]))
 
     def draw_grid(self, screen):
         # Draw the grid
@@ -98,7 +96,15 @@ class Grid(object):
                                       2,
                                       self.block_size])
 
+    # TODO: write function to get coordinates of object on grid
+
     def grid_to_pixel(self, pos):
         x_pixel = (pos[0]) * (self.block_size + MARGIN) + 120 + (self.block_size + MARGIN) / 2
         y_pixel = pos[1] * (self.block_size + MARGIN) + 120 + (self.block_size + MARGIN) / 2
         return [x_pixel, y_pixel]
+
+    def pixel_to_grid(self,pos):
+        x_grid = (pos[0] - 120) // (self.block_size + MARGIN)
+        y_grid = 19 - ((pos[1] - 120) // (self.block_size + MARGIN))
+        return [x_grid , y_grid]
+
