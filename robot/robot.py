@@ -8,16 +8,14 @@ from pygame.math import Vector2
 class Robot(object):
 
     def __init__(self, grid, pygame, robot_w, robot_h):
-        # the position of the middle of the car with respect to the grid
-        self.pixel_pos=Vector2(0,0)
-        # self.pixel_pos = Vector2(grid.grid_to_pixel([1,1])[0],grid.grid_to_pixel([1,1])[1])
         self.screen_width = grid.get_block_size() * robot_w / 10
         self.screen_height = grid.get_block_size() * robot_h / 10
         self.robot_w = robot_w
         self.robot_h = robot_h
         self.grid = grid
-
-
+        # the position of the middle of the car with respect to the grid
+        self.pixel_pos = Vector2(self.grid.grid_to_pixel([1, 1])[0], self.grid.grid_to_pixel([1, 1])[1])
+        # self.pixel_pos = Vector2(grid.grid_to_pixel([1,1])[0],grid.grid_to_pixel([1,1])[1])
 
         # TODO update the car speed
         # self.speed = 3
@@ -29,12 +27,9 @@ class Robot(object):
     def get_grid_pos(self):
         return self.grid.pixel_to_grid(self.pixel_pos)
 
+    # TODO Engine (Acceleration/Deceleration/Move Backwards
 
-    #TODO Engine (Acceleration/Deceleration/Move Backwards
-
-
-    #TODO Steering
-
+    # TODO Steering
 
     # def move_up(self):
     #     for speed in range(self.speed, 0, -1):

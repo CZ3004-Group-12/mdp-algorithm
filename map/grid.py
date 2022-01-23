@@ -100,7 +100,7 @@ class Grid(object):
 
     def grid_to_pixel(self, pos):
         x_pixel = (pos[0]) * (self.block_size + MARGIN) + 120 + (self.block_size + MARGIN) / 2
-        y_pixel = pos[1] * (self.block_size + MARGIN) + 120 + (self.block_size + MARGIN) / 2
+        y_pixel = (19 - pos[1]) * (self.block_size + MARGIN) + 120 + (self.block_size + MARGIN) / 2
         return [x_pixel, y_pixel]
 
     def pixel_to_grid(self,pos):

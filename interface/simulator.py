@@ -43,10 +43,8 @@ class Simulator:
         car = Robot(self.grid, pygame, 30, 30)
         ppu=32
 
-        rotated = pygame.transform.rotate(car_image, 0)
-        rect = rotated.get_rect()
-        self.screen.blit(rotated, car.get_pixel_pos()  - (rect.width / 2, rect.height / 2))
-        pygame.display.flip()
+
+
         # Loop until the user clicks the close button.
         done = False
 
@@ -65,7 +63,11 @@ class Simulator:
 
             # Draw the grid
             self.grid.draw_grid(self.screen)
-
+            # Draw the car
+            rotated = pygame.transform.rotate(car_image, 0)
+            rect = rotated.get_rect()
+            self.screen.blit(rotated, car.get_pixel_pos() - (rect.width / 2, rect.height / 2))
+            pygame.display.flip()
 
 
             # Limit to 60 frames per second
