@@ -2,7 +2,7 @@ import logging
 import pygame
 
 from map.cell import Cell
-from map import colours
+from map import constants
 
 # This sets the margin between each Cell
 MARGIN = 2
@@ -53,9 +53,9 @@ class Grid(object):
         for row in range(20):
             for column in range(20):
                 cell = self.cells[row][column]
-                color = colours.WHITE
+                color = constants.WHITE
                 if cell.get_cell_status() == 1:  # cell is part of starting area
-                    color = colours.BLUE
+                    color = constants.BLUE
                 pygame.draw.rect(screen,
                                  color,
                                  [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,
@@ -68,11 +68,11 @@ class Grid(object):
         for row in range(20):
             for column in range(20):
                 cell = self.cells[row][column]
-                color = colours.WHITE
+                color = constants.WHITE
                 if cell.get_cell_status() == 1:  # cell is part of starting area
-                    color = colours.BLUE
+                    color = constants.BLUE
                 if cell.get_obstacle_direction() is not None:
-                    color = colours.GREEN
+                    color = constants.GREEN
                 pygame.draw.rect(screen,
                                  color,
                                  [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,
@@ -81,28 +81,28 @@ class Grid(object):
                                   self.block_size])
                 if cell.get_obstacle_direction() == "N":
                     pygame.draw.rect(screen,
-                                     colours.RED,
+                                     constants.RED,
                                      [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,
                                       OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN,
                                       self.block_size,
                                       2])
                 if cell.get_obstacle_direction() == "E":
                     pygame.draw.rect(screen,
-                                     colours.RED,
+                                     constants.RED,
                                      [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN + 18,
                                       OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN,
                                       2,
                                       self.block_size])
                 if cell.get_obstacle_direction() == "S":
                     pygame.draw.rect(screen,
-                                     colours.RED,
+                                     constants.RED,
                                      [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,
                                       OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN + 18,
                                       self.block_size,
                                       2])
                 if cell.get_obstacle_direction() == "W":
                     pygame.draw.rect(screen,
-                                     colours.RED,
+                                     constants.RED,
                                      [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,
                                       OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN,
                                       2,

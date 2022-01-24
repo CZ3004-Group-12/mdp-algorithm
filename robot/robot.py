@@ -1,16 +1,14 @@
 import os
 from math import sin, radians, degrees, copysign
 from pygame.math import Vector2
-from map import colours
+from map import constants
 import pygame
 
 # This sets the margin between each Cell
 MARGIN = 2
+ONE_CELL = 20 + MARGIN
+THREE_CELL = 3 * ONE_CELL
 
-# How fast/direction in x
-dx = 2
-# How fast/direction in x
-dy = 3
 
 class Robot(object):
 
@@ -37,8 +35,10 @@ class Robot(object):
                                     self.screen_width, self.screen_height)
 
         # TODO update the car speed
-        # self.velocity = 3
-        # self.acceleration = 1
+        self.speed = 10
+        self.velocity = Vector2(0.0, 0.0)
+        self.steering = 0.0
+
 
     def get_pixel_pos(self):
         return self.pixel_pos
@@ -52,8 +52,14 @@ class Robot(object):
         rect.center = self.car_rect.center
         self.screen.blit(rotated, rect)
         # screen.blit(rotated, self.get_pixel_pos() - (rect.width / 2, rect.height / 2))
+        pygame.draw.rect(self.screen, constants.RED, self.car_rect, 1)
         pygame.display.flip()
-        pygame.draw.rect(self.screen, colours.RED, self.car_rect, 1)
+
+    def redraw_car(self):
+        # Need to redraw over everything (grid_surface, grid and car)
+        self.screen.blit(self.grid_surface, (120, 120))
+        self.grid.update_grid(self.screen)
+        self.draw_car()
 
 
     # TODO Engine (Acceleration/Deceleration/Move Backwards
@@ -62,90 +68,69 @@ class Robot(object):
     # ALL MOTIONS take place in minimal unit.
     # for 1: is by 10 (one grid)
     # for 2-5: is 30 by 30 (3x3 grid) area plus rotation
-    # 1. straight (one grid) - up, down, left, right
+    # 1. straight (one grid) - forward, backwards
     # 2. forward right/clockwise pi/2 turn
     # 3. forward left/anticlockwise pi/2 turn
     # 4. backward right/anticlockwise pi/2 turn
     # 5. backward left/clockwise pi/2 turn
+    def move_forward(self, dt):
+        initial_pixel_pos = self.get_pixel_pos()
+        # Set position to stop moving
+        if self.angle == constants.NORTH:  # CAR FACING NORTH
+            final_pixel_pos = Vector2(initial_pixel_pos[0], initial_pixel_pos[1] - ONE_CELL)
+        elif self.angle == constants.SOUTH:  # CAR FACING SOUTH
+            final_pixel_pos = Vector2(initial_pixel_pos[0], initial_pixel_pos[1] + ONE_CELL)
+        elif self.angle == constants.EAST:  # CAR FACING EAST
+            final_pixel_pos = Vector2(initial_pixel_pos[0] + ONE_CELL, initial_pixel_pos[1])
+        elif self.angle == constants.WEST:   # CAR FACING WEST
+            final_pixel_pos = Vector2(initial_pixel_pos[0] - ONE_CELL, initial_pixel_pos[1])
+        else:
+            final_pixel_pos = initial_pixel_pos  # car will not move
 
-    def move_up(self):
-        self.pixel_pos[1] -= 20 + MARGIN
-        self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
-                                    self.pixel_pos[1] - (0.5 * self.screen_height),
-                                    self.screen_width, self.screen_height)
+        # Set velocity of car
+        self.velocity += (0, -self.speed)
+        while self.get_pixel_pos() != final_pixel_pos:
+            self.pixel_pos += self.velocity.rotate(-self.angle) * dt
+            self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
+                                        self.pixel_pos[1] - (0.5 * self.screen_height),
+                                        self.screen_width, self.screen_height)
+            self.redraw_car()
+        # Reset velocity to 0
+        self.velocity -= (0, -self.speed)
 
-        # Need to redraw over everything (grid_surface, grid and car)
-        self.screen.blit(self.grid_surface, (120, 120))
-        self.grid.update_grid(self.screen)
-        self.draw_car()
+    def move_backwards(self, dt):
+        initial_pixel_pos = self.get_pixel_pos()
+        # Set position to stop moving
+        if self.angle == constants.NORTH:  # CAR FACING NORTH
+            final_pixel_pos = Vector2(initial_pixel_pos[0], initial_pixel_pos[1] + ONE_CELL)
+        elif self.angle == constants.SOUTH:  # CAR FACING SOUTH
+            final_pixel_pos = Vector2(initial_pixel_pos[0], initial_pixel_pos[1] - ONE_CELL)
+        elif self.angle == constants.EAST:  # CAR FACING EAST
+            final_pixel_pos = Vector2(initial_pixel_pos[0] - ONE_CELL, initial_pixel_pos[1])
+        elif self.angle == constants.WEST:  # CAR FACING WEST
+            final_pixel_pos = Vector2(initial_pixel_pos[0] + ONE_CELL, initial_pixel_pos[1])
+        else:
+            final_pixel_pos = initial_pixel_pos  # car will not move
 
-    # def move_up(self):
-    #     for speed in range(self.speed, 0, -1):
-    #         new_y = self.y - speed
-    #         xs = [0]
-    #         for inc in range(1, self.nudge_limit + 1):
-    #             xs.append(inc)
-    #             xs.append(-inc)
-    #         for x in [self.x + e for e in xs]:
-    #             if not self.hits_grid(x, new_y):
-    #                 self.x = x
-    #                 self.y = new_y
-    #                 if self.y < 0:
-    #                     self.y += self.screen_height
-    #                 return
-    #
-    # def move_down(self):
-    #     for speed in range(self.speed, 0, -1):
-    #         new_y = self.y + speed
-    #         xs = [0]
-    #         for inc in range(1, self.nudge_limit + 1):
-    #             xs.append(inc)
-    #             xs.append(-inc)
-    #         for x in [self.x + e for e in xs]:
-    #             if not self.hits_grid(x, new_y):
-    #                 self.x = x
-    #                 self.y = new_y
-    #                 if self.y >= self.screen_height:
-    #                     self.y -= self.screen_height
-    #                 return
-    #
-    # def move_left(self):
-    #     for speed in range(self.speed, 0, -1):
-    #         new_x = self.x - speed
-    #         ys = [0]
-    #         for inc in range(1, self.nudge_limit + 1):
-    #             ys.append(inc)
-    #             ys.append(-inc)
-    #         for y in [self.y + e for e in ys]:
-    #             if not self.hits_grid(new_x, y):
-    #                 self.x = new_x
-    #                 self.y = y
-    #                 return
-    #
-    # def move_right(self):
-    #     for speed in range(self.speed, 0, -1):
-    #         new_x = self.x + speed
-    #         ys = [0]
-    #         for inc in range(1, self.nudge_limit + 1):
-    #             ys.append(inc)
-    #             ys.append(-inc)
-    #         for y in [self.y + e for e in ys]:
-    #             if not self.hits_grid(new_x, y):
-    #                 self.x = new_x
-    #                 self.y = y
-    #                 return
-    #
-    # def hits_grid(self, x, y):
-    #     offsets = [
-    #         [x, y],
-    #         [x + self.xs - 1, y],
-    #         [x + self.xs - 1, y + self.ys - 1],
-    #         [x, y + self.ys - 1]
-    #     ]
-    #     for p in offsets:
-    #         if p[1] < 0:
-    #             p[1] += self.screen_height
-    #         if p[1] >= self.screen_height:
-    #             p[1] -= self.screen_height
-    #     index_pairs = set([self.grid.pixel_to_grid(*e) for e in offsets])
-    #     return any([self.grid.value(*e) == 'x' for e in index_pairs])
+        # Set velocity of car
+        self.velocity += (0, self.speed)
+        while self.get_pixel_pos() != final_pixel_pos:
+            self.pixel_pos += self.velocity.rotate(-self.angle) * dt
+            self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
+                                        self.pixel_pos[1] - (0.5 * self.screen_height),
+                                        self.screen_width, self.screen_height)
+            self.redraw_car()
+        # Reset velocity to 0
+        self.velocity -= (0, self.speed)
+
+    def move_forward_steer_right(self, dt):
+        pass
+
+    def move_forward_steer_left(self, dt):
+        pass
+
+    def move_backward_steer_right(self, dt):
+        pass
+
+    def move_backward_steer_left(self, dt):
+        pass
