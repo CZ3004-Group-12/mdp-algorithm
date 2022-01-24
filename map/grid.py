@@ -108,8 +108,6 @@ class Grid(object):
                                       2,
                                       self.block_size])
 
-    # TODO: write function to get coordinates of object on grid
-
     def grid_to_pixel(self, pos):
         x_pixel = (pos[0]) * (self.block_size + MARGIN) + 120 + (self.block_size + MARGIN) / 2
         y_pixel = (19 - pos[1]) * (self.block_size + MARGIN) + 120 + (self.block_size + MARGIN) / 2

@@ -1,4 +1,3 @@
-import os
 import time
 from math import sin, radians, degrees, copysign
 from pygame.math import Vector2

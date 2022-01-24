@@ -1,12 +1,9 @@
-import pygame
-import logging
 import os
 from map import constants
 from map.grid import Grid
 from interface.panel import Panel
 from robot.robot import Robot
 import pygame
-from math import pi
 
 # Set the HEIGHT and WIDTH of the screen
 WINDOW_SIZE = [1020, 720]
@@ -14,6 +11,7 @@ WINDOW_SIZE = [1020, 720]
 # Starting grid positions of car
 starting_position_x = 1
 starting_position_y = 1
+
 
 class Simulator:
 
@@ -46,11 +44,9 @@ class Simulator:
         image_path = os.path.join(current_dir, "car.png")
         car_image = pygame.image.load(image_path)
         self.car = Robot(self.screen, self.grid, self.grid_surface, 30, 30, starting_position_x, starting_position_y,
-                         constants.EAST, car_image)
+                         constants.NORTH, car_image)
         # Draw the car
         self.car.draw_car()
-        ppu=32
-
 
         # Loop until the user clicks the close button.
         done = False
