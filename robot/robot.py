@@ -1,4 +1,5 @@
 import os
+import time
 from math import sin, radians, degrees, copysign
 from pygame.math import Vector2
 from map import constants
@@ -74,6 +75,7 @@ class Robot(object):
     # 4. backward right/anticlockwise pi/2 turn
     # 5. backward left/clockwise pi/2 turn
     def move_forward(self, dt):
+        print("MOVE FORWARD FACING", self.angle)
         initial_pixel_pos = self.get_pixel_pos()
         # Set position to stop moving
         if self.angle == constants.NORTH:  # CAR FACING NORTH
@@ -95,10 +97,12 @@ class Robot(object):
                                         self.pixel_pos[1] - (0.5 * self.screen_height),
                                         self.screen_width, self.screen_height)
             self.redraw_car()
+
         # Reset velocity to 0
         self.velocity -= (0, -self.speed)
+        self.pixel_pos = final_pixel_pos
 
-    def move_backwards(self, dt):
+    def move_backward(self, dt):
         initial_pixel_pos = self.get_pixel_pos()
         # Set position to stop moving
         if self.angle == constants.NORTH:  # CAR FACING NORTH
@@ -122,15 +126,185 @@ class Robot(object):
             self.redraw_car()
         # Reset velocity to 0
         self.velocity -= (0, self.speed)
+        self.pixel_pos = final_pixel_pos
 
     def move_forward_steer_right(self, dt):
-        pass
+        print("STEERING RIGHT FORWARD FACING", self.angle)
+        # Pause to simulate time taken for wheels to full rotate
+        time.sleep(constants.STEERING_TIME_DELAY)
+
+        initial_pixel_pos = self.get_pixel_pos()
+        initial_angle = self.angle
+        # Set position to stop moving
+        if self.angle == constants.NORTH:  # CAR FACING NORTH
+            final_pixel_pos = Vector2(initial_pixel_pos[0] + THREE_CELL, initial_pixel_pos[1] - THREE_CELL)
+            final_angle = constants.EAST
+        elif self.angle == constants.SOUTH:  # CAR FACING SOUTH
+            final_pixel_pos = Vector2(initial_pixel_pos[0] - THREE_CELL, initial_pixel_pos[1] + THREE_CELL)
+            final_angle = constants.WEST
+        elif self.angle == constants.EAST:  # CAR FACING EAST
+            final_pixel_pos = Vector2(initial_pixel_pos[0] + THREE_CELL, initial_pixel_pos[1] + THREE_CELL)
+            final_angle = constants.SOUTH
+        elif self.angle == constants.WEST:  # CAR FACING WEST
+            final_pixel_pos = Vector2(initial_pixel_pos[0] - THREE_CELL, initial_pixel_pos[1] - THREE_CELL)
+            final_angle = constants.NORTH
+        else:
+            final_pixel_pos = initial_pixel_pos  # car will not move
+            final_angle = initial_angle
+
+        # Set velocity of car
+        self.velocity += (0, -self.speed)
+        while not self.check_if_reached(initial_angle, final_pixel_pos):
+            turning_radius = THREE_CELL
+            angular_velocity = self.velocity.y / turning_radius
+
+            self.pixel_pos += self.velocity.rotate(-self.angle) * dt
+            self.angle += degrees(angular_velocity) * dt
+
+            self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
+                                        self.pixel_pos[1] - (0.5 * self.screen_height),
+                                        self.screen_width, self.screen_height)
+            self.redraw_car()
+
+        # Reset velocity to 0 and do corrections for angle and coordinates
+        self.velocity -= (0, -self.speed)
+        self.angle = final_angle
+        self.pixel_pos = final_pixel_pos
 
     def move_forward_steer_left(self, dt):
-        pass
+        print("STEERING LEFT FORWARD FACING", self.angle)
+        # Pause to simulate time taken for wheels to full rotate
+        time.sleep(constants.STEERING_TIME_DELAY)
+
+        initial_pixel_pos = self.get_pixel_pos()
+        initial_angle = self.angle
+        # Set position to stop moving
+        if self.angle == constants.NORTH:  # CAR FACING NORTH
+            final_pixel_pos = Vector2(initial_pixel_pos[0] - THREE_CELL, initial_pixel_pos[1] - THREE_CELL)
+            final_angle = constants.WEST
+        elif self.angle == constants.SOUTH:  # CAR FACING SOUTH
+            final_pixel_pos = Vector2(initial_pixel_pos[0] + THREE_CELL, initial_pixel_pos[1] + THREE_CELL)
+            final_angle = constants.EAST
+        elif self.angle == constants.EAST:  # CAR FACING EAST
+            final_pixel_pos = Vector2(initial_pixel_pos[0] + THREE_CELL, initial_pixel_pos[1] - THREE_CELL)
+            final_angle = constants.NORTH
+        elif self.angle == constants.WEST:  # CAR FACING WEST
+            final_pixel_pos = Vector2(initial_pixel_pos[0] - THREE_CELL, initial_pixel_pos[1] + THREE_CELL)
+            final_angle = constants.SOUTH
+        else:
+            final_pixel_pos = initial_pixel_pos  # car will not move
+            final_angle = initial_angle
+
+        # Set velocity of car
+        self.velocity += (0, -self.speed)
+        while not self.check_if_reached(initial_angle, final_pixel_pos):
+            turning_radius = THREE_CELL
+            angular_velocity = self.velocity.y / turning_radius
+
+            self.pixel_pos += self.velocity.rotate(-self.angle) * dt
+            self.angle -= degrees(angular_velocity) * dt
+
+            self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
+                                        self.pixel_pos[1] - (0.5 * self.screen_height),
+                                        self.screen_width, self.screen_height)
+            self.redraw_car()
+
+        # Reset velocity to 0 and do corrections for angle and coordinates
+        self.velocity -= (0, -self.speed)
+        self.angle = final_angle
+        self.pixel_pos = final_pixel_pos
 
     def move_backward_steer_right(self, dt):
-        pass
+        print("STEERING RIGHT BACKWARD FACING", self.angle)
+        # Pause to simulate time taken for wheels to full rotate
+        time.sleep(constants.STEERING_TIME_DELAY)
+
+        initial_pixel_pos = self.get_pixel_pos()
+        initial_angle = self.angle
+        # Set position to stop moving
+        if self.angle == constants.NORTH:  # CAR FACING NORTH
+            final_pixel_pos = Vector2(initial_pixel_pos[0] + THREE_CELL, initial_pixel_pos[1] + THREE_CELL)
+            final_angle = constants.WEST
+        elif self.angle == constants.SOUTH:  # CAR FACING SOUTH
+            final_pixel_pos = Vector2(initial_pixel_pos[0] - THREE_CELL, initial_pixel_pos[1] - THREE_CELL)
+            final_angle = constants.WEST
+        elif self.angle == constants.EAST:  # CAR FACING EAST
+            final_pixel_pos = Vector2(initial_pixel_pos[0] - THREE_CELL, initial_pixel_pos[1] + THREE_CELL)
+            final_angle = constants.NORTH
+        elif self.angle == constants.WEST:  # CAR FACING WEST
+            final_pixel_pos = Vector2(initial_pixel_pos[0] + THREE_CELL, initial_pixel_pos[1] - THREE_CELL)
+            final_angle = constants.SOUTH
+        else:
+            final_pixel_pos = initial_pixel_pos  # car will not move
+            final_angle = initial_angle
+
+        # Set velocity of car
+        self.velocity += (0, -self.speed)
+        while not self.check_if_reached(initial_angle, final_pixel_pos):
+            turning_radius = THREE_CELL
+            angular_velocity = self.velocity.y / turning_radius
+
+            self.pixel_pos -= self.velocity.rotate(-self.angle) * dt
+            self.angle -= degrees(angular_velocity) * dt
+
+            self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
+                                        self.pixel_pos[1] - (0.5 * self.screen_height),
+                                        self.screen_width, self.screen_height)
+            self.redraw_car()
+
+        # Reset velocity to 0 and do corrections for angle and coordinates
+        self.velocity -= (0, -self.speed)
+        self.angle = final_angle
+        self.pixel_pos = final_pixel_pos
 
     def move_backward_steer_left(self, dt):
-        pass
+        print("STEERING LEFT BACKWARD FACING", self.angle)
+        # Pause to simulate time taken for wheels to full rotate
+        time.sleep(constants.STEERING_TIME_DELAY)
+
+        initial_pixel_pos = self.get_pixel_pos()
+        initial_angle = self.angle
+        # Set position to stop moving
+        if self.angle == constants.NORTH:  # CAR FACING NORTH
+            final_pixel_pos = Vector2(initial_pixel_pos[0] - THREE_CELL, initial_pixel_pos[1] + THREE_CELL)
+            final_angle = constants.EAST
+        elif self.angle == constants.SOUTH:  # CAR FACING SOUTH
+            final_pixel_pos = Vector2(initial_pixel_pos[0] + THREE_CELL, initial_pixel_pos[1] - THREE_CELL)
+            final_angle = constants.WEST
+        elif self.angle == constants.EAST:  # CAR FACING EAST
+            final_pixel_pos = Vector2(initial_pixel_pos[0] - THREE_CELL, initial_pixel_pos[1] - THREE_CELL)
+            final_angle = constants.SOUTH
+        elif self.angle == constants.WEST:  # CAR FACING WEST
+            final_pixel_pos = Vector2(initial_pixel_pos[0] + THREE_CELL, initial_pixel_pos[1] + THREE_CELL)
+            final_angle = constants.NORTH
+        else:
+            final_pixel_pos = initial_pixel_pos  # car will not move
+            final_angle = initial_angle
+
+        # Set velocity of car
+        self.velocity += (0, -self.speed)
+        while not self.check_if_reached(initial_angle, final_pixel_pos):
+            turning_radius = THREE_CELL
+            angular_velocity = self.velocity.y / turning_radius
+
+            self.pixel_pos -= self.velocity.rotate(-self.angle) * dt
+            self.angle += degrees(angular_velocity) * dt
+
+            self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
+                                        self.pixel_pos[1] - (0.5 * self.screen_height),
+                                        self.screen_width, self.screen_height)
+            self.redraw_car()
+
+        # Reset velocity to 0 and do corrections for angle and coordinates
+        self.velocity -= (0, -self.speed)
+        self.angle = final_angle
+        self.pixel_pos = final_pixel_pos
+
+    def check_if_reached(self, initial_angle, final_pixel_pos):
+        # Set position to stop moving
+        if round(self.get_pixel_pos()[0]) == final_pixel_pos[0] \
+                and round(self.get_pixel_pos()[1]) == final_pixel_pos[1] \
+                and abs(self.angle - initial_angle) <= 90:
+            return True
+        else:
+            return False

@@ -46,7 +46,7 @@ class Simulator:
         image_path = os.path.join(current_dir, "car.png")
         car_image = pygame.image.load(image_path)
         self.car = Robot(self.screen, self.grid, self.grid_surface, 30, 30, starting_position_x, starting_position_y,
-                         constants.NORTH, car_image)
+                         constants.EAST, car_image)
         # Draw the car
         self.car.draw_car()
         ppu=32
@@ -100,6 +100,11 @@ class Simulator:
     def start_button_clicked(self):
         print("START button clicked!")
         dt = round(self.clock.get_time() / 1000, 2)
-        self.car.move_forward(dt)
+        # self.car.move_forward(dt)
+        # self.car.move_backward(dt)
+        # self.car.move_forward_steer_right(dt)
+        # self.car.move_forward_steer_left(dt)
+        self.car.move_backward_steer_right(dt)
+        # self.car.move_backward_steer_left(dt)
 
 
