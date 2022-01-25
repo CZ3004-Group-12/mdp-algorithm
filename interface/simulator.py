@@ -100,7 +100,7 @@ class Simulator:
         # self.car.move_backward(dt)
         # self.car.move_forward_steer_right(dt)
         # self.car.move_forward_steer_left(dt)
-        self.car.move_backward_steer_right(dt)
-        # self.car.move_backward_steer_left(dt)
+        # self.car.move_backward_steer_right(dt)
+        self.car.move_backward_steer_left(dt)
 
 
