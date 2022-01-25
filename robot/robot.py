@@ -309,3 +309,29 @@ class Robot(object):
             return True
         else:
             return False
+
+    def get_angle_of_rotation(self):
+        return self.angle
+
+    def check_obstacles(self):
+        grid_x=self.grid_x
+        grid_y=self.grid_y
+        angle=self.get_angle_of_rotation()
+        if angle =="Border":
+            return "Border"
+        if angle == map.constants.NORTH:
+            for i in range(3):
+                if grid.check_obstacle_cell(grid_x+i-1, grid_y+3) is not None:
+                    return grid.get_cell(grid_x+3,grid_y+i-1)
+        elif angle == map.constants.EAST:
+            for i in range(3):
+                if grid.check_obstacle_cell(grid_x+3, grid_y+i-1) is not None:
+                    return grid.get_cell(grid_x+3,grid_y+i-1)
+        elif angle == map.constants.SOUTH:
+            for i in range(3):
+                if grid.check_obstacle_cell(grid_x+i-1, grid_y-3) is not None:
+                    return grid.get_cell(grid_x+i-1,grid_y+3)
+        elif angle == map.constants.WEST:
+            for i in range(3):
+                if grid.check_obstacle_cell(grid_x-3, grid_y+i-1) is not None:
+                    return grid.get_cell(grid_x-3, grid_y+i-1)
