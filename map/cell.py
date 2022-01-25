@@ -15,6 +15,8 @@ class Cell:
         self.obstacle = None
 
     def cell_clicked(self):
+        if self.y_coordinate < 4 and self.x_coordinate < 4:
+            return
         if self.obstacle is None:
             self.obstacle = Obstacle()
             return

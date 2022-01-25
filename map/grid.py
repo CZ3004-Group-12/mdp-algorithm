@@ -41,6 +41,7 @@ class Grid(object):
         # Change the x/y screen coordinates to grid coordinates
         column = (x_coordinate - 120) // (self.block_size + MARGIN)
         row = (y_coordinate - 120) // (self.block_size + MARGIN)
+
         # Set that location to one
         cell = self.get_cell(row, column)
         cell.cell_clicked()
