@@ -227,7 +227,7 @@ class Robot(object):
             final_angle = constants.WEST
         elif self.angle == constants.SOUTH:  # CAR FACING SOUTH
             final_pixel_pos = Vector2(initial_pixel_pos[0] - THREE_CELL, initial_pixel_pos[1] - THREE_CELL)
-            final_angle = constants.WEST
+            final_angle = constants.EAST
         elif self.angle == constants.EAST:  # CAR FACING EAST
             final_pixel_pos = Vector2(initial_pixel_pos[0] - THREE_CELL, initial_pixel_pos[1] + THREE_CELL)
             final_angle = constants.NORTH
@@ -256,6 +256,7 @@ class Robot(object):
         self.velocity -= (0, -self.speed)
         self.angle = final_angle
         self.pixel_pos = final_pixel_pos
+        print(self.angle)
 
     def move_backward_steer_left(self, dt):
         print("STEERING LEFT BACKWARD FACING", self.angle)
