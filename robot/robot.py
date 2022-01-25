@@ -40,7 +40,6 @@ class Robot(object):
         self.velocity = Vector2(0.0, 0.0)
         self.steering = 0.0
 
-
     def get_pixel_pos(self):
         return self.pixel_pos
 
@@ -61,7 +60,6 @@ class Robot(object):
         self.screen.blit(self.grid_surface, (120, 120))
         self.grid.update_grid(self.screen)
         self.draw_car()
-
 
     # TODO Engine (Acceleration/Deceleration/Move Backwards
 
@@ -84,7 +82,7 @@ class Robot(object):
             final_pixel_pos = Vector2(initial_pixel_pos[0], initial_pixel_pos[1] + ONE_CELL)
         elif self.angle == constants.EAST:  # CAR FACING EAST
             final_pixel_pos = Vector2(initial_pixel_pos[0] + ONE_CELL, initial_pixel_pos[1])
-        elif self.angle == constants.WEST:   # CAR FACING WEST
+        elif self.angle == constants.WEST:  # CAR FACING WEST
             final_pixel_pos = Vector2(initial_pixel_pos[0] - ONE_CELL, initial_pixel_pos[1])
         else:
             final_pixel_pos = initial_pixel_pos  # car will not move
@@ -314,24 +312,24 @@ class Robot(object):
         return self.angle
 
     def check_obstacles(self):
-        grid_x=self.grid_x
-        grid_y=self.grid_y
-        angle=self.get_angle_of_rotation()
-        if angle =="Border":
+        grid_x = self.grid_x
+        grid_y = self.grid_y
+        angle = self.get_angle_of_rotation()
+        if angle == "Border":
             return "Border"
         if angle == map.constants.NORTH:
             for i in range(3):
-                if grid.check_obstacle_cell(grid_x+i-1, grid_y+3) is not None:
-                    return grid.get_cell(grid_x+3,grid_y+i-1)
+                if grid.check_obstacle_cell(grid_x + i - 1, grid_y + 3) is not None:
+                    return grid.get_cell(grid_x + 3, grid_y + i - 1)
         elif angle == map.constants.EAST:
             for i in range(3):
-                if grid.check_obstacle_cell(grid_x+3, grid_y+i-1) is not None:
-                    return grid.get_cell(grid_x+3,grid_y+i-1)
+                if grid.check_obstacle_cell(grid_x + 3, grid_y + i - 1) is not None:
+                    return grid.get_cell(grid_x + 3, grid_y + i - 1)
         elif angle == map.constants.SOUTH:
             for i in range(3):
-                if grid.check_obstacle_cell(grid_x+i-1, grid_y-3) is not None:
-                    return grid.get_cell(grid_x+i-1,grid_y+3)
+                if grid.check_obstacle_cell(grid_x + i - 1, grid_y - 3) is not None:
+                    return grid.get_cell(grid_x + i - 1, grid_y + 3)
         elif angle == map.constants.WEST:
             for i in range(3):
-                if grid.check_obstacle_cell(grid_x-3, grid_y+i-1) is not None:
-                    return grid.get_cell(grid_x-3, grid_y+i-1)
+                if grid.check_obstacle_cell(grid_x - 3, grid_y + i - 1) is not None:
+                    return grid.get_cell(grid_x - 3, grid_y + i - 1)
