@@ -2,7 +2,7 @@ import logging
 import pygame
 
 from map.cell import Cell
-from map import constants
+import constants
 
 # This sets the margin between each Cell
 MARGIN = 2

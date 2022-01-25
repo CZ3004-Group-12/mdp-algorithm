@@ -1,7 +1,7 @@
 import time
-from math import sin, radians, degrees, copysign
+from math import degrees
 from pygame.math import Vector2
-from map import constants
+import constants
 import pygame
 
 # This sets the margin between each Cell

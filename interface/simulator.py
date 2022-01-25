@@ -1,5 +1,5 @@
 import os
-from map import constants
+import constants
 from map.grid import Grid
 from interface.panel import Panel
 from robot.robot import Robot

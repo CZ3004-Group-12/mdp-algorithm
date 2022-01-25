@@ -1,5 +1,5 @@
 from interface.buttons import Button
-from map import constants
+import constants
 
 
 class Panel(object):
