@@ -119,3 +119,14 @@ class Grid(object):
         y_grid = 19 - ((pos[1] - 120) // (self.block_size + MARGIN))
         return [x_grid, y_grid]
 
+    # TODO: write function to get coordinates of object on grid
+    def get_obstacles(self):
+        obstacles=[]
+        for row in range(self.grid_row):
+            r=19-row
+            for column in range(self.grid_column):
+                c=column
+                if self.cells[r][c].get_obstacle_direction() is not None:
+                    obstacles.append(self.cells[r][c])
+        # returns a list of cells with obstacles
+        return obstacles

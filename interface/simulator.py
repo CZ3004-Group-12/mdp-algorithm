@@ -95,6 +95,7 @@ class Simulator:
 
     def start_button_clicked(self):
         print("START button clicked!")
+        # value of 0.02. To change when velocity is known
         dt = round(self.clock.get_time() / 1000, 2)
         # self.car.move_forward(dt)
         # self.car.move_backward(dt)
