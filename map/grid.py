@@ -130,3 +130,8 @@ class Grid(object):
                     obstacles.append(self.cells[r][c])
         # returns a list of cells with obstacles
         return obstacles
+
+    def check_obstacle_cell(self,x,y):
+        if x<0 or y<0 or x>19 or y>19:
+            return "Border"
+        self.cells[x][y].get_obstacle_direction()
