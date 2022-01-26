@@ -28,6 +28,8 @@ class Grid(object):
                 else:
                     self.cells[row][column] = Cell(column, (19 - row), 0)
 
+        self.obstacle_cells = {}
+
     def get_block_size(self):
         return self.block_size
 
@@ -50,6 +52,14 @@ class Grid(object):
         # Set that location to one
         cell = self.get_cell(row, column)
         cell.cell_clicked()
+        # Add/remove cell from dict of obstacles accordingly
+        if cell.get_cell_status() == 3:
+            if cell.get_obstacle().get_obstacle_id() not in self.obstacle_cells.keys():
+                self.obstacle_cells[cell.get_obstacle().get_obstacle_id()] = cell
+        elif cell.get_cell_status() == 0:
+            key_to_remove = str(cell.get_xcoord()) + '-' + str(cell.get_ycoord())
+            if key_to_remove in self.obstacle_cells.keys():
+                del self.obstacle_cells[key_to_remove]
         self.unset_obstacle_boundary_cells(cell)  # runs only for empty cell
         self.set_starting_area_cells(cell)        # runs only for empty cell
         for r in range(self.grid_row):
@@ -235,6 +245,7 @@ class Grid(object):
         self.cells[x][y].get_obstacle_direction()
 
     def reset(self, screen):
+        self.obstacle_cells = {}
         for row in range(self.grid_row):
             for column in range(self.grid_column):
                 if column < 4 and row > 15:
