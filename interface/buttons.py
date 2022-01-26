@@ -44,12 +44,17 @@ class Button:
 
     def pressed(self):
         func = self.function
+        if func == "RESET":
+            pass
         if func == "CONNECT":
             print("Connect button pressed.")
         elif func == "DISCONNECT":
             print("Disconnect button pressed.")
         else:
             return
+
+    def get_function(self):
+        return self.function
 
     def get_xy_and_lh(self):
         return self.x, self.y, self.length, self.height

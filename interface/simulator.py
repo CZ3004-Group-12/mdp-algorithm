@@ -77,6 +77,22 @@ class Simulator:
         # Be IDLE friendly. If you forget this line, the program will 'hang' on exit.
         self.root.quit()
 
+    # def check_button_clicked(self, pos):
+    #     # Check if start button was pressed first:
+    #     start_button = self.panel.buttons[0]
+    #     x, y, l, h = start_button.get_xy_and_lh()
+    #     if (x < pos[0] < (l + x)) and (y < pos[1] < (h + y)):
+    #         self.start_button_clicked()
+    #         return
+    #
+    #     for button in self.panel.buttons[1:]:
+    #         x, y, l, h = button.get_xy_and_lh()
+    #         if (x < pos[0] < (l+x)) and (y < pos[1] < (h+y)):
+    #             self.panel.button_clicked(button)
+    #             return
+    #         else:
+    #             pass
+
     def check_button_clicked(self, pos):
         # Check if start button was pressed first:
         start_button = self.panel.buttons[0]
@@ -88,8 +104,16 @@ class Simulator:
         for button in self.panel.buttons[1:]:
             x, y, l, h = button.get_xy_and_lh()
             if (x < pos[0] < (l+x)) and (y < pos[1] < (h+y)):
-                self.panel.button_clicked(button)
-                return
+                button_func = self.panel.get_button_clicked(button)
+                if button_func == "RESET":
+                    print("Reset button pressed.")
+                    self.reset_button_clicked()
+                if button_func == "CONNECT":
+                    print("Connect button pressed.")
+                elif button_func == "DISCONNECT":
+                    print("Disconnect button pressed.")
+                else:
+                    return
             else:
                 pass
 
@@ -103,5 +127,8 @@ class Simulator:
         # self.car.move_forward_steer_left(dt)
         # self.car.move_backward_steer_right(dt)
         self.car.move_backward_steer_left(dt)
+
+    def reset_button_clicked(self):
+        self.grid.reset(self.screen)
 
 

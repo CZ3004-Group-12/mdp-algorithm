@@ -1,7 +1,7 @@
 # status enum:
 # 0 is empty
 # 1 is starting area
-# 2 is restricted area around obstacle
+# 2 is boundary area around obstacle
 # 3 is obstacle
 from map.obstacle import Obstacle
 
@@ -19,9 +19,21 @@ class Cell:
             return
         if self.obstacle is None:
             self.obstacle = Obstacle()
+            self.status = 3
             return
         self.obstacle.obstacle_clicked()
-        return self.obstacle.get_direction()
+        if self.obstacle.get_direction() is None:
+            self.obstacle = None
+            self.status = 0
+
+    def set_obstacle_boundary_status(self):
+        self.status = 2
+
+    def set_starting_area_status(self):
+        self.status = 1
+
+    def set_empty_status(self):
+        self.status = 0
 
     def get_obstacle_direction(self):
         if self.obstacle is None:
