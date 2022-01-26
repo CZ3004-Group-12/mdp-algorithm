@@ -44,6 +44,9 @@ class Grid(object):
         row = 19 - y
         return self.cells[row][column]
 
+    def get_obstacle_cells_dict(self):
+        return self.obstacle_cells
+
     def grid_clicked(self, x_coordinate, y_coordinate):
         # Change the x/y screen coordinates to grid coordinates
         column = (x_coordinate - 120) // (self.block_size + MARGIN)
@@ -238,11 +241,6 @@ class Grid(object):
                     obstacles.append(self.cells[r][c])
         # returns a list of cells with obstacles
         return obstacles
-
-    def check_obstacle_cell(self,x,y):
-        if x<0 or y<0 or x>19 or y>19:
-            return "Border"
-        self.cells[x][y].get_obstacle_direction()
 
     def reset(self, screen):
         self.obstacle_cells = {}

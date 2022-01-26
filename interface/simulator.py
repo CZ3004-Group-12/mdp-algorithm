@@ -110,14 +110,18 @@ class Simulator:
         # self.car.move_backward_steer_left(dt)
 
         # Test grid boundary recognition
+        # print(self.car.move_forward(dt))
+        # print(self.car.move_forward(dt))
+        # print(self.car.move_forward(dt))
         print(self.car.move_forward_steer_right(dt))
-        print(self.car.move_forward_steer_right(dt))
-        print(self.car.move_backward_steer_left(dt))
-        print(self.car.move_backward_steer_left(dt))
-        print(self.car.move_forward_steer_right(dt))
-        print(self.car.move_forward_steer_right(dt))
-        print(self.car.move_backward_steer_left(dt))
-        print(self.car.move_backward_steer_left(dt))
+        # print(self.car.move_forward_steer_right(dt))
+        # print(self.car.move_forward_steer_right(dt))
+        # print(self.car.move_backward_steer_left(dt))
+        # print(self.car.move_backward_steer_left(dt))
+        # print(self.car.move_forward_steer_right(dt))
+        # print(self.car.move_forward_steer_right(dt))
+        # print(self.car.move_backward_steer_left(dt))
+        # print(self.car.move_backward_steer_left(dt))
 
 
 
