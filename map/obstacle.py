@@ -1,5 +1,9 @@
 class Obstacle:
     def __init__(self):
+        # TODO: if possible, combine obstacle class into cell
+        # TODO: set unique ids to identify different obstacles
+        # TODO: need boolean parameter to mark obstacle as visited
+        # TODO: need to define cells which car must reach to consider as "visited" a obstacle
         self.direction = "N"
 
     def obstacle_clicked(self):

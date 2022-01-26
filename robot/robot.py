@@ -310,6 +310,7 @@ class Robot(object):
     def get_angle_of_rotation(self):
         return self.angle
 
+    # TODO: stop robot from being able to move outside of border
     def check_obstacles(self):
         grid_x = self.grid_x
         grid_y = self.grid_y
