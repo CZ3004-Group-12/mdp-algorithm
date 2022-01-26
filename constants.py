@@ -20,3 +20,11 @@ ROBOT_H = 30
 ROBOT_STARTING_X = 1
 ROBOT_STARTING_Y = 1
 ROBOT_STARTING_ANGLE = NORTH
+
+# Grid
+# if (120 < pos[0] < 560) and (120 < pos[1] < 560): to define area within grid
+min_pixel_pos_x = 120
+min_pixel_pos_y = 120
+max_pixel_pos_x = 560
+max_pixel_pos_y = 560
+

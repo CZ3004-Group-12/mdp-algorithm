@@ -165,14 +165,14 @@ class Grid(object):
         # Draw the grid
         for row in range(20):
             for column in range(20):
-                cell = self.cells[row][column]
+                cell = self.get_cell(row, column)
                 color = constants.WHITE
                 if cell.get_cell_status() == 1:  # cell is part of starting area
                     color = constants.BLUE
-                if cell.get_cell_status() == 3:  # cell has an obstacle
-                    color = constants.GREEN
                 if cell.get_cell_status() == 2:  # cell is not an obstacle but is an obstacle boundary
                     color = constants.LIGHT_RED
+                if cell.get_cell_status() == 3:  # cell has an obstacle
+                    color = constants.GREEN
                 pygame.draw.rect(screen,
                                  color,
                                  [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,

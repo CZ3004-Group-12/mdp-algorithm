@@ -74,22 +74,6 @@ class Simulator:
         # Be IDLE friendly. If you forget this line, the program will 'hang' on exit.
         self.root.quit()
 
-    # def check_button_clicked(self, pos):
-    #     # Check if start button was pressed first:
-    #     start_button = self.panel.buttons[0]
-    #     x, y, l, h = start_button.get_xy_and_lh()
-    #     if (x < pos[0] < (l + x)) and (y < pos[1] < (h + y)):
-    #         self.start_button_clicked()
-    #         return
-    #
-    #     for button in self.panel.buttons[1:]:
-    #         x, y, l, h = button.get_xy_and_lh()
-    #         if (x < pos[0] < (l+x)) and (y < pos[1] < (h+y)):
-    #             self.panel.button_clicked(button)
-    #             return
-    #         else:
-    #             pass
-
     def check_button_clicked(self, pos):
         # Check if start button was pressed first:
         start_button = self.panel.buttons[0]
@@ -120,10 +104,23 @@ class Simulator:
         dt = round(self.clock.get_time() / 1000, 2)
         # self.car.move_forward(dt)
         # self.car.move_backward(dt)
-        self.car.move_forward_steer_right(dt)
+        # self.car.move_forward_steer_right(dt)
         # self.car.move_forward_steer_left(dt)
         # self.car.move_backward_steer_right(dt)
         # self.car.move_backward_steer_left(dt)
+
+        # Test grid boundary recognition
+        print(self.car.move_forward_steer_right(dt))
+        print(self.car.move_forward_steer_right(dt))
+        print(self.car.move_backward_steer_left(dt))
+        print(self.car.move_backward_steer_left(dt))
+        print(self.car.move_forward_steer_right(dt))
+        print(self.car.move_forward_steer_right(dt))
+        print(self.car.move_backward_steer_left(dt))
+        print(self.car.move_backward_steer_left(dt))
+
+
+
 
     def reset_button_clicked(self):
         self.grid.reset(self.screen)
