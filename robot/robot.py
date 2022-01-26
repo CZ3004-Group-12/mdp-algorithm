@@ -332,3 +332,14 @@ class Robot(object):
             for i in range(3):
                 if grid.check_obstacle_cell(grid_x - 3, grid_y + i - 1) is not None:
                     return grid.get_cell(grid_x - 3, grid_y + i - 1)
+
+    def reset(self):
+        self.angle = constants.ROBOT_STARTING_ANGLE
+        self.grid_x = constants.ROBOT_STARTING_X
+        self.grid_y = constants.ROBOT_STARTING_Y
+        self.pixel_pos = Vector2(self.grid.grid_to_pixel([self.grid_x, self.grid_y])[0],
+                                 self.grid.grid_to_pixel([self.grid_x, self.grid_y])[1])
+        self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
+                                    self.pixel_pos[1] - (0.5 * self.screen_height),
+                                    self.screen_width, self.screen_height)
+        self.redraw_car()
