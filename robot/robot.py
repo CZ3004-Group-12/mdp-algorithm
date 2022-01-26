@@ -334,6 +334,10 @@ class Robot(object):
                 if grid.check_obstacle_cell(grid_x - 3, grid_y + i - 1) is not None:
                     return grid.get_cell(grid_x - 3, grid_y + i - 1)
 
+    # TODO: after setting obstacles, need function to check if robot has arrived at position and angle for image rec
+    # TODO: (slightly later) PATH PLANNING: define sets of robot movements according to destination
+    #  image facing direction and robot facing direction (refer to lecture vid for the permutations)
+
     def reset(self):
         self.angle = constants.ROBOT_STARTING_ANGLE
         self.grid_x = constants.ROBOT_STARTING_X
