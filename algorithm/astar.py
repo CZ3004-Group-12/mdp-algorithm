@@ -37,6 +37,7 @@ class AStar:
         all_target_unordered = grid.get_target_locations()
         all_target_ordered = []
         all_target_ordered.append((x, y, direction, None))
+        # The order is based on the shortest distance between the previous position to the next target location.
         for j in range(len(all_target_unordered)):
             for i in range(len(all_target_unordered)):
                 index = 0
@@ -51,3 +52,5 @@ class AStar:
             all_target_ordered.append(all_target_unordered.pop(index))
             print(all_target_ordered)
         return all_target_ordered
+
+
