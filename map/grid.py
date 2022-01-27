@@ -54,16 +54,16 @@ class Grid(object):
             target_grid_x, target_grid_y = obstacle_cell.get_xcoord(), obstacle_cell.get_ycoord()
             obstacle_direction = obstacle_cell.get_obstacle_direction()
             target_direction = constants.NORTH
-            if obstacle_direction == "N":
+            if obstacle_direction == constants.NORTH:
                 target_direction = constants.SOUTH
                 target_grid_x, target_grid_y = obstacle_cell.get_xcoord(), obstacle_cell.get_ycoord() + 4
-            elif obstacle_direction == "S":
+            elif obstacle_direction == constants.SOUTH:
                 target_direction = constants.NORTH
                 target_grid_x, target_grid_y = obstacle_cell.get_xcoord(), obstacle_cell.get_ycoord() - 4
-            elif obstacle_direction == "E":
+            elif obstacle_direction == constants.EAST:
                 target_direction = constants.WEST
                 target_grid_x, target_grid_y = obstacle_cell.get_xcoord() + 4, obstacle_cell.get_ycoord()
-            elif obstacle_direction == "W":
+            elif obstacle_direction == constants.WEST:
                 target_direction = constants.EAST
                 target_grid_x, target_grid_y = obstacle_cell.get_xcoord() - 4, obstacle_cell.get_ycoord()
 
@@ -221,28 +221,28 @@ class Grid(object):
                                   OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN,
                                   self.block_size,
                                   self.block_size])
-                if cell.get_obstacle_direction() == "N":
+                if cell.get_obstacle_direction() == constants.NORTH:
                     pygame.draw.rect(screen,
                                      constants.RED,
                                      [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,
                                       OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN,
                                       self.block_size,
                                       2])
-                if cell.get_obstacle_direction() == "E":
+                if cell.get_obstacle_direction() == constants.EAST:
                     pygame.draw.rect(screen,
                                      constants.RED,
                                      [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN + 18,
                                       OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN,
                                       2,
                                       self.block_size])
-                if cell.get_obstacle_direction() == "S":
+                if cell.get_obstacle_direction() == constants.SOUTH:
                     pygame.draw.rect(screen,
                                      constants.RED,
                                      [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,
                                       OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN + 18,
                                       self.block_size,
                                       2])
-                if cell.get_obstacle_direction() == "W":
+                if cell.get_obstacle_direction() == constants.SOUTH:
                     pygame.draw.rect(screen,
                                      constants.RED,
                                      [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,
