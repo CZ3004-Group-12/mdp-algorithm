@@ -4,6 +4,7 @@ from map.grid import Grid
 from interface.panel import Panel
 from robot.robot import Robot
 import pygame
+from algorithm import astar
 
 # Set the HEIGHT and WIDTH of the screen
 WINDOW_SIZE = [1020, 720]
@@ -113,16 +114,16 @@ class Simulator:
         # print(self.car.move_forward(dt))
         # print(self.car.move_forward(dt))
         # print(self.car.move_forward(dt))
-        print(self.car.move_forward_steer_right(dt))
         # print(self.car.move_forward_steer_right(dt))
-        # print(self.car.move_forward_steer_right(dt))
-        # print(self.car.move_backward_steer_left(dt))
-        # print(self.car.move_backward_steer_left(dt))
         # print(self.car.move_forward_steer_right(dt))
         # print(self.car.move_forward_steer_right(dt))
         # print(self.car.move_backward_steer_left(dt))
         # print(self.car.move_backward_steer_left(dt))
-
+        # print(self.car.move_forward_steer_right(dt))
+        # print(self.car.move_forward_steer_right(dt))
+        # print(self.car.move_backward_steer_left(dt))
+        # print(self.car.move_backward_steer_left(dt))
+        astar.AStar(self.grid, 1, 1)
 
 
 
