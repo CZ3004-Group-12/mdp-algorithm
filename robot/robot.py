@@ -45,6 +45,9 @@ class Robot(object):
     def get_grid_pos(self):
         return self.grid.pixel_to_grid(self.pixel_pos)
 
+    def get_angle_of_rotation(self):
+        return self.angle
+
     def draw_car(self):
         rotated = pygame.transform.rotate(self.car_image, self.angle)
         rect = rotated.get_rect()
@@ -102,6 +105,8 @@ class Robot(object):
             # Reset velocity to 0
             self.velocity -= (0, -self.speed)
             self.pixel_pos = final_pixel_pos
+
+            self.check_if_target_reached(final_pixel_pos, self.angle)
             return True
         else:
             return False
@@ -135,6 +140,8 @@ class Robot(object):
             # Reset velocity to 0
             self.velocity -= (0, self.speed)
             self.pixel_pos = final_pixel_pos
+
+            self.check_if_target_reached(final_pixel_pos, self.angle)
             return True
         else:
             return False
@@ -185,6 +192,8 @@ class Robot(object):
             self.velocity -= (0, -self.speed)
             self.angle = final_angle
             self.pixel_pos = final_pixel_pos
+
+            self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
         else:
             return False
@@ -235,6 +244,8 @@ class Robot(object):
             self.velocity -= (0, -self.speed)
             self.angle = final_angle
             self.pixel_pos = final_pixel_pos
+
+            self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
         else:
             return False
@@ -285,6 +296,8 @@ class Robot(object):
             self.velocity -= (0, -self.speed)
             self.angle = final_angle
             self.pixel_pos = final_pixel_pos
+
+            self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
         else:
             return False
@@ -333,6 +346,8 @@ class Robot(object):
             self.velocity -= (0, -self.speed)
             self.angle = final_angle
             self.pixel_pos = final_pixel_pos
+
+            self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
         else:
             return False
@@ -353,8 +368,26 @@ class Robot(object):
         print("BORDER!!")
         return False
 
-    def get_angle_of_rotation(self):
-        return self.angle
+    # TODO: for now, it is strictly right in front of the image, 4 grids away (counting from the centre of car)
+    def check_if_target_reached(self, final_pixel_pos, final_angle):
+        target_locations = self.grid.get_target_locations()
+        for target_loc in target_locations:
+            target_grid_x = target_loc[0]
+            target_grid_y = target_loc[1]
+            target_direction = target_loc[2]
+            obstacle_cell = target_loc[3]
+
+            final_grid_pos = self.grid.pixel_to_grid(final_pixel_pos)
+            final_grid_x = final_grid_pos[0]
+            final_grid_y = final_grid_pos[1]
+            # print("Checking for obstacles visited:", target_loc)
+
+            # Check if in target grid
+            if (final_grid_x == target_grid_x) and (final_grid_y == target_grid_y) and (final_angle == target_direction):
+                self.grid.set_obstacle_as_visited(obstacle_cell)
+                # Repaint grid and car
+                self.redraw_car()
+                print("--Obstacle was visited!")
 
     # def get_cells_occupied_by_car(self):
     #     cells = [self.grid.get_cell_by_xycoords(self.grid_x - 1, self.grid_y - 1),
@@ -370,36 +403,36 @@ class Robot(object):
 
     def check_exclude_obstacles(self, pos, turn):
         if turn:  # if movement is a turn, create a wider obstacle barrier to account for turning
-            for obstacle_id in self.grid.get_obstacle_cells_dict():
+            for obstacle_id in self.grid.get_obstacle_cells():
                 grid_coord = obstacle_id.split("-")
                 grid_x, grid_y = int(grid_coord[0]), int(grid_coord[1])
                 grid_coord = [grid_x, grid_y]
                 pixel_x, pixel_y = self.grid.grid_to_pixel(grid_coord)[0], self.grid.grid_to_pixel(grid_coord)[1]
                 # can use robot_w and robot_h as well since it is about the same as the obstacles boundary
                 border_pixel_length = (self.grid.block_size + MARGIN) * 3.5   # about 3 squares border for now, should account for the turning radius too
-                print(grid_x, grid_y)
-                print(pixel_x - border_pixel_length, pixel_x + border_pixel_length, pixel_y - border_pixel_length,
-                      pixel_y + border_pixel_length)
-                print(pos)
-                print(border_pixel_length)
+                # print(grid_x, grid_y)
+                # print(pixel_x - border_pixel_length, pixel_x + border_pixel_length, pixel_y - border_pixel_length,
+                #       pixel_y + border_pixel_length)
+                # print(pos)
+                # print(border_pixel_length)
                 if (pixel_x - border_pixel_length < pos[0] < pixel_x + border_pixel_length) \
                         and (pixel_y - border_pixel_length < pos[1] < pixel_y + border_pixel_length):
                     print("OBSTACLE!!")
                     return False
             return True
         else:   # straight
-            for obstacle_id in self.grid.get_obstacle_cells_dict():
+            for obstacle_id in self.grid.get_obstacle_cells():
                 grid_coord = obstacle_id.split("-")
                 grid_x, grid_y = int(grid_coord[0]), int(grid_coord[1])
                 grid_coord = [grid_x, grid_y]
                 pixel_x, pixel_y = self.grid.grid_to_pixel(grid_coord)[0], self.grid.grid_to_pixel(grid_coord)[1]
                 # can use robot_w and robot_h as well since it is about the same as the obstacles boundary
                 border_pixel_length = (self.grid.block_size + MARGIN) * 3  # about 3 squares border
-                print(grid_x, grid_y)
-                print(pixel_x - border_pixel_length, pixel_x + border_pixel_length, pixel_y - border_pixel_length,
-                      pixel_y + border_pixel_length)
-                print(pos)
-                print(border_pixel_length)
+                # print(grid_x, grid_y)
+                # print(pixel_x - border_pixel_length, pixel_x + border_pixel_length, pixel_y - border_pixel_length,
+                #       pixel_y + border_pixel_length)
+                # print(pos)
+                # print(border_pixel_length)
                 if (pixel_x - border_pixel_length < pos[0] < pixel_x + border_pixel_length) \
                         and (pixel_y - border_pixel_length < pos[1] < pixel_y + border_pixel_length):
                     print("OBSTACLE!!")

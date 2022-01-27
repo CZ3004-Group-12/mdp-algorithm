@@ -44,8 +44,33 @@ class Grid(object):
         row = 19 - y
         return self.cells[row][column]
 
-    def get_obstacle_cells_dict(self):
+    def get_obstacle_cells(self):
         return self.obstacle_cells
+
+    def get_target_locations(self):
+        target_locations = []
+        for obstacle_cell in self.obstacle_cells.values():
+            # Get target grid positions and NSEW direction that car's centre has to reach for image rec
+            target_grid_x, target_grid_y = obstacle_cell.get_xcoord(), obstacle_cell.get_ycoord()
+            obstacle_direction = obstacle_cell.get_obstacle_direction()
+            target_direction = constants.NORTH
+            if obstacle_direction == "N":
+                target_direction = constants.SOUTH
+                target_grid_x, target_grid_y = obstacle_cell.get_xcoord(), obstacle_cell.get_ycoord() + 4
+            elif obstacle_direction == "S":
+                target_direction = constants.NORTH
+                target_grid_x, target_grid_y = obstacle_cell.get_xcoord(), obstacle_cell.get_ycoord() - 4
+            elif obstacle_direction == "E":
+                target_direction = constants.WEST
+                target_grid_x, target_grid_y = obstacle_cell.get_xcoord() + 4, obstacle_cell.get_ycoord()
+            elif obstacle_direction == "W":
+                target_direction = constants.EAST
+                target_grid_x, target_grid_y = obstacle_cell.get_xcoord() - 4, obstacle_cell.get_ycoord()
+
+            target_loc = (target_grid_x, target_grid_y, target_direction, obstacle_cell)
+            target_locations.append(target_loc)
+
+        return target_locations
 
     def grid_clicked(self, x_coordinate, y_coordinate):
         # Change the x/y screen coordinates to grid coordinates
@@ -158,6 +183,8 @@ class Grid(object):
             if 0 <= x < 4 and 0 <= y < 4:
                 self.get_cell_by_xycoords(x, y).set_starting_area_status()
 
+    def set_obstacle_as_visited(self, obstacle_cell):
+        obstacle_cell.set_obstacle_visited_status()
 
     def draw_grid(self, screen):
         # Draw the grid
@@ -186,6 +213,8 @@ class Grid(object):
                     color = constants.LIGHT_RED
                 if cell.get_cell_status() == 3:  # cell has an obstacle
                     color = constants.GREEN
+                if cell.get_cell_status() == 4:  # obstacle cell has been visited
+                    color = constants.LIGHT_GREEN
                 pygame.draw.rect(screen,
                                  color,
                                  [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,
