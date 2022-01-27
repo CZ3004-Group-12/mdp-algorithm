@@ -36,3 +36,6 @@ class Cell:
 
     def get_ycoord(self):
         return self.y_coordinate
+
+    def get_pos(self):
+        return [self.x_coordinate, self.y_coordinate]

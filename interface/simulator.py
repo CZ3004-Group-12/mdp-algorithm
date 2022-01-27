@@ -25,6 +25,9 @@ class Simulator:
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         self.screen.fill(constants.GRAY)
 
+        #To indicate if simulation started
+        self.start=False
+
         # Initialise 20 by 20 Grid
         self.grid = Grid(20, 20, 20)
         self.grid.draw_grid(self.screen)
@@ -41,15 +44,7 @@ class Simulator:
         # Used to manage how fast the screen updates
         self.clock = pygame.time.Clock()
 
-        # Car printing process
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.join(current_dir, "car.png")
-        car_image = pygame.image.load(image_path)
-        self.car = Robot(self.screen, self.grid, self.grid_surface, 30, 30, starting_position_x, starting_position_y,
-                         constants.NORTH, car_image)
-        # Draw the car
-        self.car.draw_car()
-        ppu=32
+
 
 
         # Loop until the user clicks the close button.
@@ -67,7 +62,8 @@ class Simulator:
                         self.grid.grid_clicked(pos[0], pos[1])
                         self.screen.blit(self.grid_surface, (120, 120))  # Redraw the grid outlines
                         self.grid.update_grid(self.screen)               # Update grid if obstacles added
-                        self.car.draw_car()                              # Redraw the car
+                        if self.start:                                   # If start button is pressed
+                            self.car.draw_car()                          # Redraw the car
                     else:                                                # otherwise, area clicked is outside of grid
                         self.check_button_clicked(pos)
 
@@ -100,12 +96,25 @@ class Simulator:
     def start_button_clicked(self):
         print("START button clicked!")
         # value of 0.02. To change when velocity is known
+
+        if self.start is False:
+
+            # Car printing process
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            image_path = os.path.join(current_dir, "car.png")
+            car_image = pygame.image.load(image_path)
+            self.car = Robot(self.screen, self.grid, self.grid_surface, 30, 30, starting_position_x, starting_position_y,
+                             constants.NORTH, car_image)
+            # Draw the car
+            self.car.draw_car()
+
+        self.start = True
         dt = round(self.clock.get_time() / 1000, 2)
-        # self.car.move_forward(dt)
+        self.car.move_forward(dt)
         # self.car.move_backward(dt)
         # self.car.move_forward_steer_right(dt)
         # self.car.move_forward_steer_left(dt)
         # self.car.move_backward_steer_right(dt)
-        self.car.move_backward_steer_left(dt)
+        # self.car.move_backward_steer_left(dt)
 
 

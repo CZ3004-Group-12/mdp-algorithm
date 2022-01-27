@@ -2,7 +2,7 @@ import os
 import time
 from math import sin, radians, degrees, copysign
 from pygame.math import Vector2
-from map import constants
+from map import constants, grid
 import pygame
 
 # This sets the margin between each Cell
@@ -75,6 +75,9 @@ class Robot(object):
     def move_forward(self, dt):
         print("MOVE FORWARD FACING", self.angle)
         initial_pixel_pos = self.get_pixel_pos()
+        if self.check_obstacles_front():
+            return False
+
         # Set position to stop moving
         if self.angle == constants.NORTH:  # CAR FACING NORTH
             final_pixel_pos = Vector2(initial_pixel_pos[0], initial_pixel_pos[1] - ONE_CELL)
@@ -99,6 +102,7 @@ class Robot(object):
         # Reset velocity to 0
         self.velocity -= (0, -self.speed)
         self.pixel_pos = final_pixel_pos
+        return True
 
     def move_backward(self, dt):
         initial_pixel_pos = self.get_pixel_pos()
@@ -311,25 +315,59 @@ class Robot(object):
     def get_angle_of_rotation(self):
         return self.angle
 
-    def check_obstacles(self):
+    def check_obstacles_front(self):
         grid_x = self.grid_x
         grid_y = self.grid_y
         angle = self.get_angle_of_rotation()
         if angle == "Border":
             return "Border"
-        if angle == map.constants.NORTH:
+        if angle == constants.NORTH:
             for i in range(3):
-                if grid.check_obstacle_cell(grid_x + i - 1, grid_y + 3) is not None:
-                    return grid.get_cell(grid_x + 3, grid_y + i - 1)
-        elif angle == map.constants.EAST:
+                print(self.grid.check_obstacle_cell(grid_x + i - 1, grid_y + 2))
+                if self.grid.check_obstacle_cell(grid_x + i - 1, grid_y + 3) is not None:
+                    return True
+        elif angle == constants.EAST:
             for i in range(3):
-                if grid.check_obstacle_cell(grid_x + 3, grid_y + i - 1) is not None:
-                    return grid.get_cell(grid_x + 3, grid_y + i - 1)
-        elif angle == map.constants.SOUTH:
+                if self.grid.check_obstacle_cell(grid_x + 3, grid_y + i - 1) is not None:
+                    return True
+        elif angle == constants.SOUTH:
+            for i in range(3):
+                if self.grid.check_obstacle_cell(grid_x + i - 1, grid_y - 3) is not None:
+                    return True
+        elif angle == constants.WEST:
+            for i in range(3):
+                if self.grid.check_obstacle_cell(grid_x - 3, grid_y + i - 1) is not None:
+                    return True
+        else:
+            False
+
+    def check_obstacles_back(self):
+        grid_x = self.grid_x
+        grid_y = self.grid_y
+        angle = self.get_angle_of_rotation()
+        if angle == "Border":
+            return "Border"
+        if angle == constants.NORTH:
             for i in range(3):
                 if grid.check_obstacle_cell(grid_x + i - 1, grid_y - 3) is not None:
-                    return grid.get_cell(grid_x + i - 1, grid_y + 3)
-        elif angle == map.constants.WEST:
+                    return True
+        elif angle == constants.EAST:
             for i in range(3):
                 if grid.check_obstacle_cell(grid_x - 3, grid_y + i - 1) is not None:
-                    return grid.get_cell(grid_x - 3, grid_y + i - 1)
+                    return True
+        elif angle == constants.SOUTH:
+            for i in range(3):
+                if grid.check_obstacle_cell(grid_x + i - 1, grid_y + 3) is not None:
+                    return True
+        elif angle == constants.WEST:
+            for i in range(3):
+                if grid.check_obstacle_cell(grid_x + 3, grid_y + i - 1) is not None:
+                    return True
+        else:
+            False
+
+    # TODO: Check for steering 90 degrees to the left and right
+    # def check_obstacle_left(self):
+    #
+    #
+    # def check_obstacle_right(self):

@@ -80,28 +80,28 @@ class Grid(object):
                                   OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN,
                                   self.block_size,
                                   self.block_size])
-                if cell.get_obstacle_direction() == "N":
+                if cell.get_obstacle_direction() == constants.NORTH:
                     pygame.draw.rect(screen,
                                      constants.RED,
                                      [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,
                                       OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN,
                                       self.block_size,
                                       2])
-                if cell.get_obstacle_direction() == "E":
+                if cell.get_obstacle_direction() == constants.EAST:
                     pygame.draw.rect(screen,
                                      constants.RED,
                                      [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN + 18,
                                       OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN,
                                       2,
                                       self.block_size])
-                if cell.get_obstacle_direction() == "S":
+                if cell.get_obstacle_direction() == constants.SOUTH:
                     pygame.draw.rect(screen,
                                      constants.RED,
                                      [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,
                                       OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN + 18,
                                       self.block_size,
                                       2])
-                if cell.get_obstacle_direction() == "W":
+                if cell.get_obstacle_direction() == constants.WEST:
                     pygame.draw.rect(screen,
                                      constants.RED,
                                      [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,
@@ -131,7 +131,7 @@ class Grid(object):
         # returns a list of cells with obstacles
         return obstacles
 
-    def check_obstacle_cell(self,x,y):
-        if x<0 or y<0 or x>19 or y>19:
+    def check_obstacle_cell(self, x, y):
+        if x < 0 or y < 0 or x > 19 or y > 19:
             return "Border"
-        self.cells[x][y].get_obstacle_direction()
+        return self.cells[x][y].get_obstacle_direction()
