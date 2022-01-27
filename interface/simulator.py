@@ -124,8 +124,6 @@ class Simulator:
         # print(self.car.move_backward_steer_left(dt))
 
 
-
-
     def reset_button_clicked(self):
         self.grid.reset(self.screen)
         self.car.reset()

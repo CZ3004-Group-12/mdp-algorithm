@@ -89,7 +89,7 @@ class Robot(object):
         else:
             final_pixel_pos = initial_pixel_pos  # car will not move
 
-        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, False):
+        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles_straight(final_pixel_pos):
             # Pause to simulate time taken for wheels to full rotate
             time.sleep(constants.STEERING_TIME_DELAY)
 
@@ -125,7 +125,7 @@ class Robot(object):
         else:
             final_pixel_pos = initial_pixel_pos  # car will not move
 
-        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, False):
+        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles_straight(final_pixel_pos):
             # Pause to simulate time taken for wheels to full rotate
             time.sleep(constants.STEERING_TIME_DELAY)
 
@@ -170,7 +170,8 @@ class Robot(object):
             final_pixel_pos = initial_pixel_pos  # car will not move
             final_angle = initial_angle
 
-        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, True):
+        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "FORWARD_R",
+                                                                                      final_angle):
             # Pause to simulate time taken for wheels to full rotate
             time.sleep(constants.STEERING_TIME_DELAY)
 
@@ -222,7 +223,8 @@ class Robot(object):
             final_pixel_pos = initial_pixel_pos  # car will not move
             final_angle = initial_angle
 
-        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, True):
+        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "FORWARD_L",
+                                                                                      final_angle):
             # Pause to simulate time taken for wheels to full rotate
             time.sleep(constants.STEERING_TIME_DELAY)
 
@@ -274,7 +276,8 @@ class Robot(object):
             final_pixel_pos = initial_pixel_pos  # car will not move
             final_angle = initial_angle
 
-        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, True):
+        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "BACKWARD_R",
+                                                                                      final_angle):
             # Pause to simulate time taken for wheels to full rotate
             time.sleep(constants.STEERING_TIME_DELAY)
 
@@ -324,7 +327,8 @@ class Robot(object):
             final_pixel_pos = initial_pixel_pos  # car will not move
             final_angle = initial_angle
 
-        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, True):
+        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "BACKWARD_L",
+                                                                                      final_angle):
             # Pause to simulate time taken for wheels to full rotate
             time.sleep(constants.STEERING_TIME_DELAY)
 
@@ -383,7 +387,8 @@ class Robot(object):
             # print("Checking for obstacles visited:", target_loc)
 
             # Check if in target grid
-            if (final_grid_x == target_grid_x) and (final_grid_y == target_grid_y) and (final_angle == target_direction):
+            if (final_grid_x == target_grid_x) and (final_grid_y == target_grid_y) and (
+                    final_angle == target_direction):
                 self.grid.set_obstacle_as_visited(obstacle_cell)
                 # Repaint grid and car
                 self.redraw_car()
@@ -401,68 +406,105 @@ class Robot(object):
     #              self.grid.get_cell_by_xycoords(self.grid_x - 1, self.grid_y) + 1]
     #     return cells
 
-    def check_exclude_obstacles(self, pos, turn):
-        if turn:  # if movement is a turn, create a wider obstacle barrier to account for turning
-            for obstacle_id in self.grid.get_obstacle_cells():
-                grid_coord = obstacle_id.split("-")
-                grid_x, grid_y = int(grid_coord[0]), int(grid_coord[1])
-                grid_coord = [grid_x, grid_y]
-                pixel_x, pixel_y = self.grid.grid_to_pixel(grid_coord)[0], self.grid.grid_to_pixel(grid_coord)[1]
-                # can use robot_w and robot_h as well since it is about the same as the obstacles boundary
-                border_pixel_length = (self.grid.block_size + MARGIN) * 3.5   # about 3 squares border for now, should account for the turning radius too
-                # print(grid_x, grid_y)
-                # print(pixel_x - border_pixel_length, pixel_x + border_pixel_length, pixel_y - border_pixel_length,
-                #       pixel_y + border_pixel_length)
-                # print(pos)
-                # print(border_pixel_length)
-                if (pixel_x - border_pixel_length < pos[0] < pixel_x + border_pixel_length) \
-                        and (pixel_y - border_pixel_length < pos[1] < pixel_y + border_pixel_length):
-                    print("OBSTACLE!!")
-                    return False
-            return True
-        else:   # straight
-            for obstacle_id in self.grid.get_obstacle_cells():
-                grid_coord = obstacle_id.split("-")
-                grid_x, grid_y = int(grid_coord[0]), int(grid_coord[1])
-                grid_coord = [grid_x, grid_y]
-                pixel_x, pixel_y = self.grid.grid_to_pixel(grid_coord)[0], self.grid.grid_to_pixel(grid_coord)[1]
-                # can use robot_w and robot_h as well since it is about the same as the obstacles boundary
-                border_pixel_length = (self.grid.block_size + MARGIN) * 3  # about 3 squares border
-                # print(grid_x, grid_y)
-                # print(pixel_x - border_pixel_length, pixel_x + border_pixel_length, pixel_y - border_pixel_length,
-                #       pixel_y + border_pixel_length)
-                # print(pos)
-                # print(border_pixel_length)
-                if (pixel_x - border_pixel_length < pos[0] < pixel_x + border_pixel_length) \
-                        and (pixel_y - border_pixel_length < pos[1] < pixel_y + border_pixel_length):
-                    print("OBSTACLE!!")
-                    return False
-            return True
+    def check_exclude_obstacles_straight(self, final_pixel_pos):
+        for obstacle_id in self.grid.get_obstacle_cells():
+            obstacle_grid_coord = obstacle_id.split("-")
+            obstacle_grid_x, obstacle_grid_y = int(obstacle_grid_coord[0]), int(obstacle_grid_coord[1])
+            obstacle_grid_coord = [obstacle_grid_x, obstacle_grid_y]
 
-    # def check_obstacles(self):
-    #     grid_x = self.grid_x
-    #     grid_y = self.grid_y
-    #     angle = self.get_angle_of_rotation()
-    #     if angle == "Border":
-    #         return "Border"
-    #     if angle == map.constants.NORTH:
-    #         for i in range(3):
-    #             if grid.check_obstacle_cell(grid_x + i - 1, grid_y + 3) is not None:
-    #                 return grid.get_cell(grid_x + 3, grid_y + i - 1)
-    #     elif angle == map.constants.EAST:
-    #         for i in range(3):
-    #             if grid.check_obstacle_cell(grid_x + 3, grid_y + i - 1) is not None:
-    #                 return grid.get_cell(grid_x + 3, grid_y + i - 1)
-    #     elif angle == map.constants.SOUTH:
-    #         for i in range(3):
-    #             if grid.check_obstacle_cell(grid_x + i - 1, grid_y - 3) is not None:
-    #                 return grid.get_cell(grid_x + i - 1, grid_y + 3)
-    #     elif angle == map.constants.WEST:
-    #         for i in range(3):
-    #             if grid.check_obstacle_cell(grid_x - 3, grid_y + i - 1) is not None:
-    #                 return grid.get_cell(grid_x - 3, grid_y + i - 1)
+            # Using pixel position
+            obstacle_pixel_x, obstacle_pixel_y = self.grid.grid_to_pixel(obstacle_grid_coord)[0], \
+                                                 self.grid.grid_to_pixel(obstacle_grid_coord)[1]
+            border_pixel_length = (self.grid.block_size + MARGIN) * 3  # about 3 squares border
+            if (obstacle_pixel_x - border_pixel_length < final_pixel_pos[0] < obstacle_pixel_x + border_pixel_length) \
+                    and (obstacle_pixel_y - border_pixel_length < final_pixel_pos[
+                1] < obstacle_pixel_y + border_pixel_length):
+                print("OBSTACLE!!")
+                return False
 
-    # TODO: after setting obstacles, need function to check if robot has arrived at position and angle for image rec
+            # Using grid position
+            # grid_coord = self.grid.pixel_to_grid(final_pixel_pos)
+            # grid_x, grid_y = grid_coord[0], grid_coord[1]
+            # if (obstacle_grid_x - 3 <= grid_x <= obstacle_grid_x + 3) \
+            #         and (obstacle_grid_y - 3 <= grid_y <= obstacle_grid_y + 3):   # about 3 squares
+            #     print("OBSTACLE!!")
+            #     return False
+
+        return True
+
+    # NOTE (it's basically checking the 3x3 grid in front/behind the robot to see if its obstacle free and can turn)
+    def check_turning_radius(self, turn):
+        # Since movement is a turn, create a wider obstacle barrier to account for turning
+        # initial position + 3~ grids (according to direction of turn)
+        initial_grid_x, initial_grid_y, initial_angle = self.grid_x, self.grid_y, self.angle
+        grid_x, grid_y = initial_grid_x, initial_grid_y
+        if initial_angle == constants.NORTH:
+            if turn == "FORWARD_R" or turn == "FORWARD_L":
+                # + 3y
+                grid_x, grid_y = grid_x, grid_y + 3
+                pass
+            elif turn == "BACKWARD_R" or turn == "BACKWARD_L":
+                # - 3y
+                grid_x, grid_y = grid_x, grid_y - 3
+                pass
+        elif initial_angle == constants.SOUTH:
+            if turn == "FORWARD_R" or turn == "FORWARD_L":
+                # - 3y
+                grid_x, grid_y = grid_x, grid_y - 3
+                pass
+            elif turn == "BACKWARD_R" or turn == "BACKWARD_L":
+                # + 3y
+                grid_x, grid_y = grid_x, grid_y + 3
+                pass
+        elif initial_angle == constants.EAST:
+            if turn == "FORWARD_R" or turn == "FORWARD_L":
+                # + 3x
+                grid_x, grid_y = grid_x + 3, grid_y
+                pass
+            elif turn == "BACKWARD_R" or turn == "BACKWARD_L":
+                # - 3x
+                grid_x, grid_y = grid_x - 3, grid_y
+                pass
+        elif initial_angle == constants.WEST:
+            if turn == "FORWARD_R" or turn == "FORWARD_L":
+                # - 3x
+                grid_x, grid_y = grid_x - 3, grid_y
+                pass
+            elif turn == "BACKWARD_R" or turn == "BACKWARD_L":
+                # + 3x
+                grid_x, grid_y = grid_x + 3, grid_y
+                pass
+
+        for obstacle_id in self.grid.get_obstacle_cells():
+            obstacle_grid_coord = obstacle_id.split("-")
+            obstacle_grid_x, obstacle_grid_y = int(obstacle_grid_coord[0]), int(obstacle_grid_coord[1])
+            obstacle_grid_coord = [obstacle_grid_x, obstacle_grid_y]
+
+            # Using pixel position
+            obstacle_pixel_x, obstacle_pixel_y = self.grid.grid_to_pixel(obstacle_grid_coord)[0], \
+                                                 self.grid.grid_to_pixel(obstacle_grid_coord)[1]
+            turning_pixel = self.grid.grid_to_pixel((grid_x, grid_y))
+            border_pixel_length = (self.grid.block_size + MARGIN) * 3  # about 3 squares border
+            if (obstacle_pixel_x - border_pixel_length < turning_pixel[0] < obstacle_pixel_x + border_pixel_length) \
+                    and (
+                    obstacle_pixel_y - border_pixel_length < turning_pixel[1] < obstacle_pixel_y + border_pixel_length):
+                print("OBSTACLE (TURN)!!")
+                return False
+
+            # Using grid position
+            # if (obstacle_grid_x - 3 <= grid_x <= obstacle_grid_x + 3) \
+            #         and (obstacle_grid_y - 3 <= grid_y <= obstacle_grid_y + 3):  # about 3 squares
+            #     print("OBSTACLE (TURN)!!")
+            #     return False
+
+        return True
+
+    def check_exclude_obstacles(self, final_pixel_pos, turn, final_angle):
+        # Checks if final position will clash into any obstacles, then checks for turning radius obstacles
+        if self.check_exclude_obstacles_straight(final_pixel_pos):
+            return self.check_turning_radius(turn)
+        return False
+
     # TODO: (slightly later) PATH PLANNING: define sets of robot movements according to destination
     #  image facing direction and robot facing direction (refer to lecture vid for the permutations)
 
