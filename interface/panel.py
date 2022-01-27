@@ -20,6 +20,21 @@ class Panel(object):
         draw_path_button = Button(surface, constants.GREEN, 650, 180, 150, 25, "Draw Path", constants.BLACK, "DRAWPATH")
         self.buttons.append(draw_path_button)
 
+        # For testing
+        forward_button = Button(surface, constants.LIGHT_GREEN, 800, 120, 100, 25, "Forward", constants.BLACK, "FORWARD")
+        self.buttons.append(forward_button)
+        backward_button = Button(surface, constants.LIGHT_GREEN, 800, 150, 100, 25, "Backward", constants.BLACK, "BACKWARD")
+        self.buttons.append(backward_button)
+        for_right_button = Button(surface, constants.LIGHT_GREEN, 800, 180, 100, 25, "Forward R", constants.BLACK, "FORWARD_RIGHT")
+        self.buttons.append(for_right_button)
+        for_left_button = Button(surface, constants.LIGHT_GREEN, 800, 210, 100, 25, "Forward L", constants.BLACK, "FORWARD_LEFT")
+        self.buttons.append(for_left_button)
+        back_right_button = Button(surface, constants.LIGHT_GREEN, 800, 240, 100, 25, "Backward R", constants.BLACK, "BACKWARD_RIGHT")
+        self.buttons.append(back_right_button)
+        back_left_button = Button(surface, constants.LIGHT_GREEN, 800, 270, 100, 25, "Backward L", constants.BLACK, "BACKWARD_LEFT")
+        self.buttons.append(back_left_button)
+
+
     def button_clicked(self, button):
         return button.pressed()
 

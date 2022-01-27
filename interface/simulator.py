@@ -94,6 +94,26 @@ class Simulator:
                     print("Connect button pressed.")
                 elif button_func == "DISCONNECT":
                     print("Disconnect button pressed.")
+
+                # for testing purposes
+                elif button_func == "FORWARD":
+                    dt = round(self.clock.get_time() / 1000, 2)
+                    self.car.move_forward(dt)
+                elif button_func == "BACKWARD":
+                    dt = round(self.clock.get_time() / 1000, 2)
+                    self.car.move_backward(dt)
+                elif button_func == "FORWARD_RIGHT":
+                    dt = round(self.clock.get_time() / 1000, 2)
+                    self.car.move_forward_steer_right(dt)
+                elif button_func == "FORWARD_LEFT":
+                    dt = round(self.clock.get_time() / 1000, 2)
+                    self.car.move_forward_steer_left(dt)
+                elif button_func == "BACKWARD_RIGHT":
+                    dt = round(self.clock.get_time() / 1000, 2)
+                    self.car.move_backward_steer_right(dt)
+                elif button_func == "BACKWARD_LEFT":
+                    dt = round(self.clock.get_time() / 1000, 2)
+                    self.car.move_backward_steer_left(dt)
                 else:
                     return
             else:
@@ -109,21 +129,6 @@ class Simulator:
         # self.car.move_forward_steer_left(dt)
         # self.car.move_backward_steer_right(dt)
         # self.car.move_backward_steer_left(dt)
-
-        # Test grid boundary recognition
-        # print(self.car.move_forward(dt))
-        # print(self.car.move_forward(dt))
-        # print(self.car.move_forward(dt))
-        # print(self.car.move_forward_steer_right(dt))
-        # print(self.car.move_forward_steer_right(dt))
-        # print(self.car.move_forward_steer_right(dt))
-        # print(self.car.move_backward_steer_left(dt))
-        # print(self.car.move_backward_steer_left(dt))
-        # print(self.car.move_forward_steer_right(dt))
-        # print(self.car.move_forward_steer_right(dt))
-        # print(self.car.move_backward_steer_left(dt))
-        # print(self.car.move_backward_steer_left(dt))
-        # astar.AStar(self.grid, 1, 1)
 
     def reset_button_clicked(self):
         self.grid.reset(self.screen)
