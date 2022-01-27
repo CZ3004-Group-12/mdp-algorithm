@@ -376,7 +376,7 @@ class Robot(object):
                 grid_coord = [grid_x, grid_y]
                 pixel_x, pixel_y = self.grid.grid_to_pixel(grid_coord)[0], self.grid.grid_to_pixel(grid_coord)[1]
                 # can use robot_w and robot_h as well since it is about the same as the obstacles boundary
-                border_pixel_length = (self.grid.block_size + MARGIN) * 3   # about 3 squares border for now, should account for the turning radius too
+                border_pixel_length = (self.grid.block_size + MARGIN) * 3.5   # about 3 squares border for now, should account for the turning radius too
                 print(grid_x, grid_y)
                 print(pixel_x - border_pixel_length, pixel_x + border_pixel_length, pixel_y - border_pixel_length,
                       pixel_y + border_pixel_length)
