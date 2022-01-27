@@ -83,9 +83,9 @@ class Grid(object):
         # Add/remove cell from dict of obstacles accordingly
         if cell.get_cell_status() == 3:
             if cell.get_obstacle().get_obstacle_id() not in self.obstacle_cells.keys():
-                self.obstacle_cells[cell.get_obstacle().get_obstacle_id()] = cell
+                self.obstacle_cells[cell.get_obstacle().get_obstacle_id()] = cell   # '1-12': cell()
         elif cell.get_cell_status() == 0:
-            key_to_remove = str(cell.get_xcoord()) + '-' + str(cell.get_ycoord())
+            key_to_remove = str(cell.get_xcoord()) + '-' + str(cell.get_ycoord())   # '1-12'
             if key_to_remove in self.obstacle_cells.keys():
                 del self.obstacle_cells[key_to_remove]
         self.unset_obstacle_boundary_cells(cell)  # runs only for empty cell
@@ -96,7 +96,8 @@ class Grid(object):
                 self.set_obstacle_boundary_cells(a)  # runs only for obstacle cell
 
         logging.info("Clicked (x,y): (" + str(x_coordinate) + "," + str(y_coordinate) + "); column, row: " + str(column)
-                     + "," + str(row) + "; Grid coordinates: " + str(cell.get_xcoord()) + " " + str(cell.get_ycoord()))
+                     + "," + str(row) + "; Grid coordinates: " + str(cell.get_xcoord()) + " " + str(cell.get_ycoord())
+                     + "; Direction: " + str(cell.get_obstacle_direction()))
         logging.info(self.pixel_to_grid([x_coordinate, y_coordinate]))
 
     def set_obstacle_boundary_cells(self, cell):
@@ -242,7 +243,7 @@ class Grid(object):
                                       OUTER_MARGIN + (MARGIN + self.block_size) * row + MARGIN + 18,
                                       self.block_size,
                                       2])
-                if cell.get_obstacle_direction() == constants.SOUTH:
+                if cell.get_obstacle_direction() == constants.WEST:
                     pygame.draw.rect(screen,
                                      constants.RED,
                                      [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,
@@ -259,17 +260,6 @@ class Grid(object):
         x_grid = (pos[0] - 120) // (self.block_size + MARGIN)
         y_grid = 19 - ((pos[1] - 120) // (self.block_size + MARGIN))
         return [x_grid, y_grid]
-
-    def get_obstacles(self):
-        obstacles=[]
-        for row in range(self.grid_row):
-            r=19-row
-            for column in range(self.grid_column):
-                c=column
-                if self.cells[r][c].get_obstacle_direction() is not None:
-                    obstacles.append(self.cells[r][c])
-        # returns a list of cells with obstacles
-        return obstacles
 
     def reset(self, screen):
         self.obstacle_cells = {}

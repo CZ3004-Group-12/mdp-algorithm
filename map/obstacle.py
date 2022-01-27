@@ -1,4 +1,6 @@
 import constants
+
+
 class Obstacle:
     def __init__(self, x_coordinate, y_coordinate):
         # TODO: if possible, combine obstacle class into cell
