@@ -52,7 +52,7 @@ class AStar:
                                                 [all_target_unordered[i][0], all_target_unordered[i][1]])
                     index = i
             all_target_ordered.append(all_target_unordered.pop(index))
-            print(all_target_ordered)
+        print(all_target_ordered)
         return all_target_ordered
 
 
