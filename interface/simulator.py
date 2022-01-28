@@ -40,7 +40,7 @@ class Simulator:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         image_path = os.path.join(current_dir, "car.png")
         car_image = pygame.image.load(image_path)
-        self.car = Robot(self.screen, self.grid, self.grid_surface, constants.ROBOT_W, constants.ROBOT_H,
+        self.car = Robot(self, self.screen, self.grid, self.grid_surface, constants.ROBOT_W, constants.ROBOT_H,
                          constants.ROBOT_STARTING_X, constants.ROBOT_STARTING_Y, constants.ROBOT_STARTING_ANGLE,
                          car_image)
         # Draw the car
@@ -65,7 +65,6 @@ class Simulator:
                     else:                                                # otherwise, area clicked is outside of grid
                         self.check_button_clicked(pos)
 
-
             # Limit to 60 frames per second
             self.clock.tick(60)
 
@@ -74,6 +73,10 @@ class Simulator:
 
         # Be IDLE friendly. If you forget this line, the program will 'hang' on exit.
         self.root.quit()
+
+    def reprint_screen_and_buttons(self):
+        self.screen.fill(constants.GRAY)
+        self.panel.redraw_buttons()
 
     def check_button_clicked(self, pos):
         # Check if start button was pressed first:

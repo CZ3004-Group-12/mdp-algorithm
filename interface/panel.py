@@ -5,6 +5,8 @@ import constants
 class Panel(object):
 
     def __init__(self, surface):
+        self.surface = surface
+
         # Buttons
         self.buttons = []
 
@@ -34,6 +36,11 @@ class Panel(object):
         back_left_button = Button(surface, constants.LIGHT_GREEN, 800, 270, 100, 25, "Backward L", constants.BLACK, "BACKWARD_LEFT")
         self.buttons.append(back_left_button)
 
+    def redraw_buttons(self):
+        for button in self.buttons:
+            button.draw_button(button.surface, button.color, button.length, button.height, button.x, button.y, button.width)
+            button.write_text(button.surface, button.text, button.text_color, button.length, button.height, button.x, button.y)
+            # button.rect = pygame.Rect(x, y, length, height)
 
     def button_clicked(self, button):
         return button.pressed()

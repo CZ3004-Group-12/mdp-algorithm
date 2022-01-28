@@ -12,7 +12,7 @@ THREE_CELL = 3 * ONE_CELL
 
 class Robot(object):
 
-    def __init__(self, screen, grid, grid_surface, robot_w, robot_h, grid_x, grid_y, angle, car_image):
+    def __init__(self, simulator, screen, grid, grid_surface, robot_w, robot_h, grid_x, grid_y, angle, car_image):
         self.robot_w = robot_w
         self.robot_h = robot_h
         # actual pixel width and height of robot (inclusive of margin)
@@ -21,6 +21,7 @@ class Robot(object):
         # NOTE: grid_x and grid_y are the grid coordinates of the middle square of the 3x3 car area
         self.grid_x = grid_x
         self.grid_y = grid_y
+        self.simulator = simulator
         self.screen = screen
         self.grid = grid
         self.grid_surface = grid_surface
@@ -59,6 +60,7 @@ class Robot(object):
 
     def redraw_car(self):
         # Need to redraw over everything (grid_surface, grid and car)
+        self.simulator.reprint_screen_and_buttons()
         self.screen.blit(self.grid_surface, (120, 120))
         self.grid.update_grid(self.screen)
         self.draw_car()
@@ -365,12 +367,14 @@ class Robot(object):
         else:
             return False
 
+    # TODO: it is possible for robot to move outside of border for now (to meet some of the limitations of path planning
     def check_within_border(self, pos):
         if (constants.min_pixel_pos_x + self.robot_w < pos[0] < constants.max_pixel_pos_x - self.robot_w) \
                 and (constants.min_pixel_pos_y + self.robot_h < pos[1] < constants.max_pixel_pos_y - self.robot_h):
             return True
         print("BORDER!!")
-        return False
+        return True
+        # return False
 
     # TODO: for now, it is strictly right in front of the image, 4 grids away (counting from the centre of car)
     def check_if_target_reached(self, final_pixel_pos, final_angle):
