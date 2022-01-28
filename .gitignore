@@ -72,3 +72,7 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+*.xml
+*.iml
+.idea/mdp-algorithm.iml
+.idea/misc.xml
