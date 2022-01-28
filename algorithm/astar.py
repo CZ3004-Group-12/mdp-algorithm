@@ -11,6 +11,7 @@ class AStar:
         self.grid = grid
         self.cells = grid.get_cells()
         self.all_target_locations = self.get_ordered_target(start_cell_x, start_cell_y,0, grid)
+        print(self.all_target_locations)
         # Cells to be evaluated; Put the cells with the lowest cost in first
         self.open_cells = PriorityQueue()
         # Cells already evaluated
@@ -38,12 +39,13 @@ class AStar:
         all_target_ordered = []
         all_target_ordered.append((x, y, direction, None))
         # The order is based on the shortest distance between the previous position to the next target location.
-        for j in range(len(all_target_unordered)):
+        while len(all_target_unordered) != 0:
+            index = 0
+            temp = len(all_target_ordered) - 1
+            smallest = self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
+                                             [all_target_unordered[0][0], all_target_unordered[0][1]])
             for i in range(len(all_target_unordered)):
-                index = 0
-                temp = len(all_target_ordered) - 1
-                smallest = self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
-                                            [all_target_unordered[0][0], all_target_unordered[0][1]])
+
                 if smallest > self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
                                                [all_target_unordered[i][0], all_target_unordered[i][1]]):
                     smallest = self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],

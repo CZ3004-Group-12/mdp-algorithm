@@ -129,6 +129,7 @@ class Simulator:
         # self.car.move_forward_steer_left(dt)
         # self.car.move_backward_steer_right(dt)
         # self.car.move_backward_steer_left(dt)
+        astar.AStar(self.grid,1,1)
 
     def reset_button_clicked(self):
         self.grid.reset(self.screen)
