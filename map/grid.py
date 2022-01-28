@@ -104,56 +104,56 @@ class Grid(object):
         if cell.get_cell_status() == 3:
             # Set cells around obstacle as boundary
             x, y = cell.get_xcoord() + 1, cell.get_ycoord() + 1  # top right
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_obstacle_boundary_status()
             x, y = cell.get_xcoord() + 1, cell.get_ycoord()  # right
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_obstacle_boundary_status()
             x, y = cell.get_xcoord() + 1, cell.get_ycoord() - 1  # bottom right
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_obstacle_boundary_status()
             x, y = cell.get_xcoord(), cell.get_ycoord() + 1  # top
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_obstacle_boundary_status()
             x, y = cell.get_xcoord(), cell.get_ycoord() - 1  # bottom
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_obstacle_boundary_status()
             x, y = cell.get_xcoord() - 1, cell.get_ycoord() + 1  # top left
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_obstacle_boundary_status()
             x, y = cell.get_xcoord() - 1, cell.get_ycoord()  # left
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_obstacle_boundary_status()
             x, y = cell.get_xcoord() - 1, cell.get_ycoord() - 1  # bottom left
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_obstacle_boundary_status()
 
     def unset_obstacle_boundary_cells(self, cell):
         if cell.get_cell_status() == 0:
             # UNSET cells around removed obstacle as empty
             x, y = cell.get_xcoord() + 1, cell.get_ycoord() + 1  # top right
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_empty_status()
             x, y = cell.get_xcoord() + 1, cell.get_ycoord()  # right
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_empty_status()
             x, y = cell.get_xcoord() + 1, cell.get_ycoord() - 1  # bottom right
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_empty_status()
             x, y = cell.get_xcoord(), cell.get_ycoord() + 1  # top
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_empty_status()
             x, y = cell.get_xcoord(), cell.get_ycoord() - 1  # bottom
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_empty_status()
             x, y = cell.get_xcoord() - 1, cell.get_ycoord() + 1  # top left
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_empty_status()
             x, y = cell.get_xcoord() - 1, cell.get_ycoord()  # left
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_empty_status()
             x, y = cell.get_xcoord() - 1, cell.get_ycoord() - 1  # bottom left
-            if x >= 0 and y >= 0 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
+            if x >= 0 and y >= 0 and x <= 19 and y <= 19 and self.get_cell_by_xycoords(x, y).get_cell_status() != 3:
                 self.get_cell_by_xycoords(x, y).set_empty_status()
 
     def set_starting_area_cells(self, cell):
