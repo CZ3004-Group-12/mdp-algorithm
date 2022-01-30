@@ -3,8 +3,10 @@ import constants
 from map.grid import Grid
 from interface.panel import Panel
 from robot.robot import Robot
+from algorithm.astar import AStar
+from algorithm.path_planning import PathPlan
 import pygame
-from algorithm import astar
+import logging
 
 # Set the HEIGHT and WIDTH of the screen
 WINDOW_SIZE = [1020, 720]
@@ -19,6 +21,9 @@ class Simulator:
         self.root.display.set_caption("MDP Algorithm Simulator")
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         self.screen.fill(constants.GRAY)
+
+        # Astar class
+        self.astar = None
 
         # Initialise 20 by 20 Grid
         self.grid = Grid(20, 20, 20)
@@ -125,14 +130,17 @@ class Simulator:
     def start_button_clicked(self):
         print("START button clicked!")
         # value of 0.02. To change when velocity is known
-        dt = round(self.clock.get_time() / 1000, 2)
-        # self.car.move_forward(dt)
-        # self.car.move_backward(dt)
-        # self.car.move_forward_steer_right(dt)
-        # self.car.move_forward_steer_left(dt)
-        # self.car.move_backward_steer_right(dt)
-        # self.car.move_backward_steer_left(dt)
-        astar.AStar(self.grid,1,1)
+        dt = 0.02
+        # dt = round(self.clock.get_time() / 1000, 2)
+
+        # Get fastest route
+        self.astar = AStar(self.grid, 1, 1)
+        fastest_route = self.astar.get_astar_route()
+        logging.info("Astar route: " + str(fastest_route))
+
+        # Path finding
+        path_planner = PathPlan(self.grid, self.car, fastest_route)
+        path_planner.start_robot()
 
     def reset_button_clicked(self):
         self.grid.reset(self.screen)

@@ -4,29 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8fa28666-9fca-4e19-962b-abf160de1a3c" name="Changes" comment="">
-<<<<<<< Updated upstream
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Map/Grid.py" beforeDir="false" afterPath="$PROJECT_DIR$/Map/Grid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Robot/Robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/Robot/Robot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/User Interface/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/User Interface/main.py" afterDir="false" />
-=======
+    <list default="true" id="b09627cd-5cdb-4bbc-bc79-c9ed9d9b6e1d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/mdp-algorithm.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mdp-algorithm.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
->>>>>>> Stashed changes
+      <change beforePath="$PROJECT_DIR$/algorithm/astar.py" beforeDir="false" afterPath="$PROJECT_DIR$/algorithm/astar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithm/dataexploration.py" beforeDir="false" afterPath="$PROJECT_DIR$/algorithm/path_planning.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/interface/simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/interface/simulator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map/grid.py" beforeDir="false" afterPath="$PROJECT_DIR$/map/grid.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Python Script" />
-      </list>
-    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -34,35 +24,22 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="23xpYlSur38use2Y6MjyEvudXq2" />
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="2" id="Add" />
-  </component>
+  <component name="ProjectId" id="24Q873YVp0dtPYrC3NDnnzpj9zu" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Buttons.py" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="terminal" />
-  </component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\chink\OneDrive\Documents\GitHub\mdp-algorithm\Map" />
-      <recent name="C:\Users\chink\OneDrive\Documents\GitHub\mdp-algorithm\Robot" />
-      <recent name="C:\Users\chink\OneDrive\Documents\GitHub\mdp-algorithm\User Interface" />
-    </key>
   </component>
   <component name="RunManager">
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="mdp-algorithm" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -75,7 +52,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="C:\Users\chink\OneDrive\Documents\GitHub\mdp-algorithm\User Interface\main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -84,25 +61,21 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="8fa28666-9fca-4e19-962b-abf160de1a3c" name="Changes" comment="" />
-      <created>1642685642638</created>
+      <changelist id="b09627cd-5cdb-4bbc-bc79-c9ed9d9b6e1d" name="Changes" comment="" />
+      <created>1643551285214</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1642685642638</updated>
-      <workItem from="1642685661447" duration="391000" />
-      <workItem from="1642686096995" duration="142000" />
-      <workItem from="1642686272885" duration="86000" />
-      <workItem from="1642686401461" duration="57000" />
-      <workItem from="1642686495854" duration="5586000" />
-      <workItem from="1642693607793" duration="595000" />
-      <workItem from="1642726253798" duration="1792000" />
-      <workItem from="1642728415423" duration="15000" />
-      <workItem from="1642729018890" duration="298000" />
-      <workItem from="1642756482423" duration="693000" />
+      <updated>1643551285214</updated>
+      <workItem from="1643551288217" duration="3863000" />
     </task>
     <servers />
   </component>
@@ -120,12 +93,7 @@
       </map>
     </option>
   </component>
-<<<<<<< Updated upstream
-  <component name="VcsManagerConfiguration">
-    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-=======
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/mdp_algorithm$main.coverage" NAME="main Coverage Results" MODIFIED="1642756579312" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
->>>>>>> Stashed changes
+    <SUITE FILE_PATH="coverage/mdp_algorithm$main.coverage" NAME="main Coverage Results" MODIFIED="1643555181725" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

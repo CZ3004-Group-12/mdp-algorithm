@@ -98,7 +98,6 @@ class Grid(object):
         logging.info("Clicked (x,y): (" + str(x_coordinate) + "," + str(y_coordinate) + "); column, row: " + str(column)
                      + "," + str(row) + "; Grid coordinates: " + str(cell.get_xcoord()) + " " + str(cell.get_ycoord())
                      + "; Direction: " + str(cell.get_obstacle_direction()))
-        logging.info(self.pixel_to_grid([x_coordinate, y_coordinate]))
 
     def set_obstacle_boundary_cells(self, cell):
         if cell.get_cell_status() == 3:

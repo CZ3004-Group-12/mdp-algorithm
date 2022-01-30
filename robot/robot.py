@@ -92,9 +92,6 @@ class Robot(object):
             final_pixel_pos = initial_pixel_pos  # car will not move
 
         if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles_straight(final_pixel_pos):
-            # Pause to simulate time taken for wheels to full rotate
-            time.sleep(constants.STEERING_TIME_DELAY)
-
             # Set velocity of car
             self.velocity += (0, -self.speed)
             while self.get_pixel_pos() != final_pixel_pos:
@@ -128,9 +125,6 @@ class Robot(object):
             final_pixel_pos = initial_pixel_pos  # car will not move
 
         if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles_straight(final_pixel_pos):
-            # Pause to simulate time taken for wheels to full rotate
-            time.sleep(constants.STEERING_TIME_DELAY)
-
             # Set velocity of car
             self.velocity += (0, self.speed)
             while self.get_pixel_pos() != final_pixel_pos:
