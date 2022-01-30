@@ -104,6 +104,8 @@ class Robot(object):
             # Reset velocity to 0
             self.velocity -= (0, -self.speed)
             self.pixel_pos = final_pixel_pos
+            self.grid_x = self.grid.pixel_to_grid(final_pixel_pos)[0]
+            self.grid_y = self.grid.pixel_to_grid(final_pixel_pos)[1]
 
             self.check_if_target_reached(final_pixel_pos, self.angle)
             return True
@@ -136,6 +138,8 @@ class Robot(object):
             # Reset velocity to 0
             self.velocity -= (0, self.speed)
             self.pixel_pos = final_pixel_pos
+            self.grid_x = self.grid.pixel_to_grid(final_pixel_pos)[0]
+            self.grid_y = self.grid.pixel_to_grid(final_pixel_pos)[1]
 
             self.check_if_target_reached(final_pixel_pos, self.angle)
             return True
@@ -189,6 +193,8 @@ class Robot(object):
             self.velocity -= (0, -self.speed)
             self.angle = final_angle
             self.pixel_pos = final_pixel_pos
+            self.grid_x = self.grid.pixel_to_grid(final_pixel_pos)[0]
+            self.grid_y = self.grid.pixel_to_grid(final_pixel_pos)[1]
 
             self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
@@ -242,6 +248,8 @@ class Robot(object):
             self.velocity -= (0, -self.speed)
             self.angle = final_angle
             self.pixel_pos = final_pixel_pos
+            self.grid_x = self.grid.pixel_to_grid(final_pixel_pos)[0]
+            self.grid_y = self.grid.pixel_to_grid(final_pixel_pos)[1]
 
             self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
@@ -295,6 +303,8 @@ class Robot(object):
             self.velocity -= (0, -self.speed)
             self.angle = final_angle
             self.pixel_pos = final_pixel_pos
+            self.grid_x = self.grid.pixel_to_grid(final_pixel_pos)[0]
+            self.grid_y = self.grid.pixel_to_grid(final_pixel_pos)[1]
 
             self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
@@ -346,6 +356,8 @@ class Robot(object):
             self.velocity -= (0, -self.speed)
             self.angle = final_angle
             self.pixel_pos = final_pixel_pos
+            self.grid_x = self.grid.pixel_to_grid(final_pixel_pos)[0]
+            self.grid_y = self.grid.pixel_to_grid(final_pixel_pos)[1]
 
             self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
