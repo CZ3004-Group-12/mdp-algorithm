@@ -143,23 +143,31 @@ class PathPlan(object):
 
     def AR1(self, a, b, x, y):
         if a - x <= 0:
+            #Forward Left
             self.robot.move_forward_steer_left(dt)
             for i in range(int(abs(a - x))):
                 self.robot.move_forward(dt)
+            #Forward Left
             self.robot.move_forward_steer_left(dt)
             for i in range(int(abs(b - y))):
                 self.robot.move_forward(dt)
+            # Forward Left
             self.robot.move_forward_steer_left(dt)
+            #Forward Left
             self.robot.move_forward_steer_left(dt)
 
         else:
+            #Forward Right
             self.robot.move_forward_steer_right(dt)
             for i in range(int(abs(a - x))):
                 self.robot.move_forward(dt)
+            # Forward Right
             self.robot.move_forward_steer_right(dt)
             for i in range(int(abs(b - y))):
                 self.robot.move_forward(dt)
+            # Forward Right
             self.robot.move_forward_steer_right(dt)
+            # Forward Right
             self.robot.move_forward_steer_right(dt)
 
     def AR2(self, a, b, x, y):
@@ -189,6 +197,7 @@ class PathPlan(object):
 
     def AR6(self, a, b, x, y):
         if abs(a-x)>=6 and abs(b-y)>=6:
+            # Forward Left
             self.robot.move_forward_steer_left(dt)
             for i in range(int(abs(a - x)-6)):
                 self.robot.move_forward(dt)
@@ -197,9 +206,11 @@ class PathPlan(object):
                 self.robot.move_forward(dt)
 
         elif abs(a-x)<6 and abs(b-y)>=6:
+            # Forward Left
             self.robot.move_forward_steer_left(dt)
             for i in range(int(6-abs(a - x))):
                 self.robot.move_backward(dt)
+            # Forward Right
             self.robot.move_forward_steer_right(dt)
             for i in range(int(abs(b - y)-6)):
                 self.robot.move_forward(dt)
@@ -207,33 +218,41 @@ class PathPlan(object):
         elif abs(a-x)>=6 and abs(b-y)<6:
             for i in range(int(6-abs(b - y))):
                 self.robot.move_backward(dt)
+            # Forward Left
             self.robot.move_forward_steer_left(dt)
             for i in range(int(abs(a - x)-6)):
                 self.robot.move_forward(dt)
+            # Forward Right
             self.robot.move_forward_steer_right(dt)
 
         elif abs(a-x)<6 and abs(b-y)<6:
             for i in range(int(6-abs(b - y))):
                 self.robot.move_backward(dt)
+            # Forward Left
             self.robot.move_forward_steer_left(dt)
             for i in range(int(6-abs(a - x))):
                 self.robot.move_backward(dt)
+            # Forward Right
             self.robot.move_forward_steer_right(dt)
 
 
     def AR7(self, a, b, x, y):
         if abs(a-x)>=6 and abs(b-y)>=6:
+            # Forward Right
             self.robot.move_forward_steer_right(dt)
             for i in range(int(abs(a - x)-6)):
                 self.robot.move_forward(dt)
+            # Forward Left
             self.robot.move_forward_steer_left(dt)
             for i in range(int(abs(b - y)-6)):
                 self.robot.move_forward(dt)
 
         elif abs(a-x)<6 and abs(b-y)>=6:
+            # Forward Right
             self.robot.move_forward_steer_right(dt)
             for i in range(int(6-abs(a - x))):
                 self.robot.move_backward(dt)
+            # Forward Left
             self.robot.move_forward_steer_left(dt)
             for i in range(int(abs(b - y)-6)):
                 self.robot.move_forward(dt)
@@ -241,9 +260,11 @@ class PathPlan(object):
         elif abs(a-x)>=6 and abs(b-y)<6:
             for i in range(int(6-abs(b - y))):
                 self.robot.move_backward(dt)
+            # Forward Right
             self.robot.move_forward_steer_right(dt)
             for i in range(int(abs(a - x)-6)):
                 self.robot.move_forward(dt)
+            # Forward Left
             self.robot.move_forward_steer_left(dt)
 
         elif abs(a-x)<6 and abs(b-y)<6:
@@ -252,6 +273,7 @@ class PathPlan(object):
             self.robot.move_forward_steer_right(dt)
             for i in range(int(6-abs(a - x))):
                 self.robot.move_backward(dt)
+            # Forward Left
             self.robot.move_forward_steer_left(dt)
 
 
