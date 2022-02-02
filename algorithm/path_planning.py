@@ -66,83 +66,145 @@ class PathPlan(object):
 
     # Refer to Google Doc for details of different permutations
     def plan_trip_by_robot_target_directions(self, a, b, x, y, robot_direction, target_direction):
+        print(a, b, x, y)
+        print(robot_direction, target_direction)
         if robot_direction == target_direction:
             if abs(a - x) <= 2 and b < y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("AR1")
                 self.AR1(a, b, x, y)
             elif a < x and b == y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("AR2")
                 self.AR2(a, b, x, y)
             elif a == x and b > y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("AR3")
                 self.AR3(a, b, x, y)
-            elif a < x and b == y:
+            elif a > x and b == y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("AR4")
                 self.AR4(a, b, x, y)
             elif abs(a - x) > 2 and a < x and b < y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("AR5")
                 self.AR5(a, b, x, y)
             elif a < x and b > y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("AR6")
                 self.AR6(a, b, x, y)
             elif a > x and b > y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("AR7")
                 self.AR7(a, b, x, y)
             elif abs(a - x) > 2 and a > x and b < y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("AR8")
                 self.AR8(a, b, x, y)
-            # TODO: add the other 5 cases
 
         elif abs(robot_direction - target_direction) == 180:
-            if abs(a - x) <= 2 and b < y:
+            if a == x and b < y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("BR1")
                 self.BR1(a, b, x, y)
             elif a < x and b == y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("BR2")
                 self.BR2(a, b, x, y)
-            elif a == x and b > y:
+            elif abs(a-x) <= 2 and b > y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("BR3")
                 self.BR3(a, b, x, y)
-            elif a < x and b == y:
+            elif a > x and b == y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("BR4")
                 self.BR4(a, b, x, y)
-            elif abs(a - x) > 2 and a < x and b < y:
+            elif a < x and b < y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("BR5")
                 self.BR5(a, b, x, y)
-            elif a < x and b > y:
+            elif abs(a-x) > 2 and a < x and b > y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("BR6")
                 self.BR6(a, b, x, y)
-            elif a > x and b > y:
+            elif abs(a-x) > 2 and a > x and b > y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("BR7")
                 self.BR7(a, b, x, y)
-            elif abs(a - x) > 2 and a > x and b < y:
+            elif a > x and b < y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("BR8")
                 self.BR8(a, b, x, y)
-            # TODO: add the other 5 cases
 
         elif (robot_direction - target_direction == 90) or \
                 (target_direction == constants.SOUTH and robot_direction == constants.EAST):
             if a == x and b < y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("CR1")
                 self.CR1(a, b, x, y)
             elif a < x and b == y:
                 self.CR2(a, b, x, y)
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("CR2")
             elif a == x and b > y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("CR3")
                 self.CR3(a, b, x, y)
-            elif a < x and b == y:
+            elif a > x and b == y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("CR4")
                 self.CR4(a, b, x, y)
             elif a < x and b < y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("CR5")
                 self.CR5(a, b, x, y)
             elif a < x and b > y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("CR6")
                 self.CR6(a, b, x, y)
             elif a > x and b > y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("CR7")
                 self.CR7(a, b, x, y)
             elif a > x and b < y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("CR8")
                 self.CR8(a, b, x, y)
-            # TODO: add the other 5 cases
 
         elif (robot_direction - target_direction == -90) or \
                 (target_direction == constants.EAST and robot_direction == constants.SOUTH):
             if a == x and b < y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("DR1")
                 self.DR1(a, b, x, y)
             elif a < x and b == y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("DR2")
                 self.DR2(a, b, x, y)
             elif a == x and b > y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("DR3")
                 self.DR3(a, b, x, y)
-            elif a < x and b == y:
+            elif a > x and b == y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("DR4")
                 self.DR4(a, b, x, y)
             elif a < x and b < y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("DR5")
                 self.DR5(a, b, x, y)
             elif a < x and b > y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("DR6")
                 self.DR6(a, b, x, y)
             elif a > x and b > y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("DR7")
                 self.DR7(a, b, x, y)
             elif a > x and b < y:
+                a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+                print("DR8")
                 self.DR8(a, b, x, y)
-            # TODO: add the other 5 cases
 
         else:
             return
