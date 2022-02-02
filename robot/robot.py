@@ -44,7 +44,7 @@ class Robot(object):
         return self.pixel_pos
 
     def get_grid_pos(self):
-        return self.grid.pixel_to_grid(self.pixel_pos)
+        return (self.grid_x, self.grid_y)
 
     def get_angle_of_rotation(self):
         return self.angle
@@ -430,7 +430,7 @@ class Robot(object):
                     and (obstacle_pixel_y - border_pixel_length < final_pixel_pos[
                 1] < obstacle_pixel_y + border_pixel_length):
                 print("OBSTACLE!!")
-                return False
+                return True
 
             # Using grid position
             # grid_coord = self.grid.pixel_to_grid(final_pixel_pos)
@@ -499,7 +499,7 @@ class Robot(object):
                     and (
                     obstacle_pixel_y - border_pixel_length < turning_pixel[1] < obstacle_pixel_y + border_pixel_length):
                 print("OBSTACLE (TURN)!!")
-                return False
+                return True
 
             # Using grid position
             # if (obstacle_grid_x - 3 <= grid_x <= obstacle_grid_x + 3) \
