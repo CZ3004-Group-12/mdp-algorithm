@@ -1,6 +1,6 @@
 import constants
 
-dt = 0.02
+dt = 0.04
 
 
 # dt = round(self.clock.get_time() / 1000, 2)
@@ -13,22 +13,28 @@ class PathPlan(object):
         self.grid = grid
         self.robot = robot
         self.fastest_route = fastest_route
+        self.target_x = 0
+        self.target_y = 0
+        self.target_direction = 0
+        self.robot_x = self.robot.get_grid_pos()[0]
+        self.robot_y = self.robot.get_grid_pos()[1]
+        self.robot_direction = self.robot.get_angle_of_rotation()
+
 
     def start_robot(self):
-        for target in self.fastest_route:
-            target_x = target[0]
-            target_y = target[1]
-            target_direction = target[2]
+        for target in self.fastest_route[1:]:
+            self.target_x = target[0]
+            self.target_y = target[1]
+            self.target_direction = target[2]
             obstacle_cell = target[3]
 
-            robot_x = self.robot.get_grid_pos()[0]
-            robot_y = self.robot.get_grid_pos()[1]
-            robot_direction = self.robot.get_angle_of_rotation()
+            self.robot_x = self.robot.get_grid_pos()[0]
+            self.robot_y = self.robot.get_grid_pos()[1]
+            self.robot_direction = self.robot.get_angle_of_rotation()
 
             # Target Coordinates: (a, b); Robot Coordinates: (x, y)
-            a, b, x, y = self.transpose_orientation(target_x, target_y, target_direction, robot_x, robot_y)
-
-            self.plan_trip_by_robot_target_directions(a, b, x, y, robot_direction, target_direction)
+            self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot_x, self.robot_y,
+                                                      self.robot_direction, self.target_direction)
 
     def transpose_orientation(self, target_x, target_y, target_direction, robot_x, robot_y):
         if target_direction == constants.NORTH:
