@@ -8,7 +8,8 @@ import pygame
 MARGIN = 2
 ONE_CELL = 20 + MARGIN
 THREE_CELL = 3 * ONE_CELL
-
+dt = 0.04
+# dt = round(self.clock.get_time() / 1000, 2)
 
 class Robot(object):
 
@@ -76,7 +77,7 @@ class Robot(object):
     # 3. forward left/anticlockwise pi/2 turn
     # 4. backward right/anticlockwise pi/2 turn
     # 5. backward left/clockwise pi/2 turn
-    def move_forward(self, dt):
+    def move_forward(self):
         print("MOVE FORWARD FACING", self.angle)
         initial_pixel_pos = self.get_pixel_pos()
         # Set position to stop moving
@@ -112,7 +113,7 @@ class Robot(object):
         else:
             return False
 
-    def move_backward(self, dt):
+    def move_backward(self):
         initial_pixel_pos = self.get_pixel_pos()
         # Set position to stop moving
         if self.angle == constants.NORTH:  # CAR FACING NORTH
@@ -146,7 +147,7 @@ class Robot(object):
         else:
             return False
 
-    def move_forward_steer_right(self, dt):
+    def move_forward_steer_right(self):
         print("STEERING RIGHT FORWARD FACING", self.angle)
         # Pause to simulate time taken for wheels to full rotate
         time.sleep(constants.STEERING_TIME_DELAY)
@@ -201,7 +202,7 @@ class Robot(object):
         else:
             return False
 
-    def move_forward_steer_left(self, dt):
+    def move_forward_steer_left(self):
         print("STEERING LEFT FORWARD FACING", self.angle)
         # Pause to simulate time taken for wheels to full rotate
         time.sleep(constants.STEERING_TIME_DELAY)
@@ -256,7 +257,7 @@ class Robot(object):
         else:
             return False
 
-    def move_backward_steer_right(self, dt):
+    def move_backward_steer_right(self):
         print("STEERING RIGHT BACKWARD FACING", self.angle)
         # Pause to simulate time taken for wheels to full rotate
         time.sleep(constants.STEERING_TIME_DELAY)
@@ -311,7 +312,7 @@ class Robot(object):
         else:
             return False
 
-    def move_backward_steer_left(self, dt):
+    def move_backward_steer_left(self):
         print("STEERING LEFT BACKWARD FACING", self.angle)
 
         initial_pixel_pos = self.get_pixel_pos()
@@ -400,6 +401,12 @@ class Robot(object):
             if (final_grid_x == target_grid_x) and (final_grid_y == target_grid_y) and (
                     final_angle == target_direction):
                 self.grid.set_obstacle_as_visited(obstacle_cell)
+
+                # Move car 2 steps backwards for next move
+                self.move_backward()
+                self.move_backward()
+                time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
+
                 # Repaint grid and car
                 self.redraw_car()
                 print("--Obstacle was visited!")

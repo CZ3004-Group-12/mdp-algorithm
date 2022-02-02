@@ -105,23 +105,17 @@ class Simulator:
 
                 # for testing purposes
                 elif button_func == "FORWARD":
-                    dt = round(self.clock.get_time() / 1000, 2)
-                    self.car.move_forward(dt)
+                    self.car.move_forward()
                 elif button_func == "BACKWARD":
-                    dt = round(self.clock.get_time() / 1000, 2)
-                    self.car.move_backward(dt)
+                    self.car.move_backward()
                 elif button_func == "FORWARD_RIGHT":
-                    dt = round(self.clock.get_time() / 1000, 2)
-                    self.car.move_forward_steer_right(dt)
+                    self.car.move_forward_steer_right()
                 elif button_func == "FORWARD_LEFT":
-                    dt = round(self.clock.get_time() / 1000, 2)
-                    self.car.move_forward_steer_left(dt)
+                    self.car.move_forward_steer_left()
                 elif button_func == "BACKWARD_RIGHT":
-                    dt = round(self.clock.get_time() / 1000, 2)
-                    self.car.move_backward_steer_right(dt)
+                    self.car.move_backward_steer_right()
                 elif button_func == "BACKWARD_LEFT":
-                    dt = round(self.clock.get_time() / 1000, 2)
-                    self.car.move_backward_steer_left(dt)
+                    self.car.move_backward_steer_left()
                 else:
                     return
             else:
@@ -129,9 +123,6 @@ class Simulator:
 
     def start_button_clicked(self):
         print("START button clicked!")
-        # value of 0.02. To change when velocity is known
-        dt = 0.02
-        # dt = round(self.clock.get_time() / 1000, 2)
 
         # Get fastest route
         self.astar = AStar(self.grid, 1, 1)
