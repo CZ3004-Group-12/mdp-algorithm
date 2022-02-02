@@ -431,19 +431,25 @@ class PathPlan(object):
         self.BR4(a, b, x, y)
 
     def BR8(self, a, b, x, y):
-        if abs(b - y) < 6:
-            for i in range(int(6 - abs(b - y))):
-                self.robot.move_forward()
-        else:
-            for i in range(int(abs(b - y) - 6)):
+        if abs(b - y) < 10:
+            for i in range(int(10 - abs(b - y))):
                 self.robot.move_backward()
-        self.robot.move_backward_steer_left()
+        else:
+            for i in range(int(abs(b - y) - 10)):
+                self.robot.move_forward()
+        self.robot.move_forward_steer_left()
         if abs(a - x) <= 2:
             for i in range(int(3 - abs(a - x))):
-                self.robot.move_forward()
+                self.robot.move_backward()
         else:
-            for i in range(int(abs(a - x))):
+            for i in range(int(abs(a - x) - 3)):
                 self.robot.move_forward()
+        self.robot.move_backward_steer_right()
+        for i in range(4):
+            self.robot.move_backward()
+        self.robot.move_backward_steer_right()
+        for i in range(3):
+            self.robot.move_backward()
         self.robot.move_forward_steer_right()
 
     def CR1(self, a, b, x, y):
