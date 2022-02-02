@@ -10,6 +10,7 @@ import logging
 
 # Set the HEIGHT and WIDTH of the screen
 WINDOW_SIZE = [1020, 720]
+FPS = 40
 
 
 class Simulator:
@@ -71,7 +72,7 @@ class Simulator:
                         self.check_button_clicked(pos)
 
             # Limit to 60 frames per second
-            self.clock.tick(60)
+            self.clock.tick(FPS)
 
             # Go ahead and update the screen with what we've drawn.
             self.root.display.flip()
