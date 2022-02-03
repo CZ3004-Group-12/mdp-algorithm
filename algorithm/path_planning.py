@@ -536,7 +536,7 @@ class PathPlan(object):
                 self.robot.move_backward()
         # Backward Right
         self.robot.move_backward_steer_right()
-        for i in range(int(abs(b - y))):
+        for i in range(int(abs(b - y) + 3)):
             self.robot.move_forward()
 
     def DR3(self, a, b, x, y):
@@ -551,7 +551,7 @@ class PathPlan(object):
         a, b = self.undo_target_transpose(a, b, self.target_direction)
         a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
                                                     self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
-        self.DR2(a, b, x, y)
+        self.DR7(a, b, x, y)
 
     def DR5(self, a, b, x, y):
         if abs(x - a) <= 5:
@@ -576,8 +576,12 @@ class PathPlan(object):
             self.AR6(a, b, x, y)
 
     def DR6(self, a, b, x, y):
-        for i in range(int(abs(x - a) - 3)):
-            self.robot.move_backward()
+        if abs(a - x) <=2:
+            for i in range(int(3 - abs(x - a))):
+                self.robot.move_forward()
+        else:
+            for i in range(int(abs(x - a) - 3)):
+                self.robot.move_backward()
         # Backward Right
         self.robot.move_backward_steer_right()
         for i in range(int(abs(b - y)) + 3):
