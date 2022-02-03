@@ -8,7 +8,7 @@ import pygame
 MARGIN = 2
 ONE_CELL = 20 + MARGIN
 THREE_CELL = 3 * ONE_CELL
-dt = 0.05
+dt = 0.3
 # dt = round(self.clock.get_time() / 1000, 2)
 
 class Robot(object):
@@ -100,7 +100,7 @@ class Robot(object):
         if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles_straight(final_pixel_pos):
             # Set velocity of car
             self.velocity += (0, -self.speed)
-            while self.get_pixel_pos() != final_pixel_pos:
+            while self.check_movement_complete(final_pixel_pos):
                 self.pixel_pos += self.velocity.rotate(-self.angle) * dt
                 self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
                                             self.pixel_pos[1] - (0.5 * self.screen_height),
@@ -112,11 +112,16 @@ class Robot(object):
             self.pixel_pos = final_pixel_pos
             self.grid_x = self.grid.pixel_to_grid(final_pixel_pos)[0]
             self.grid_y = self.grid.pixel_to_grid(final_pixel_pos)[1]
+            self.redraw_car()
 
             self.check_if_target_reached(final_pixel_pos, self.angle)
             return True
         else:
             return False
+
+    def check_movement_complete(self, final_pixel_pos):
+        return abs(self.get_pixel_pos()[0] - final_pixel_pos[0]) > 3 or abs(
+            self.get_pixel_pos()[1] - final_pixel_pos[1]) > 3
 
     def move_backward(self):
         initial_pixel_pos = self.get_pixel_pos()
@@ -135,7 +140,7 @@ class Robot(object):
         if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles_straight(final_pixel_pos):
             # Set velocity of car
             self.velocity += (0, self.speed)
-            while self.get_pixel_pos() != final_pixel_pos:
+            while self.check_movement_complete(final_pixel_pos):
                 self.pixel_pos += self.velocity.rotate(-self.angle) * dt
                 self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
                                             self.pixel_pos[1] - (0.5 * self.screen_height),
@@ -146,6 +151,7 @@ class Robot(object):
             self.pixel_pos = final_pixel_pos
             self.grid_x = self.grid.pixel_to_grid(final_pixel_pos)[0]
             self.grid_y = self.grid.pixel_to_grid(final_pixel_pos)[1]
+            self.redraw_car()
 
             self.check_if_target_reached(final_pixel_pos, self.angle)
             return True
@@ -201,6 +207,7 @@ class Robot(object):
             self.pixel_pos = final_pixel_pos
             self.grid_x = self.grid.pixel_to_grid(final_pixel_pos)[0]
             self.grid_y = self.grid.pixel_to_grid(final_pixel_pos)[1]
+            self.redraw_car()
 
             self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
@@ -256,6 +263,7 @@ class Robot(object):
             self.pixel_pos = final_pixel_pos
             self.grid_x = self.grid.pixel_to_grid(final_pixel_pos)[0]
             self.grid_y = self.grid.pixel_to_grid(final_pixel_pos)[1]
+            self.redraw_car()
 
             self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
@@ -311,6 +319,7 @@ class Robot(object):
             self.pixel_pos = final_pixel_pos
             self.grid_x = self.grid.pixel_to_grid(final_pixel_pos)[0]
             self.grid_y = self.grid.pixel_to_grid(final_pixel_pos)[1]
+            self.redraw_car()
 
             self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
@@ -364,6 +373,7 @@ class Robot(object):
             self.pixel_pos = final_pixel_pos
             self.grid_x = self.grid.pixel_to_grid(final_pixel_pos)[0]
             self.grid_y = self.grid.pixel_to_grid(final_pixel_pos)[1]
+            self.redraw_car()
 
             self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
@@ -372,9 +382,8 @@ class Robot(object):
 
     def check_if_reached(self, initial_angle, final_pixel_pos):
         # Set position to stop moving
-        if round(self.get_pixel_pos()[0]) == final_pixel_pos[0] \
-                and round(self.get_pixel_pos()[1]) == final_pixel_pos[1] \
-                and abs(self.angle - initial_angle) <= 90:
+        if self.check_movement_complete(final_pixel_pos) \
+                and abs(self.angle) - abs(initial_angle) > 85:
             return True
         else:
             return False

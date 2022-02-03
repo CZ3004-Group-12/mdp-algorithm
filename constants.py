@@ -15,7 +15,7 @@ SOUTH = 180
 EAST = -90
 WEST = 90
 STEERING_TIME_DELAY = 1.0
-NEXT_OBSTACLE_TIME_DELAY = 0.5
+NEXT_OBSTACLE_TIME_DELAY = 1
 ROBOT_W = 30
 ROBOT_H = 30
 # Starting grid positions of car
@@ -30,5 +30,5 @@ min_pixel_pos_y = 120
 max_pixel_pos_x = 560
 max_pixel_pos_y = 560
 
-FPS = 20
+FPS = 60
 
