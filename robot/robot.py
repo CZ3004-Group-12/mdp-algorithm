@@ -8,7 +8,7 @@ import pygame
 MARGIN = 2
 ONE_CELL = 20 + MARGIN
 THREE_CELL = 3 * ONE_CELL
-dt = 0.04
+dt = 0.05
 # dt = round(self.clock.get_time() / 1000, 2)
 
 class Robot(object):
@@ -401,11 +401,6 @@ class Robot(object):
             if (final_grid_x == target_grid_x) and (final_grid_y == target_grid_y) and (
                     final_angle == target_direction):
                 self.grid.set_obstacle_as_visited(obstacle_cell)
-
-                # Move car 2 steps backwards for next move
-                self.move_backward()
-                self.move_backward()
-                time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
 
                 # Repaint grid and car
                 self.redraw_car()

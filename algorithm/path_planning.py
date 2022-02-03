@@ -1,3 +1,4 @@
+import time
 import constants
 
 
@@ -83,6 +84,8 @@ class PathPlan(object):
     def plan_trip_by_robot_target_directions(self, a, b, x, y, robot_direction, target_direction):
         print(a, b, x, y)
         print(robot_direction, target_direction)
+        initial_a = a
+        initial_b = b
         a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
         if robot_direction == target_direction:
             if abs(a - x) <= 2 and b < y:
@@ -200,6 +203,8 @@ class PathPlan(object):
 
         else:
             return
+
+        self.check_reached_target(initial_a, initial_b)
 
     def AR1(self, a, b, x, y):
         if abs(b-y) <= 2:
@@ -564,3 +569,11 @@ class PathPlan(object):
     def move_backward_by(self, no_of_steps):
         for i in range(int(no_of_steps)):
             self.robot.move_backward()
+
+    def check_reached_target(self, target_a, target_b):
+        x, y = self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1]
+        if target_a == x and target_b == y:
+            # Move car 2 steps backwards for next move
+            time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
+            self.move_backward_by(1)
+            time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
