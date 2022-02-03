@@ -9,16 +9,21 @@ MARGIN = 2
 ONE_CELL = 20 + MARGIN
 THREE_CELL = 3 * ONE_CELL
 dt = 0.4
+
+
 # dt = round(self.clock.get_time() / 1000, 2)
 
 class BorderException(Exception):
     pass
 
+
 class ObstacleException(Exception):
     pass
 
+
 class ObstacleTurnException(Exception):
     pass
+
 
 class Robot(object):
 
@@ -168,7 +173,6 @@ class Robot(object):
         # Pause to simulate time taken for wheels to full rotate
         # time.sleep(constants.STEERING_TIME_DELAY)
 
-
         initial_pixel_pos = self.get_pixel_pos()
         initial_angle = self.angle
         # Set position to stop moving
@@ -188,8 +192,7 @@ class Robot(object):
             final_pixel_pos = initial_pixel_pos  # car will not move
             final_angle = initial_angle
 
-        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "FORWARD_R",
-                                                                                      final_angle):
+        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "FORWARD_R"):
             # Pause to simulate time taken for wheels to full rotate
             # time.sleep(constants.STEERING_TIME_DELAY)
 
@@ -241,8 +244,7 @@ class Robot(object):
             final_pixel_pos = initial_pixel_pos  # car will not move
             final_angle = initial_angle
 
-        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "FORWARD_L",
-                                                                                      final_angle):
+        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "FORWARD_L"):
             # Pause to simulate time taken for wheels to full rotate
             # time.sleep(constants.STEERING_TIME_DELAY)
 
@@ -294,8 +296,7 @@ class Robot(object):
             final_pixel_pos = initial_pixel_pos  # car will not move
             final_angle = initial_angle
 
-        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "BACKWARD_R",
-                                                                                      final_angle):
+        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "BACKWARD_R"):
             # Pause to simulate time taken for wheels to full rotate
             # time.sleep(constants.STEERING_TIME_DELAY)
 
@@ -345,8 +346,7 @@ class Robot(object):
             final_pixel_pos = initial_pixel_pos  # car will not move
             final_angle = initial_angle
 
-        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "BACKWARD_L",
-                                                                                      final_angle):
+        if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "BACKWARD_L"):
             # Pause to simulate time taken for wheels to full rotate
             # time.sleep(constants.STEERING_TIME_DELAY)
 
@@ -396,7 +396,7 @@ class Robot(object):
         if (constants.min_pixel_pos_x + self.robot_w < pos[0] < constants.max_pixel_pos_x - self.robot_w) \
                 and (constants.min_pixel_pos_y + self.robot_h < pos[1] < constants.max_pixel_pos_y - self.robot_h):
             return True
-        raise BorderException("BORDER")
+        #raise BorderException("BORDER")
         return True
         # return False
 
@@ -517,7 +517,7 @@ class Robot(object):
             if (obstacle_pixel_x - border_pixel_length < turning_pixel[0] < obstacle_pixel_x + border_pixel_length) \
                     and (
                     obstacle_pixel_y - border_pixel_length < turning_pixel[1] < obstacle_pixel_y + border_pixel_length):
-                raise ObstacleTurnException("OBSTACLE_TURN")
+                #raise ObstacleTurnException("OBSTACLE_TURN")
                 return True
 
             # Using grid position
@@ -528,7 +528,7 @@ class Robot(object):
 
         return True
 
-    def check_exclude_obstacles(self, final_pixel_pos, turn, final_angle):
+    def check_exclude_obstacles(self, final_pixel_pos, turn):
         # Checks if final position will clash into any obstacles, then checks for turning radius obstacles
         if self.check_exclude_obstacles_straight(final_pixel_pos):
             return self.check_turning_radius(turn)
