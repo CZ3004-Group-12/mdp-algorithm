@@ -15,7 +15,6 @@ class PathPlan(object):
         self.robot_y = self.robot.get_grid_pos()[1]
         self.robot_direction = self.robot.get_angle_of_rotation()
 
-
     def start_robot(self):
         for target in self.fastest_route[1:]:
             self.target_x = target[0]
@@ -120,7 +119,7 @@ class PathPlan(object):
             elif a < x and b == y:
                 print("BR2")
                 self.BR2(a, b, x, y)
-            elif abs(a-x) <= 2 and b > y:
+            elif abs(a - x) <= 2 and b > y:
                 print("BR3")
                 self.BR3(a, b, x, y)
             elif a > x and b == y:
@@ -129,10 +128,10 @@ class PathPlan(object):
             elif a < x and b < y:
                 print("BR5")
                 self.BR5(a, b, x, y)
-            elif abs(a-x) > 2 and a < x and b > y:
+            elif abs(a - x) > 2 and a < x and b > y:
                 print("BR6")
                 self.BR6(a, b, x, y)
-            elif abs(a-x) > 2 and a > x and b > y:
+            elif abs(a - x) > 2 and a > x and b > y:
                 print("BR7")
                 self.BR7(a, b, x, y)
             elif a > x and b < y:
@@ -203,33 +202,34 @@ class PathPlan(object):
             return
 
     def AR1(self, a, b, x, y):
-        if a - x <= 0:
-            # Forward Left
-            self.robot.move_forward_steer_left()
-            for i in range(int(abs(a - x))):
-                self.robot.move_forward()
-            # Forward Left
-            self.robot.move_forward_steer_left()
-            for i in range(int(abs(b - y))):
-                self.robot.move_forward()
-            # Forward Left
-            self.robot.move_forward_steer_left()
-            # Forward Left
-            self.robot.move_forward_steer_left()
-
+        if abs(b-y) <= 2:
+            self.move_backward_by(abs(b - y))
+            if a - x < 0:
+                a, b = self.undo_target_transpose(a, b, self.target_direction)
+                a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
+                                                        self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
+                self.AR2(a, b, x, y)
+            elif a - x > 0:
+                a, b = self.undo_target_transpose(a, b, self.target_direction)
+                a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
+                                                        self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
+                self.AR4(a, b, x, y)
         else:
-            # Forward Right
-            self.robot.move_forward_steer_right()
-            for i in range(int(abs(a - x))):
-                self.robot.move_forward()
-            # Forward Right
-            self.robot.move_forward_steer_right()
-            for i in range(int(abs(b - y))):
-                self.robot.move_forward()
-            # Forward Right
-            self.robot.move_forward_steer_right()
-            # Forward Right
-            self.robot.move_forward_steer_right()
+            if a - x <= 0:
+                self.robot.move_forward_steer_left()
+                self.move_forward_by(abs(a - x))
+                self.robot.move_forward_steer_left()
+                self.move_forward_by(abs(b - y))
+                self.robot.move_forward_steer_left()
+                self.robot.move_forward_steer_left()
+
+            else:
+                self.robot.move_forward_steer_right()
+                self.move_forward_by(abs(a - x))
+                self.robot.move_forward_steer_right()
+                self.move_forward_by(abs(b - y))
+                self.robot.move_forward_steer_right()
+                self.robot.move_forward_steer_right()
 
     def AR2(self, a, b, x, y):
         a, b = self.undo_target_transpose(a, b, self.target_direction)
@@ -239,8 +239,7 @@ class PathPlan(object):
 
     def AR3(self, a, b, x, y):
         # Forward by abs(b-y)
-        for i in range(int(abs(b - y))):
-            self.robot.move_forward()
+        self.move_forward_by(abs(b - y))
 
     def AR4(self, a, b, x, y):
         a, b = self.undo_target_transpose(a, b, self.target_direction)
@@ -249,124 +248,92 @@ class PathPlan(object):
         self.AR7(a, b, x, y)
 
     def AR5(self, a, b, x, y):
-        for i in range(int(abs(b - y))):
-            self.robot.move_backward()
+        self.move_backward_by(abs(b - y))
         a, b = self.undo_target_transpose(a, b, self.target_direction)
         a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
                                                 self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
         self.AR6(a, b, x, y)
 
     def AR6(self, a, b, x, y):
-        if abs(b-y) < 2:
-            for i in range(int(2 - abs(b - y))):
-                self.robot.move_backward()
+        if abs(b - y) < 2:
+            self.move_backward_by(2 - abs(b - y))
         else:
-            for i in range(int(abs(b - y) - 2)):
-                self.robot.move_forward()
+            self.move_forward_by(abs(b - y) - 2)
         self.robot.move_forward_steer_left()
-        for i in range(int(abs(a - x))):
-            self.robot.move_forward()
+        self.move_forward_by(abs(a - x))
         self.robot.move_backward_steer_left()
-        for i in range(2):
-            self.robot.move_forward()
+        self.move_forward_by(2)
 
     def AR7(self, a, b, x, y):
-        if abs(b-y) < 2:
-            for i in range(int(2 - abs(b - y))):
-                self.robot.move_backward()
+        if abs(b - y) < 2:
+            self.move_backward_by(2 - abs(b - y))
         else:
-            for i in range(int(abs(b - y) - 2)):
-                self.robot.move_forward()
+            self.move_forward_by(abs(b - y) - 2)
         self.robot.move_forward_steer_right()
-        for i in range(int(abs(a - x))):
-            self.robot.move_forward()
+        self.move_forward_by(abs(a - x))
         self.robot.move_backward_steer_right()
-        for i in range(2):
-            self.robot.move_forward()
+        self.move_forward_by(2)
 
     def AR8(self, a, b, x, y):
-        for i in range(int(abs(b - y))):
-            self.robot.move_backward()
+        self.move_backward_by(abs(b - y))
         a, b = self.undo_target_transpose(a, b, self.target_direction)
         a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
                                                 self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
         self.AR7(a, b, x, y)
 
     def BR1(self, a, b, x, y):
-        # self.robot.move_forward_steer_right()
-        # self.robot.move_backward_steer_left()
-        # for i in range(int(abs(b - y) + 3)):
-        #     self.robot.move_forward()
-
-        if abs(b-y) <= 2:
-            for i in range(2):
-                self.robot.move_forward()
+        if abs(b - y) <= 2:
+            self.move_forward_by(2)
             a, b = self.undo_target_transpose(a, b, self.target_direction)
             a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
                                                     self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
             self.BR3(a, b, x, y)
         else:
-            if abs(b-y) < 10:
-                for i in range(int(10 - abs(b - y))):
-                    self.robot.move_backward()
+            if abs(b - y) < 10:
+                self.move_backward_by(10 - abs(b - y))
             else:
-                for i in range(int(abs(b - y) - 10)):
-                    self.robot.move_forward()
+                self.move_forward_by(abs(b - y) - 10)
             self.robot.move_forward_steer_right()
-            for i in range(3):
-                self.robot.move_backward()
+            self.move_backward_by(3)
             self.robot.move_forward_steer_left()
             self.robot.move_forward_steer_left()
-            for i in range(3):
-                self.robot.move_forward()
+            self.move_forward_by(3)
             self.robot.move_backward_steer_right()
-            for i in range(2):
-                self.robot.move_forward()
+            self.move_forward_by(2)
 
     def BR2(self, a, b, x, y):
-        for i in range(3):
-            self.robot.move_backward()
+        self.move_backward_by(3)
         self.robot.move_forward_steer_right()
-        for i in range(int(abs(a - x))):
-            self.robot.move_forward()
+        self.move_forward_by(abs(a - x))
         self.robot.move_backward_steer_left()
-        for i in range(3):
-            self.robot.move_forward()
+        self.move_forward_by(3)
 
     def BR3(self, a, b, x, y):
-        if abs(b-y) <= 2:
+        if abs(b - y) <= 2:
             self.robot.move_forward_steer_right()
             self.robot.move_backward_steer_left()
-            for i in range(int(6 + abs(b - y))):
-                self.robot.move_forward()
+            self.move_forward_by(6 + abs(b - y))
         else:
-            for i in range(int(abs(b - y))):
-                self.robot.move_backward()
+            self.move_backward_by(abs(b - y))
 
             self.robot.move_forward_steer_right()
             if abs(a) - abs(x) > 0:
-                for i in range(int(abs(a - x))):
-                    self.robot.move_forward()
+                self.move_forward_by(abs(a - x))
             elif abs(a) - abs(x) < 0:
-                for i in range(int(abs(a - x))):
-                    self.robot.move_backward()
+                self.move_backward_by(abs(a - x))
             self.robot.move_backward_steer_left()
-            for i in range(6):
-                self.robot.move_forward()
+            self.move_forward_by(6)
 
     def BR4(self, a, b, x, y):
-        for i in range(3):
-            self.robot.move_backward()
+        self.move_backward_by(3)
         self.robot.move_forward_steer_left()
-        for i in range(int(abs(a - x))):
-            self.robot.move_forward()
+        self.move_forward_by(abs(a - x))
         self.robot.move_backward_steer_right()
-        for i in range(3):
-            self.robot.move_forward()
+        self.move_forward_by(3)
 
     def BR5(self, a, b, x, y):
-        if abs(a-x) <= 2:
-            if abs(b-y) <= 2:
+        if abs(a - x) <= 2:
+            if abs(b - y) <= 2:
                 self.robot.move_forward_steer_right()
                 a, b = self.undo_target_transpose(a, b, self.target_direction)
                 a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
@@ -380,32 +347,29 @@ class PathPlan(object):
                 self.DR8(a, b, x, y)
 
         else:
-            for i in range(int(abs(b-y))):
-                self.robot.move_forward()
+            self.move_forward_by(abs(b - y))
             a, b = self.undo_target_transpose(a, b, self.target_direction)
             a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
                                                     self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
             self.BR2(a, b, x, y)
 
     def BR6(self, a, b, x, y):
-        for i in range(int(abs(b - y))):
-            self.robot.move_backward()
+        self.move_backward_by(abs(b - y))
         a, b = self.undo_target_transpose(a, b, self.target_direction)
         a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
                                                 self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
         self.BR2(a, b, x, y)
 
     def BR7(self, a, b, x, y):
-        for i in range(int(abs(b - y))):
-            self.robot.move_backward()
+        self.move_backward_by(abs(b - y))
         a, b = self.undo_target_transpose(a, b, self.target_direction)
         a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
                                                 self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
         self.BR4(a, b, x, y)
 
     def BR8(self, a, b, x, y):
-        if abs(a-x) <= 2:
-            if abs(b-y) <= 2:
+        if abs(a - x) <= 2:
+            if abs(b - y) <= 2:
                 self.robot.move_forward_steer_left()
                 a, b = self.undo_target_transpose(a, b, self.target_direction)
                 a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
@@ -419,8 +383,7 @@ class PathPlan(object):
                 self.CR5(a, b, x, y)
 
         else:
-            for i in range(int(abs(b - y))):
-                self.robot.move_forward()
+            self.move_forward_by(abs(b - y))
             a, b = self.undo_target_transpose(a, b, self.target_direction)
             a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
                                                     self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
@@ -435,32 +398,28 @@ class PathPlan(object):
         self.AR5(a, b, x, y)
 
     def CR2(self, a, b, x, y):
-        for i in range(int(abs(b - y) + 3)):
-            self.robot.move_forward()
+        self.move_forward_by(abs(b - y) + 3)
         a, b = self.undo_target_transpose(a, b, self.target_direction)
         a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
-                                                    self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
+                                                self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
         self.CR4(a, b, x, y)
         pass
 
     def CR3(self, a, b, x, y):
         a, b = self.undo_target_transpose(a, b, self.target_direction)
         a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
-                                                    self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
+                                                self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
         self.CR6(a, b, x, y)
         pass
 
     def CR4(self, a, b, x, y):
         if abs(a - x) <= 2:
-            for i in range(int(3 - abs(a - x))):
-                self.robot.move_forward()
+            self.move_forward_by(3 - abs(a - x))
         else:
-            for i in range(int(abs(x - a) - 3)):
-                self.robot.move_backward()
+            self.move_backward_by(abs(x - a) - 3)
         # Backward Left
         self.robot.move_backward_steer_left()
-        for i in range(int(abs(b - y))):
-            self.robot.move_forward()
+        self.move_forward_by(abs(b - y))
 
     def CR5(self, a, b, x, y):
         # Backward Left
@@ -483,26 +442,20 @@ class PathPlan(object):
         pass
 
     def CR6(self, a, b, x, y):
-        for i in range(int(abs(a - x) + 3)):
-            self.robot.move_forward()
+        self.move_forward_by(abs(a - x) + 3)
         a, b = self.undo_target_transpose(a, b, self.target_direction)
         a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
-                                                    self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
+                                                self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
         self.CR7(a, b, x, y)
 
     def CR7(self, a, b, x, y):
-        for i in range(int(abs(x - a) - 3)):
-            self.robot.move_backward()
-        # Backward Left
+        self.move_backward_by(abs(x - a) - 3)
         self.robot.move_backward_steer_left()
-        for i in range(int(abs(b - y)) + 3):
-            self.robot.move_forward()
+        self.move_forward_by(abs(b - y) + 3)
 
     def CR8(self, a, b, x, y):
         if abs(x - a) <= 5:
-            for i in range(int(6 - abs(x - a))):
-                self.robot.move_forward()
-        # Backward Left
+            self.move_forward_by(6 - abs(x - a))
         self.robot.move_backward_steer_left()
         if abs(y - b) > 3:
             a, b = self.undo_target_transpose(a, b, self.target_direction)
@@ -524,40 +477,34 @@ class PathPlan(object):
         self.robot.move_backward_steer_right()
         a, b = self.undo_target_transpose(a, b, self.target_direction)
         a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
-                                                    self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
+                                                self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
         self.AR8(a, b, x, y)
 
     def DR2(self, a, b, x, y):
         if abs(a - x) <= 2:
-            for i in range(int(3 - abs(a - x))):
-                self.robot.move_forward()
+            self.move_forward_by(3 - abs(a - x))
         else:
-            for i in range(int(abs(x - a) - 3)):
-                self.robot.move_backward()
+            self.move_backward_by(abs(a - x) - 3)
         # Backward Right
         self.robot.move_backward_steer_right()
-        for i in range(int(abs(b - y) + 3)):
-            self.robot.move_forward()
+        self.move_forward_by(abs(b - y) + 3)
 
     def DR3(self, a, b, x, y):
         a, b = self.undo_target_transpose(a, b, self.target_direction)
         a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
-                                                    self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
+                                                self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
         self.DR7(a, b, x, y)
 
     def DR4(self, a, b, x, y):
-        for i in range(int(abs(b - y) + 3)):
-            self.robot.move_forward()
+        self.move_forward_by(abs(b - y) + 3)
         a, b = self.undo_target_transpose(a, b, self.target_direction)
         a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
-                                                    self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
+                                                self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
         self.DR7(a, b, x, y)
 
     def DR5(self, a, b, x, y):
         if abs(x - a) <= 5:
-            for i in range(int(6 - abs(x - a))):
-                self.robot.move_forward()
-        # Backward Right
+            self.move_forward_by(6 - abs(a - x))
         self.robot.move_backward_steer_right()
         if abs(y - b) > 3:
             a, b = self.undo_target_transpose(a, b, self.target_direction)
@@ -576,23 +523,18 @@ class PathPlan(object):
             self.AR6(a, b, x, y)
 
     def DR6(self, a, b, x, y):
-        if abs(a - x) <=2:
-            for i in range(int(3 - abs(x - a))):
-                self.robot.move_forward()
+        if abs(a - x) <= 2:
+            self.move_forward_by(3 - abs(a - x))
         else:
-            for i in range(int(abs(x - a) - 3)):
-                self.robot.move_backward()
-        # Backward Right
+            self.move_backward_by(abs(a - x) - 3)
         self.robot.move_backward_steer_right()
-        for i in range(int(abs(b - y)) + 3):
-            self.robot.move_forward()
+        self.move_forward_by(abs(b - y) + 3)
 
     def DR7(self, a, b, x, y):
-        for i in range(int(abs(a - x) + 3)):
-            self.robot.move_forward()
+        self.move_forward_by(abs(a - x) + 3)
         a, b = self.undo_target_transpose(a, b, self.target_direction)
         a, b, x, y = self.transpose_orientation(a, b, self.target_direction,
-                                                    self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
+                                                self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
         self.DR6(a, b, x, y)
 
     def DR8(self, a, b, x, y):
@@ -614,3 +556,11 @@ class PathPlan(object):
                                                     self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
             self.AR7(a, b, x, y)
         pass
+
+    def move_forward_by(self, no_of_steps):
+        for i in range(int(no_of_steps)):
+            self.robot.move_forward()
+
+    def move_backward_by(self, no_of_steps):
+        for i in range(int(no_of_steps)):
+            self.robot.move_backward()
