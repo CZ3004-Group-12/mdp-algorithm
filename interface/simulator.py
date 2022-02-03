@@ -1,5 +1,6 @@
 import os
 import constants
+from pygame import time
 from map.grid import Grid
 from interface.panel import Panel
 from robot.robot import Robot
@@ -10,8 +11,6 @@ import logging
 
 # Set the HEIGHT and WIDTH of the screen
 WINDOW_SIZE = [1020, 720]
-FPS = 40
-
 
 class Simulator:
 
@@ -40,7 +39,9 @@ class Simulator:
         self.panel = Panel(self.screen)
 
         # Used to manage how fast the screen updates
-        self.clock = pygame.time.Clock()
+        # self.clock = pygame.time.Clock()
+        self.startTime = pygame.time.get_ticks() / 1000
+        self.ticks = 0
 
         # Car printing process
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -63,19 +64,19 @@ class Simulator:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # User clicks the mouse. Get the position
                     pos = pygame.mouse.get_pos()
-                    if (120 < pos[0] < 560) and (120 < pos[1] < 560):    # if area clicked is within grid
+                    if (120 < pos[0] < 560) and (120 < pos[1] < 560):  # if area clicked is within grid
                         self.grid.grid_clicked(pos[0], pos[1])
                         self.screen.blit(self.grid_surface, (120, 120))  # Redraw the grid outlines
-                        self.grid.update_grid(self.screen)               # Update grid if obstacles added
-                        self.car.draw_car()                              # Redraw the car
-                    else:                                                # otherwise, area clicked is outside of grid
+                        self.grid.update_grid(self.screen)  # Update grid if obstacles added
+                        self.car.draw_car()  # Redraw the car
+                    else:  # otherwise, area clicked is outside of grid
                         self.check_button_clicked(pos)
 
-            # Limit to 60 frames per second
-            self.clock.tick(FPS)
-
-            # Go ahead and update the screen with what we've drawn.
-            self.root.display.flip()
+            # Limit to 20 frames per second
+            now = pygame.time.get_ticks()/1000
+            if now - self.startTime > 1 / constants.FPS:
+                self.startTime = now
+                self.root.display.flip()
 
         # Be IDLE friendly. If you forget this line, the program will 'hang' on exit.
         self.root.quit()
@@ -94,7 +95,7 @@ class Simulator:
 
         for button in self.panel.buttons[1:]:
             x, y, l, h = button.get_xy_and_lh()
-            if (x < pos[0] < (l+x)) and (y < pos[1] < (h+y)):
+            if (x < pos[0] < (l + x)) and (y < pos[1] < (h + y)):
                 button_func = self.panel.get_button_clicked(button)
                 if button_func == "RESET":
                     print("Reset button pressed.")
@@ -137,4 +138,3 @@ class Simulator:
     def reset_button_clicked(self):
         self.grid.reset(self.screen)
         self.car.reset()
-

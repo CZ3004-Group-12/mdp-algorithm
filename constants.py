@@ -30,3 +30,5 @@ min_pixel_pos_y = 120
 max_pixel_pos_x = 560
 max_pixel_pos_y = 560
 
+FPS = 20
+

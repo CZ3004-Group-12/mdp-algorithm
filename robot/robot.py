@@ -57,7 +57,12 @@ class Robot(object):
         self.screen.blit(rotated, rect)
         # screen.blit(rotated, self.get_pixel_pos() - (rect.width / 2, rect.height / 2))
         pygame.draw.rect(self.screen, constants.RED, self.car_rect, 1)
-        pygame.display.flip()
+
+        # Refresh screen by frame rate
+        now = pygame.time.get_ticks() / 1000
+        if now - self.simulator.startTime > 1 / constants.FPS:
+            self.simulator.startTime = now
+            self.simulator.root.display.flip()
 
     def redraw_car(self):
         # Need to redraw over everything (grid_surface, grid and car)
