@@ -140,6 +140,9 @@ class PathPlan(object):
             elif a > x and b < y:
                 print("BR8")
                 self.BR8(a, b, x, y)
+            elif a == x and b == y:
+                print("BR9")
+                self.BR9(a, b, x, y)
             else:
                 print("no case")
 
@@ -169,6 +172,9 @@ class PathPlan(object):
             elif a > x and b < y:
                 print("CR8")
                 self.CR8(a, b, x, y)
+            elif a == x and b == y:
+                print("CR9")
+                self.CR9(a, b, x, y)
             else:
                 print("no case")
 
@@ -198,6 +204,9 @@ class PathPlan(object):
             elif a > x and b < y:
                 print("DR8")
                 self.DR8(a, b, x, y)
+            elif a == x and b == y:
+                print("DR9")
+                self.DR9(a, b, x, y)
             else:
                 print("no case")
 
@@ -400,6 +409,11 @@ class PathPlan(object):
             self.robot.move_backward_steer_right()
             self.move_forward_by(3)
 
+    def BR9(self, a, b, x, y):
+        self.robot.move_forward_steer_right()
+        self.move_backward_by(6)
+        self.robot.move_forward_steer_right()
+
     def CR1(self, a, b, x, y):
         # Backward Left
         self.robot.move_backward_steer_left()
@@ -484,6 +498,11 @@ class PathPlan(object):
                                                     self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
             self.AR7(a, b, x, y)
 
+    def CR9(self, a, b, x, y):
+        self.move_forward_by(3)
+        self.robot.move_backward_steer_left()
+        self.move_forward_by(3)
+
     def DR1(self, a, b, x, y):
         self.robot.move_backward_steer_right()
         a, b = self.undo_target_transpose(a, b, self.target_direction)
@@ -567,6 +586,11 @@ class PathPlan(object):
                                                     self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1])
             self.AR7(a, b, x, y)
         pass
+
+    def DR9(self, a, b, x, y):
+        self.move_forward_by(3)
+        self.robot.move_backward_steer_right()
+        self.move_forward_by(3)
 
     def move_forward_by(self, no_of_steps):
         for i in range(int(no_of_steps)):
