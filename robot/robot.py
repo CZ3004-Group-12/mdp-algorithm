@@ -8,8 +8,17 @@ import pygame
 MARGIN = 2
 ONE_CELL = 20 + MARGIN
 THREE_CELL = 3 * ONE_CELL
-dt = 0.2
+dt = 0.4
 # dt = round(self.clock.get_time() / 1000, 2)
+
+class BorderException(Exception):
+    pass
+
+class ObstacleException(Exception):
+    pass
+
+class ObstacleTurnException(Exception):
+    pass
 
 class Robot(object):
 
@@ -387,7 +396,7 @@ class Robot(object):
         if (constants.min_pixel_pos_x + self.robot_w < pos[0] < constants.max_pixel_pos_x - self.robot_w) \
                 and (constants.min_pixel_pos_y + self.robot_h < pos[1] < constants.max_pixel_pos_y - self.robot_h):
             return True
-        print("BORDER!!")
+        raise BorderException("BORDER")
         return True
         # return False
 
@@ -439,7 +448,7 @@ class Robot(object):
             if (obstacle_pixel_x - border_pixel_length < final_pixel_pos[0] < obstacle_pixel_x + border_pixel_length) \
                     and (obstacle_pixel_y - border_pixel_length < final_pixel_pos[
                 1] < obstacle_pixel_y + border_pixel_length):
-                print("OBSTACLE!!")
+                raise ObstacleException("OBSTACLE")
                 return True
 
             # Using grid position
@@ -508,7 +517,7 @@ class Robot(object):
             if (obstacle_pixel_x - border_pixel_length < turning_pixel[0] < obstacle_pixel_x + border_pixel_length) \
                     and (
                     obstacle_pixel_y - border_pixel_length < turning_pixel[1] < obstacle_pixel_y + border_pixel_length):
-                print("OBSTACLE (TURN)!!")
+                raise ObstacleTurnException("OBSTACLE_TURN")
                 return True
 
             # Using grid position
