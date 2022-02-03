@@ -580,6 +580,6 @@ class PathPlan(object):
         x, y = self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1]
         if target_a == x and target_b == y:
             # Move car 2 steps backwards for next move
-            time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
+            # time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
             self.move_backward_by(1)
-            time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
+            # time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)

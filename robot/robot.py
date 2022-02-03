@@ -8,7 +8,7 @@ import pygame
 MARGIN = 2
 ONE_CELL = 20 + MARGIN
 THREE_CELL = 3 * ONE_CELL
-dt = 0.3
+dt = 0.075
 # dt = round(self.clock.get_time() / 1000, 2)
 
 class Robot(object):
@@ -161,7 +161,8 @@ class Robot(object):
     def move_forward_steer_right(self):
         print("STEERING RIGHT FORWARD FACING", self.angle)
         # Pause to simulate time taken for wheels to full rotate
-        time.sleep(constants.STEERING_TIME_DELAY)
+        # time.sleep(constants.STEERING_TIME_DELAY)
+
 
         initial_pixel_pos = self.get_pixel_pos()
         initial_angle = self.angle
@@ -185,7 +186,7 @@ class Robot(object):
         if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "FORWARD_R",
                                                                                       final_angle):
             # Pause to simulate time taken for wheels to full rotate
-            time.sleep(constants.STEERING_TIME_DELAY)
+            # time.sleep(constants.STEERING_TIME_DELAY)
 
             # Set velocity of car
             self.velocity += (0, -self.speed)
@@ -217,7 +218,7 @@ class Robot(object):
     def move_forward_steer_left(self):
         print("STEERING LEFT FORWARD FACING", self.angle)
         # Pause to simulate time taken for wheels to full rotate
-        time.sleep(constants.STEERING_TIME_DELAY)
+        # time.sleep(constants.STEERING_TIME_DELAY)
 
         initial_pixel_pos = self.get_pixel_pos()
         initial_angle = self.angle
@@ -241,7 +242,7 @@ class Robot(object):
         if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "FORWARD_L",
                                                                                       final_angle):
             # Pause to simulate time taken for wheels to full rotate
-            time.sleep(constants.STEERING_TIME_DELAY)
+            # time.sleep(constants.STEERING_TIME_DELAY)
 
             # Set velocity of car
             self.velocity += (0, -self.speed)
@@ -273,7 +274,7 @@ class Robot(object):
     def move_backward_steer_right(self):
         print("STEERING RIGHT BACKWARD FACING", self.angle)
         # Pause to simulate time taken for wheels to full rotate
-        time.sleep(constants.STEERING_TIME_DELAY)
+        # time.sleep(constants.STEERING_TIME_DELAY)
 
         initial_pixel_pos = self.get_pixel_pos()
         initial_angle = self.angle
@@ -297,7 +298,7 @@ class Robot(object):
         if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "BACKWARD_R",
                                                                                       final_angle):
             # Pause to simulate time taken for wheels to full rotate
-            time.sleep(constants.STEERING_TIME_DELAY)
+            # time.sleep(constants.STEERING_TIME_DELAY)
 
             # Set velocity of car
             self.velocity += (0, -self.speed)
@@ -351,7 +352,7 @@ class Robot(object):
         if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles(final_pixel_pos, "BACKWARD_L",
                                                                                       final_angle):
             # Pause to simulate time taken for wheels to full rotate
-            time.sleep(constants.STEERING_TIME_DELAY)
+            # time.sleep(constants.STEERING_TIME_DELAY)
 
             # Set velocity of car
             self.velocity += (0, -self.speed)
