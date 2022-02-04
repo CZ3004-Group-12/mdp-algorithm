@@ -558,7 +558,7 @@ class PathPlan(object):
             self.move_backward_by(abs(x - a) - 3)
         # Backward Left
         self.robot.move_backward_steer_left()
-        self.move_forward_by(abs(b - y))
+        self.move_forward_by(abs(b - y)+3)
 
     def CR5(self, a, b, x, y):
         # Backward Left
