@@ -649,9 +649,9 @@ class PathPlan(object):
         self.DR7(a, b, x, y)
 
     def DR4(self, a, b, x, y):
-        self.move_forward_by(abs(b - y) + 3)
-        a, b, x, y = self.preprocess_coords(a, b, x, y)
-        self.DR7(a, b, x, y)
+        self.move_forward_by(abs(a - x) + 3)
+        self.robot.move_backward_steer_right()
+        self.move_forward_by(3)
 
     def DR5(self, a, b, x, y):
         if abs(b - y) == 1:
