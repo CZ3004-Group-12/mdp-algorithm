@@ -567,7 +567,7 @@ class PathPlan(object):
             self.robot.move_backward_steer_left()
             self.move_forward_by(abs(b-y)+1)
             return
-        if abs(y-b<6):
+        if abs(a-x)>6:
             self.move_forward_by(abs(a-x)-6)
         else:
             self.move_backward_by(6-abs(a-x))
@@ -580,7 +580,7 @@ class PathPlan(object):
         self.move_forward_by(3)
         self.robot.move_backward_steer_left()
         self.move_forward_by(2)
-        
+
         # self.robot.move_backward_steer_left()
         # if abs(y - b) > 3:
         #     a, b, x, y = self.preprocess_coords(a, b, x, y)
@@ -599,7 +599,8 @@ class PathPlan(object):
         self.CR7(a, b, x, y)
 
     def CR7(self, a, b, x, y):
-        self.move_backward_by(abs(x - a) - 3)
+        if abs(x-a)<3:
+            self.move_backward_by(abs(x - a) - 3)
         self.robot.move_backward_steer_left()
         self.move_forward_by(abs(b - y) + 3)
 
