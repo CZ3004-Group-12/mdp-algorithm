@@ -19,6 +19,7 @@ class PathPlan(object):
         self.robot_x = self.robot.get_grid_pos()[0]
         self.robot_y = self.robot.get_grid_pos()[1]
         self.robot_direction = self.robot.get_angle_of_rotation()
+        self.collection_of_movements = []
 
     def start_robot(self):
         for target in self.fastest_route[1:]:
@@ -720,24 +721,33 @@ class PathPlan(object):
 
     def turn_forward_right(self):
         self.robot.move_forward_steer_right()
+        self.collection_of_movements.append("FR")
 
     def turn_forward_left(self):
         self.robot.move_forward_steer_left()
+        self.collection_of_movements.append("FL")
 
     def turn_backward_right(self):
         self.robot.move_backward_steer_right()
+        self.collection_of_movements.append("BR")
 
     def turn_backward_left(self):
         self.robot.move_backward_steer_left()
+        self.collection_of_movements.append("BL")
 
     def move_forward_by(self, no_of_steps):
         for i in range(int(no_of_steps)):
             self.robot.move_forward()
+            self.collection_of_movements.append("F")
 
     def move_backward_by(self, no_of_steps):
         for i in range(int(no_of_steps)):
             self.robot.move_backward()
-    
+            self.collection_of_movements.append("B")
+
+    def reset_collection_of_movements(self):
+        self.collection_of_movements = []
+
     def check_reached_target(self, target_a, target_b):
         x, y = self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1]
         if target_a == x and target_b == y:
