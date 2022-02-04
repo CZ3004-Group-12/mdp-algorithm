@@ -705,7 +705,10 @@ class PathPlan(object):
             else:
                 self.move_forward_by(abs(a - x) - 6)
             self.robot.move_forward_steer_right()
-            self.move_forward_by(abs(b - y) - 3)
+            if abs(b - y) < 3:
+                self.move_backward_by(3 - abs(b - y))
+            else:
+                self.move_forward_by(abs(b - y) - 3)
             self.robot.move_forward_steer_left()
             self.move_backward_by(3)
             self.robot.move_forward_steer_left()
