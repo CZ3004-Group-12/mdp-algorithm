@@ -1,6 +1,8 @@
 import os
 import constants
 from pygame import time
+
+from communication.comms import Communication
 from map.grid import Grid
 from interface.panel import Panel
 from robot.robot import Robot
@@ -15,6 +17,8 @@ WINDOW_SIZE = [1020, 720]
 class Simulator:
 
     def __init__(self):
+        self.comms = None
+
         # Initialize pygame
         self.root = pygame
         self.root.init()
@@ -102,6 +106,8 @@ class Simulator:
                     self.reset_button_clicked()
                 if button_func == "CONNECT":
                     print("Connect button pressed.")
+                    # self.comms = Communication()
+                    # self.comms.connect()
                 elif button_func == "DISCONNECT":
                     print("Disconnect button pressed.")
 

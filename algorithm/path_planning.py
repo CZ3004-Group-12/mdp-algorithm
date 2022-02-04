@@ -19,6 +19,7 @@ class PathPlan(object):
         self.robot_x = self.robot.get_grid_pos()[0]
         self.robot_y = self.robot.get_grid_pos()[1]
         self.robot_direction = self.robot.get_angle_of_rotation()
+        self.obstacle_cell = None
         self.collection_of_movements = []
 
     def start_robot(self):
@@ -26,7 +27,7 @@ class PathPlan(object):
             self.target_x = target[0]
             self.target_y = target[1]
             self.target_direction = target[2]
-            obstacle_cell = target[3]
+            self.obstacle_cell = target[3]
 
             self.robot_x = self.robot.get_grid_pos()[0]
             self.robot_y = self.robot.get_grid_pos()[1]
@@ -785,4 +786,7 @@ class PathPlan(object):
             # time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
             # self.move_backward_by(1)
             # time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
+            print("~~ OBSTACLE: ", self.obstacle_cell.get_obstacle().get_obstacle_id())
+            print("~~ MOVEMENTS: ", self.get_collection_of_movements_string())
+            self.reset_collection_of_movements()
             pass
