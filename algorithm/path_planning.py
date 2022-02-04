@@ -775,6 +775,9 @@ class PathPlan(object):
     def reset_collection_of_movements(self):
         self.collection_of_movements = []
 
+    def get_collection_of_movements_string(self):
+        return ','.join([str(movement) for movement in self.collection_of_movements])
+
     def check_reached_target(self, target_a, target_b):
         x, y = self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1]
         if target_a == x and target_b == y:
