@@ -607,18 +607,47 @@ class PathPlan(object):
         self.move_forward_by(abs(b - y) + 3)
 
     def CR8(self, a, b, x, y):
-        if abs(x - a) <= 5:
-            self.move_forward_by(6 - abs(x - a))
-        self.turn_backward_left()
-        if abs(y - b) > 3:
-            a, b, x, y = self.preprocess_coords(a, b, x, y)
-            self.AR8(a, b, x, y)
-        elif abs(y - b) == 3:
-            a, b, x, y = self.preprocess_coords(a, b, x, y)
-            self.AR4(a, b, x, y)
+        if abs(b-y)==1:
+            if abs(a-x)<3:
+                self.move_forward_by(3 - abs(a - x))
+            else:
+                self.move_backward_by(abs(a-x)-3)
+            self.robot.move_backward_steer_left()
+            self.move_forward_by(2)
+        elif abs(b-y)<7:
+            if abs(a-x)<3:
+                self.move_backward_by(3 - abs(a-x))
+            else:
+                self.move_forward_by(abs(a-x) - 3)
+            self.turn_forward_left()
+            if abs(b-y)<3:
+                self.move_backward_by(3-abs(b-y))
+            else:
+                self.move_forward_by(abs(b - y) - 3)
+            self.turn_forward_left()
+            self.turn_forward_left()
         else:
-            a, b, x, y = self.preprocess_coords(a, b, x, y)
-            self.AR7(a, b, x, y)
+            self.move_backward_by(abs(a - x))
+            self.robot.move_forward_steer_left()
+            self.move_forward_by(abs(b - y) - 3)
+            self.robot.move_forward_steer_left()
+            self.move_backward_by(3)
+            self.robot.move_forward_steer_left()
+
+
+
+        # if abs(x - a) <= 5:
+        #     self.move_forward_by(6 - abs(x - a))
+        # self.turn_backward_left()
+        # if abs(y - b) > 3:
+        #     a, b, x, y = self.preprocess_coords(a, b, x, y)
+        #     self.AR8(a, b, x, y)
+        # elif abs(y - b) == 3:
+        #     a, b, x, y = self.preprocess_coords(a, b, x, y)
+        #     self.AR4(a, b, x, y)
+        # else:
+        #     a, b, x, y = self.preprocess_coords(a, b, x, y)
+        #     self.AR7(a, b, x, y)
 
     def CR9(self, a, b, x, y):
         self.move_forward_by(3)
