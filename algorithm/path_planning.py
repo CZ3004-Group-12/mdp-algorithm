@@ -562,6 +562,12 @@ class PathPlan(object):
 
     def CR5(self, a, b, x, y):
         # Backward Left
+        if abs(y-b)<2:
+            self.move_forward_by(abs(a-x)+3)
+            self.robot.move_backward_steer_left()
+            self.move_forward_by(abs(b-y)+1)
+            return
+
         self.robot.move_backward_steer_left()
         if abs(y - b) > 3:
             a, b, x, y = self.preprocess_coords(a, b, x, y)
