@@ -541,7 +541,7 @@ class PathPlan(object):
         self.AR5(a, b, x, y)
 
     def CR2(self, a, b, x, y):
-        self.move_forward_by(abs(b - y) + 3)
+        self.move_forward_by(abs(a-x) + 3)
         a, b, x, y = self.preprocess_coords(a, b, x, y)
         self.CR4(a, b, x, y)
         pass
