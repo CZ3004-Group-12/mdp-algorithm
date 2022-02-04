@@ -127,7 +127,7 @@ class PathPlan(object):
                 elif a < x and b == y:
                     print("BR2")
                     self.BR2(a, b, x, y)
-                elif abs(a - x) <= 2 and b > y:
+                elif a == x and b > y:
                     print("BR3")
                     self.BR3(a, b, x, y)
                 elif a > x and b == y:
@@ -136,10 +136,10 @@ class PathPlan(object):
                 elif a < x and b < y:
                     print("BR5")
                     self.BR5(a, b, x, y)
-                elif abs(a - x) > 2 and a < x and b > y:
+                elif a < x and b > y:
                     print("BR6")
                     self.BR6(a, b, x, y)
-                elif abs(a - x) > 2 and a > x and b > y:
+                elif a > x and b > y:
                     print("BR7")
                     self.BR7(a, b, x, y)
                 elif a > x and b < y:
@@ -418,9 +418,9 @@ class PathPlan(object):
 
     def BR1(self, a, b, x, y):
         if abs(b - y) <= 2:
-            self.move_forward_by(2)
+            self.move_forward_by(abs(b - y))
             a, b, x, y = self.preprocess_coords(a, b, x, y)
-            self.BR3(a, b, x, y)
+            self.BR9(a, b, x, y)
         else:
             if abs(b - y) < 10:
                 self.move_backward_by(10 - abs(b - y))
@@ -435,40 +435,41 @@ class PathPlan(object):
             self.move_forward_by(2)
 
     def BR2(self, a, b, x, y):
-        self.move_backward_by(3)
-        self.robot.move_forward_steer_right()
-        self.move_forward_by(abs(a - x))
-        self.robot.move_backward_steer_left()
-        self.move_forward_by(3)
+        if abs(a - x) <= 2:
+            self.robot.move_forward_steer_right()
+            self.move_backward_by(6 - abs(a - x))
+            self.robot.move_forward_steer_right()
+        else:
+            self.move_backward_by(3)
+            self.robot.move_forward_steer_right()
+            self.move_forward_by(abs(a - x))
+            self.robot.move_backward_steer_left()
+            self.move_forward_by(3)
 
     def BR3(self, a, b, x, y):
-        if abs(b - y) <= 2:
-            self.robot.move_forward_steer_right()
-            self.robot.move_backward_steer_left()
-            self.move_forward_by(6 + abs(b - y))
-        else:
-            self.move_backward_by(abs(b - y))
-            self.robot.move_forward_steer_right()
-            if abs(a) - abs(x) > 0:
-                self.move_forward_by(abs(a - x))
-            elif abs(a) - abs(x) < 0:
-                self.move_backward_by(abs(a - x))
-            self.robot.move_backward_steer_left()
-            self.move_forward_by(6)
+        self.move_backward_by(abs(b - y))
+        a, b, x, y = self.preprocess_coords(a, b, x, y)
+        self.BR9(a, b, x, y)
 
     def BR4(self, a, b, x, y):
-        self.move_backward_by(3)
-        self.robot.move_forward_steer_left()
-        self.move_forward_by(abs(a - x))
-        self.robot.move_backward_steer_right()
-        self.move_forward_by(3)
+        if abs(a - x) <= 2:
+            self.robot.move_forward_steer_left()
+            self.move_backward_by(6 - abs(a - x))
+            self.robot.move_forward_steer_left()
+        else:
+            self.move_backward_by(3)
+            self.robot.move_forward_steer_left()
+            self.move_forward_by(abs(a - x))
+            self.robot.move_backward_steer_right()
+            self.move_forward_by(3)
 
     def BR5(self, a, b, x, y):
         if abs(a - x) <= 2:
             if abs(b - y) <= 2:
+                self.move_forward_by(abs(b - y))
                 self.robot.move_forward_steer_right()
-                a, b, x, y = self.preprocess_coords(a, b, x, y)
-                self.CR8(a, b, x, y)
+                self.move_backward_by(6 - abs(a - x))
+                self.robot.move_forward_steer_right()
             else:
                 self.robot.move_backward_steer_right()
                 a, b, x, y = self.preprocess_coords(a, b, x, y)
@@ -486,27 +487,40 @@ class PathPlan(object):
 
     def BR6(self, a, b, x, y):
         self.move_backward_by(abs(b - y))
-        a, b, x, y = self.preprocess_coords(a, b, x, y)
-        self.BR2(a, b, x, y)
+        if abs(a - x) > 0:
+            self.robot.move_forward_steer_right()
+            self.move_forward_by(abs(a - x))
+            self.robot.move_backward_steer_left()
+            self.move_forward_by(6)
+        else:
+            a, b, x, y = self.preprocess_coords(a, b, x, y)
+            self.BR2(a, b, x, y)
 
     def BR7(self, a, b, x, y):
         self.move_backward_by(abs(b - y))
-        a, b, x, y = self.preprocess_coords(a, b, x, y)
-        self.BR4(a, b, x, y)
+        if abs(a) - abs(x) < 0:
+            self.robot.move_forward_steer_left()
+            self.move_forward_by(abs(a - x))
+            self.robot.move_backward_steer_right()
+            self.move_forward_by(6)
+        else:
+            a, b, x, y = self.preprocess_coords(a, b, x, y)
+            self.BR4(a, b, x, y)
 
     def BR8(self, a, b, x, y):
         if abs(a - x) <= 2:
             if abs(b - y) <= 2:
+                self.move_forward_by(abs(b - y))
                 self.robot.move_forward_steer_left()
-                a, b, x, y = self.preprocess_coords(a, b, x, y)
-                self.DR5(a, b, x, y)
+                self.move_backward_by(6 - abs(a - x))
+                self.robot.move_forward_steer_left()
             else:
                 self.robot.move_backward_steer_left()
                 a, b, x, y = self.preprocess_coords(a, b, x, y)
                 self.CR5(a, b, x, y)
 
         else:
-            if abs(b - y) - 3 >= 0:
+            if abs(b - y) >= 3:
                 self.move_forward_by(abs(b - y) - 3)
             else:
                 self.move_backward_by(3 - abs(b - y))
@@ -671,5 +685,6 @@ class PathPlan(object):
         if target_a == x and target_b == y:
             # Move car 2 steps backwards for next move
             # time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
-            self.move_backward_by(1)
+            #self.move_backward_by(1)
             # time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
+            pass

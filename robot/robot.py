@@ -86,8 +86,8 @@ class Robot(object):
         self.draw_car()
 
     def check_movement_complete(self, final_pixel_pos):
-        return abs(self.get_pixel_pos()[0] - final_pixel_pos[0]) > 3 or abs(
-            self.get_pixel_pos()[1] - final_pixel_pos[1]) > 3
+        return abs(self.get_pixel_pos()[0] - final_pixel_pos[0]) > 2 or abs(
+            self.get_pixel_pos()[1] - final_pixel_pos[1]) > 2
 
     # TODO: define possible movements (for turning motions picture steering wheel direction)
     # ALL MOTIONS take place in minimal unit.
@@ -135,6 +135,7 @@ class Robot(object):
             return False
 
     def move_backward(self):
+        print("MOVE BACKWARD FACING", self.angle)
         initial_pixel_pos = self.get_pixel_pos()
         # Set position to stop moving
         if self.angle == constants.NORTH:  # CAR FACING NORTH
