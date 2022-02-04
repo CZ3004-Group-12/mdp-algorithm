@@ -575,7 +575,7 @@ class PathPlan(object):
         if abs(y-b)<7:
             self.move_backward_by(7-abs(b-y))
         else:
-            self.move_forward_by(abs(b-y)-4)
+            self.move_forward_by(abs(b-y)-7)
         self.robot.move_forward_steer_right()
         self.move_forward_by(3)
         self.robot.move_backward_steer_left()
