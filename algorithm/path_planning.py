@@ -350,7 +350,7 @@ class PathPlan(object):
         return a, b, x, y
 
     def AR1(self, a, b, x, y):
-        if abs(b-y) <= 2:
+        if abs(b - y) <= 2:
             self.move_backward_by(abs(b - y))
             if a - x < 0:
                 a, b, x, y = self.preprocess_coords(a, b, x, y)
@@ -542,7 +542,7 @@ class PathPlan(object):
         self.AR5(a, b, x, y)
 
     def CR2(self, a, b, x, y):
-        self.move_forward_by(abs(a-x) + 3)
+        self.move_forward_by(abs(a - x) + 3)
         a, b, x, y = self.preprocess_coords(a, b, x, y)
         self.CR4(a, b, x, y)
         pass
@@ -559,24 +559,24 @@ class PathPlan(object):
             self.move_backward_by(abs(x - a) - 3)
         # Backward Left
         self.turn_backward_left()
-        self.move_forward_by(abs(b - y)+3)
+        self.move_forward_by(abs(b - y) + 3)
 
     def CR5(self, a, b, x, y):
         # Backward Left
-        if abs(y-b)<2:
-            self.move_forward_by(abs(a-x)+3)
+        if abs(y - b) < 2:
+            self.move_forward_by(abs(a - x) + 3)
             self.turn_backward_left()
-            self.move_forward_by(abs(b-y)+1)
+            self.move_forward_by(abs(b - y) + 1)
             return
-        if abs(a-x)>6:
-            self.move_forward_by(abs(a-x)-6)
+        if abs(a - x) > 6:
+            self.move_forward_by(abs(a - x) - 6)
         else:
-            self.move_backward_by(6-abs(a-x))
+            self.move_backward_by(6 - abs(a - x))
         self.turn_forward_left()
-        if abs(y-b)<7:
-            self.move_backward_by(7-abs(b-y))
+        if abs(y - b) < 7:
+            self.move_backward_by(7 - abs(b - y))
         else:
-            self.move_forward_by(abs(b-y)-7)
+            self.move_forward_by(abs(b - y) - 7)
         self.turn_forward_right()
         self.move_forward_by(3)
         self.turn_backward_left()
@@ -600,29 +600,29 @@ class PathPlan(object):
         self.CR7(a, b, x, y)
 
     def CR7(self, a, b, x, y):
-        if abs(x-a)<3:
-            self.move_forward_by(3-abs(x - a))
+        if abs(x - a) < 3:
+            self.move_forward_by(3 - abs(x - a))
         else:
             self.move_backward_by(abs(x - a) - 3)
         self.turn_backward_left()
         self.move_forward_by(abs(b - y) + 3)
 
     def CR8(self, a, b, x, y):
-        if abs(b-y)==1:
-            if abs(a-x)<3:
+        if abs(b - y) == 1:
+            if abs(a - x) < 3:
                 self.move_forward_by(3 - abs(a - x))
             else:
-                self.move_backward_by(abs(a-x)-3)
+                self.move_backward_by(abs(a - x) - 3)
             self.robot.move_backward_steer_left()
             self.move_forward_by(2)
-        elif abs(b-y)<7:
-            if abs(a-x)<3:
-                self.move_backward_by(3 - abs(a-x))
+        elif abs(b - y) < 7:
+            if abs(a - x) < 3:
+                self.move_backward_by(3 - abs(a - x))
             else:
-                self.move_forward_by(abs(a-x) - 3)
+                self.move_forward_by(abs(a - x) - 3)
             self.turn_forward_left()
-            if abs(b-y)<3:
-                self.move_backward_by(3-abs(b-y))
+            if abs(b - y) < 3:
+                self.move_backward_by(3 - abs(b - y))
             else:
                 self.move_forward_by(abs(b - y) - 3)
             self.turn_forward_left()
@@ -634,8 +634,6 @@ class PathPlan(object):
             self.robot.move_forward_steer_left()
             self.move_backward_by(3)
             self.robot.move_forward_steer_left()
-
-
 
         # if abs(x - a) <= 5:
         #     self.move_forward_by(6 - abs(x - a))
@@ -782,6 +780,6 @@ class PathPlan(object):
         if target_a == x and target_b == y:
             # Move car 2 steps backwards for next move
             # time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
-            #self.move_backward_by(1)
+            # self.move_backward_by(1)
             # time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
             pass
