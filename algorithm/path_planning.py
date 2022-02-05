@@ -673,6 +673,11 @@ class PathPlan(object):
         self.turn_forward_right()
 
     def CR1(self, a, b, x, y):
+        if abs(b - y) <= 2:
+            self.move_forward_by(3)
+            self.turn_backward_left()
+            self.move_forward_by(3 - abs(b - y))
+            return
         # Backward Left
         self.turn_backward_left()
         a, b, x, y = self.preprocess_coords(a, b, x, y)
