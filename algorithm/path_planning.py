@@ -759,9 +759,9 @@ class PathPlan(object):
             self.move_forward_by(2)
         elif abs(b - y) < 7:
             if abs(a - x) < 3:
-                self.move_backward_by(3 - abs(a - x))
+                self.move_forward_by(3 - abs(a - x))
             else:
-                self.move_forward_by(abs(a - x) - 3)
+                self.move_backward_by(abs(a - x) - 3)
             self.turn_forward_left()
             if abs(b - y) < 3:
                 self.move_backward_by(3 - abs(b - y))
