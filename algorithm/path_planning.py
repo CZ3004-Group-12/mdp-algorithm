@@ -1,7 +1,9 @@
+import logging
 from robot.robot import BorderException
 from robot.robot import ObstacleException
 from robot.robot import ObstacleTurnException
 import constants
+from constants import BUFFER
 
 MARGIN = 2
 
@@ -13,6 +15,7 @@ class PathPlan(object):
         self.grid = grid
         self.robot = robot
         self.fastest_route = fastest_route
+        self.target = None
         self.target_x = 0
         self.target_y = 0
         self.target_direction = 0
@@ -21,9 +24,28 @@ class PathPlan(object):
         self.robot_direction = self.robot.get_angle_of_rotation()
         self.obstacle_cell = None
         self.collection_of_movements = []
+        self.EXCEPTION_COUNT = 0
+        self.REPEATED_LAST_TARGET = 0
+        self.IS_EXCEPTION = False
 
     def start_robot(self):
-        for target in self.fastest_route[1:]:
+        # Remove robot starting position from fastest_route
+        self.fastest_route.pop(0)
+        while len(self.fastest_route) != 0:
+            target = self.fastest_route.pop(0)
+
+            if self.target == target:
+                self.REPEATED_LAST_TARGET += 1
+                if self.REPEATED_LAST_TARGET > 1:
+                    print("~~~ Obstacle may be impossible to reach. Will Give UP.")
+                    return
+                # Reset Exception Count
+                self.EXCEPTION_COUNT = 0
+            else:
+                # Reset Exception Count
+                self.EXCEPTION_COUNT = 0
+
+            self.target = target
             self.target_x = target[0]
             self.target_y = target[1]
             self.target_direction = target[2]
@@ -93,31 +115,40 @@ class PathPlan(object):
             print(robot_direction, target_direction)
             initial_a = a
             initial_b = b
+            path_to_run = None
             a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
             if robot_direction == target_direction:
                 if abs(a - x) <= 2 and b < y:
                     print("AR1")
+                    path_to_run = "AR1"
                     self.AR1(a, b, x, y)
                 elif a < x and b == y:
                     print("AR2")
+                    path_to_run = "AR2"
                     self.AR2(a, b, x, y)
                 elif a == x and b > y:
                     print("AR3")
+                    path_to_run = "AR3"
                     self.AR3(a, b, x, y)
                 elif a > x and b == y:
                     print("AR4")
+                    path_to_run = "AR4"
                     self.AR4(a, b, x, y)
                 elif abs(a - x) > 2 and a < x and b < y:
                     print("AR5")
+                    path_to_run = "AR5"
                     self.AR5(a, b, x, y)
                 elif a < x and b > y:
                     print("AR6")
+                    path_to_run = "AR6"
                     self.AR6(a, b, x, y)
                 elif a > x and b > y:
                     print("AR7")
+                    path_to_run = "AR7"
                     self.AR7(a, b, x, y)
                 elif abs(a - x) > 2 and a > x and b < y:
                     print("AR8")
+                    path_to_run = "AR8"
                     self.AR8(a, b, x, y)
                 else:
                     print("no case")
@@ -125,30 +156,39 @@ class PathPlan(object):
             elif abs(robot_direction - target_direction) == 180:
                 if a == x and b < y:
                     print("BR1")
+                    path_to_run = "BR1"
                     self.BR1(a, b, x, y)
                 elif a < x and b == y:
                     print("BR2")
+                    path_to_run = "BR2"
                     self.BR2(a, b, x, y)
                 elif a == x and b > y:
                     print("BR3")
+                    path_to_run = "BR3"
                     self.BR3(a, b, x, y)
                 elif a > x and b == y:
                     print("BR4")
+                    path_to_run = "BR4"
                     self.BR4(a, b, x, y)
                 elif a < x and b < y:
                     print("BR5")
+                    path_to_run = "BR5"
                     self.BR5(a, b, x, y)
                 elif a < x and b > y:
                     print("BR6")
+                    path_to_run = "BR6"
                     self.BR6(a, b, x, y)
                 elif a > x and b > y:
                     print("BR7")
+                    path_to_run = "BR7"
                     self.BR7(a, b, x, y)
                 elif a > x and b < y:
                     print("BR8")
+                    path_to_run = "BR8"
                     self.BR8(a, b, x, y)
                 elif a == x and b == y:
                     print("BR9")
+                    path_to_run = "BR9"
                     self.BR9(a, b, x, y)
                 else:
                     print("no case")
@@ -157,30 +197,39 @@ class PathPlan(object):
                     (target_direction == constants.SOUTH and robot_direction == constants.EAST):
                 if a == x and b < y:
                     print("CR1")
+                    path_to_run = "CR1"
                     self.CR1(a, b, x, y)
                 elif a < x and b == y:
                     self.CR2(a, b, x, y)
                     print("CR2")
+                    path_to_run = "CR2"
                 elif a == x and b > y:
                     print("CR3")
+                    path_to_run = "CR3"
                     self.CR3(a, b, x, y)
                 elif a > x and b == y:
                     print("CR4")
+                    path_to_run = "CR4"
                     self.CR4(a, b, x, y)
                 elif a < x and b < y:
                     print("CR5")
+                    path_to_run = "CR5"
                     self.CR5(a, b, x, y)
                 elif a < x and b > y:
                     print("CR6")
+                    path_to_run = "CR6"
                     self.CR6(a, b, x, y)
                 elif a > x and b > y:
                     print("CR7")
+                    path_to_run = "CR7"
                     self.CR7(a, b, x, y)
                 elif a > x and b < y:
                     print("CR8")
+                    path_to_run = "CR8"
                     self.CR8(a, b, x, y)
                 elif a == x and b == y:
                     print("CR9")
+                    path_to_run = "CR9"
                     self.CR9(a, b, x, y)
                 else:
                     print("no case")
@@ -189,30 +238,39 @@ class PathPlan(object):
                     (target_direction == constants.EAST and robot_direction == constants.SOUTH):
                 if a == x and b < y:
                     print("DR1")
+                    path_to_run = "DR1"
                     self.DR1(a, b, x, y)
                 elif a < x and b == y:
                     print("DR2")
+                    path_to_run = "DR2"
                     self.DR2(a, b, x, y)
                 elif a == x and b > y:
                     print("DR3")
+                    path_to_run = "DR3"
                     self.DR3(a, b, x, y)
                 elif a > x and b == y:
                     print("DR4")
+                    path_to_run = "DR4"
                     self.DR4(a, b, x, y)
                 elif a < x and b < y:
                     print("DR5")
+                    path_to_run = "DR5"
                     self.DR5(a, b, x, y)
                 elif a < x and b > y:
                     print("DR6")
+                    path_to_run = "DR6"
                     self.DR6(a, b, x, y)
                 elif a > x and b > y:
                     print("DR7")
+                    path_to_run = "DR7"
                     self.DR7(a, b, x, y)
                 elif a > x and b < y:
                     print("DR8")
+                    path_to_run = "DR8"
                     self.DR8(a, b, x, y)
                 elif a == x and b == y:
                     print("DR9")
+                    path_to_run = "DR9"
                     self.DR9(a, b, x, y)
                 else:
                     print("no case")
@@ -220,42 +278,110 @@ class PathPlan(object):
             else:
                 return
 
-            self.check_reached_target(initial_a, initial_b)
+            if not self.IS_EXCEPTION:
+                if self.check_reached_target(initial_a, initial_b):
+                    return
+                else:
+                    print("!! Target position not reached! Check", path_to_run)
+                    # TODO: Or can throw an exception in such cases to recall path planning from robots current position
+                    # print("Replanning trip...")
+                    # self.replan_trip()
+
         except BorderException:
-            print("border--")
+            print("BorderException--")
+            if self.check_exceed_exception_count():
+                return
+
             # TODO: Write how to handle border collision
 
             self.replan_trip()
 
         except ObstacleException:
-            print("obstacle--")
+            print("ObstacleException--")
+            print(self.EXCEPTION_COUNT)
+            if self.check_exceed_exception_count():
+                return
+
             # TODO: Write how to handle obstacle collision
-            if self.check_3by3_area(self.get_grid_pos_straight("FORWARD", 3)):
-                if self.check_3by3_area(self.get_grid_pos_turn("FORWARD_L")):
-                    self.turn_forward_left()
-                elif self.check_3by3_area(self.get_grid_pos_turn("FORWARD_R")):
-                    self.turn_forward_right()
-                elif self.check_3by3_area(self.get_grid_pos_straight("BACKWARD", 1)):
-                    self.move_forward_by(1)
-                else:
-                    print("Nothing done for obstacle avoidance")
-            else:
-                if self.check_3by3_area(self.get_grid_pos_straight("BACKWARD", 3)):
-                    self.move_backward_by(3)
-                elif self.check_3by3_area(self.get_grid_pos_straight("BACKWARD", 2)):
-                    self.move_backward_by(2)
-                elif self.check_3by3_area(self.get_grid_pos_straight("BACKWARD", 1)):
-                    self.move_backward_by(1)
-                else:
-                    print("Nothing done for obstacle avoidance")
+            # self.explore_empty_space()
+
+            a, b, x, y = self.target_x, self.target_y, self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1]
+            robot_direction, target_direction = self.robot.get_angle_of_rotation(), self.target_direction
+
+            # Try to go back to starting box
+            # self.IS_EXCEPTION = True
+            # self.plan_trip_by_robot_target_directions(1, 1, x, y, robot_direction, robot_direction)
+            # self.IS_EXCEPTION = False
+            # self.replan_trip()
+
+            # Try to get to other sides of obstacle
+            if target_direction == constants.NORTH:
+                self.IS_EXCEPTION = True
+                self.plan_trip_by_robot_target_directions(a, b + 8, x, y, robot_direction, constants.EAST)
+                self.IS_EXCEPTION = False
+                self.replan_trip()
+            elif target_direction == constants.SOUTH:
+                self.IS_EXCEPTION = True
+                self.plan_trip_by_robot_target_directions(a, b - 8, x, y, robot_direction, constants.WEST)
+                self.IS_EXCEPTION = False
+                self.replan_trip()
+            elif target_direction == constants.EAST:
+                self.IS_EXCEPTION = True
+                self.plan_trip_by_robot_target_directions(a + 8, b, x, y, robot_direction, constants.SOUTH)
+                self.IS_EXCEPTION = False
+                self.replan_trip()
+            elif target_direction == constants.WEST:
+                self.IS_EXCEPTION = True
+                self.plan_trip_by_robot_target_directions(a - 8, b, x, y, robot_direction, constants.NORTH)
+                self.IS_EXCEPTION = False
+                self.replan_trip()
 
             self.replan_trip()
 
         except ObstacleTurnException:
-            print("obstacle-turn--")
+            print("ObstacleTurnException--")
+            print(self.EXCEPTION_COUNT)
+            if self.check_exceed_exception_count():
+                return
+
             # TODO: Write how to handle "unable to turn due to obstacle" collisions
 
+
             self.replan_trip()
+
+
+    def explore_empty_space(self):
+        # Check if can turn forward right/left
+        if self.check_3by3_area(self.get_grid_pos_straight("FORWARD", BUFFER)):
+            if self.check_3by3_area(self.get_grid_pos_turn("FORWARD_L")):
+                self.turn_forward_left()
+                self.move_backward_by(3)
+            elif self.check_3by3_area(self.get_grid_pos_turn("FORWARD_R")):
+                self.turn_forward_right()
+                self.move_backward_by(3)
+        # Check if can turn backward right/left
+        # elif self.check_3by3_area(self.get_grid_pos_straight("BACKWARD", BUFFER)):
+        #     if self.check_3by3_area(self.get_grid_pos_turn("BACKWARD_L")):
+        #         self.turn_backward_left()
+        #     elif self.check_3by3_area(self.get_grid_pos_turn("BACKWARD_R")):
+        #         self.turn_backward_right()
+        # Check if can move forwards by 1
+        elif self.check_3by3_area(self.get_grid_pos_straight("FORWARD", 1)):
+            self.move_forward_by(1)
+        elif self.check_3by3_area(self.get_grid_pos_straight("BACKWARD", 1)):
+            self.move_backward_by(1)
+        else:
+            print("Nothing done for obstacle avoidance")
+
+    def check_exceed_exception_count(self):
+        if self.EXCEPTION_COUNT > 5:
+            logging.info("!! Exception Loop Detected! Giving up on current target obstacle...")
+            self.fastest_route.append(self.target)
+            logging.info("Astar route: " + str(self.fastest_route))
+            return True
+
+        self.EXCEPTION_COUNT += 1
+        return False
 
     # c is how many grids in front you want to check (use 3 for turns)
     def get_grid_pos_straight(self, movement, c):
@@ -325,6 +451,13 @@ class PathPlan(object):
 
     def check_3by3_area(self, grid_pos):
         pos = self.grid.grid_to_pixel(grid_pos)
+
+        # First check if exceeding borders
+        if not ((constants.min_pixel_pos_x + self.robot.robot_w < pos[0] < constants.max_pixel_pos_x - self.robot.robot_w) \
+                and (constants.min_pixel_pos_y + self.robot.robot_h < pos[1] < constants.max_pixel_pos_y - self.robot.robot_h)):
+            print("exceed border")
+            return False
+
         for obstacle_id in self.grid.get_obstacle_cells():
             obstacle_grid_coord = obstacle_id.split("-")
             obstacle_grid_x, obstacle_grid_y = int(obstacle_grid_coord[0]), int(obstacle_grid_coord[1])
@@ -334,14 +467,17 @@ class PathPlan(object):
             obstacle_pixel_x, obstacle_pixel_y = self.grid.grid_to_pixel(obstacle_grid_coord)[0], \
                                                  self.grid.grid_to_pixel(obstacle_grid_coord)[1]
             border_pixel_length = (self.grid.block_size + MARGIN) * 3  # about 3 squares border
+
+            # Check if overlapping with obstacles
             if (obstacle_pixel_x - border_pixel_length < pos[0] < obstacle_pixel_x + border_pixel_length) \
                     and (obstacle_pixel_y - border_pixel_length < pos[1] < obstacle_pixel_y + border_pixel_length):
                 return False
         return True
 
     def replan_trip(self):
+        print("Replanning trip...")
         a, b, x, y = self.target_x, self.target_y, self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1]
-        robot_direction, target_direction = self.target_direction, self.robot.get_angle_of_rotation()
+        robot_direction, target_direction = self.robot.get_angle_of_rotation(), self.target_direction
         self.plan_trip_by_robot_target_directions(a, b, x, y, robot_direction, target_direction)
 
     def preprocess_coords(self, a, b, x, y):
@@ -779,14 +915,125 @@ class PathPlan(object):
     def get_collection_of_movements_string(self):
         return ','.join([str(movement) for movement in self.collection_of_movements])
 
+    def get_movements_string(self):
+        movement_list = ["MOVEMENTS", self.obstacle_cell.get_obstacle().get_obstacle_id(), self.get_collection_of_movements_string()]
+        return '/'.join([str(elem) for elem in movement_list])
+
+    def get_current_obstacle_id(self):
+        obstacle_id_list = ["OBSTACLE", self.obstacle_cell.get_obstacle().get_obstacle_id()]
+        return '/'.join([str(elem) for elem in obstacle_id_list])
+
+    def get_robot_pos_and_dir(self):
+        robot_list = ["ROBOT", self.robot.grid_x, self.robot.grid_y, self.robot.angle]
+        return '/'.join([str(elem) for elem in robot_list])
+
     def check_reached_target(self, target_a, target_b):
         x, y = self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1]
         if target_a == x and target_b == y:
+            print(self.get_movements_string())
+            print(self.get_current_obstacle_id())
+            print(self.get_robot_pos_and_dir())
+            self.reset_collection_of_movements()
+
             # Move car 2 steps backwards for next move
             # time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
-            # self.move_backward_by(1)
+            self.move_backward_by(2)
             # time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
-            print("~~ OBSTACLE: ", self.obstacle_cell.get_obstacle().get_obstacle_id())
-            print("~~ MOVEMENTS: ", self.get_collection_of_movements_string())
-            self.reset_collection_of_movements()
-            pass
+
+            return True
+        print(self.get_movements_string())
+        print(self.get_current_obstacle_id())
+        print(self.get_robot_pos_and_dir())
+        return False
+
+    def check_orientation_wrt_target(self, a, b, x, y, robot_direction, target_direction):
+        area = None
+        a, b, x, y = self.transpose_orientation(a, b, target_direction, x, y)
+        if robot_direction == target_direction:
+            if abs(a - x) <= 2 and b < y:
+                area = "AR1"
+            elif a < x and b == y:
+                area = "AR2"
+            elif a == x and b > y:
+                area = "AR3"
+            elif a > x and b == y:
+                area = "AR4"
+            elif abs(a - x) > 2 and a < x and b < y:
+                area = "AR5"
+            elif a < x and b > y:
+                area = "AR6"
+            elif a > x and b > y:
+                area = "AR7"
+            elif abs(a - x) > 2 and a > x and b < y:
+                area = "AR8"
+            else:
+                area = "AR0"
+
+        elif abs(robot_direction - target_direction) == 180:
+            if a == x and b < y:
+                area = "BR1"
+            elif a < x and b == y:
+                area = "BR2"
+            elif a == x and b > y:
+                area = "BR3"
+            elif a > x and b == y:
+                area = "BR4"
+            elif a < x and b < y:
+                area = "BR5"
+            elif a < x and b > y:
+                area = "BR6"
+            elif a > x and b > y:
+                area = "BR7"
+            elif a > x and b < y:
+                area = "BR8"
+            elif a == x and b == y:
+                area = "BR9"
+            else:
+                area = "BR0"
+
+        elif (robot_direction - target_direction == 90) or \
+                (target_direction == constants.SOUTH and robot_direction == constants.EAST):
+            if a == x and b < y:
+                area = "CR1"
+            elif a < x and b == y:
+                area = "CR2"
+            elif a == x and b > y:
+                area = "CR3"
+            elif a > x and b == y:
+                area = "CR4"
+            elif a < x and b < y:
+                area = "CR5"
+            elif a < x and b > y:
+                area = "CR6"
+            elif a > x and b > y:
+                area = "CR7"
+            elif a > x and b < y:
+                area = "CR8"
+            elif a == x and b == y:
+                area = "CR9"
+            else:
+                area = "CR0"
+        elif (robot_direction - target_direction == -90) or \
+                (target_direction == constants.EAST and robot_direction == constants.SOUTH):
+            if a == x and b < y:
+                area = "DR1"
+            elif a < x and b == y:
+                area = "DR2"
+            elif a == x and b > y:
+                area = "DR3"
+            elif a > x and b == y:
+                area = "DR4"
+            elif a < x and b < y:
+                area = "DR5"
+            elif a < x and b > y:
+                area = "DR6"
+            elif a > x and b > y:
+                area = "DR7"
+            elif a > x and b < y:
+                area = "DR8"
+            elif a == x and b == y:
+                area = "DR9"
+            else:
+                area = "DR0"
+
+        return area

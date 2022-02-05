@@ -3,12 +3,13 @@ from math import degrees
 from pygame.math import Vector2
 import constants
 import pygame
+from constants import BUFFER
 
 # This sets the margin between each Cell
 MARGIN = 2
 ONE_CELL = 20 + MARGIN
 THREE_CELL = 3 * ONE_CELL
-dt = 0.4
+dt = 1
 
 
 # dt = round(self.clock.get_time() / 1000, 2)
@@ -99,7 +100,7 @@ class Robot(object):
     # 4. backward right/anticlockwise pi/2 turn
     # 5. backward left/clockwise pi/2 turn
     def move_forward(self):
-        print("MOVE FORWARD FACING", self.angle)
+        # print("MOVE FORWARD FACING", self.angle)
         initial_pixel_pos = self.get_pixel_pos()
         # Set position to stop moving
         if self.angle == constants.NORTH:  # CAR FACING NORTH
@@ -135,7 +136,7 @@ class Robot(object):
             return False
 
     def move_backward(self):
-        print("MOVE BACKWARD FACING", self.angle)
+        # print("MOVE BACKWARD FACING", self.angle)
         initial_pixel_pos = self.get_pixel_pos()
         # Set position to stop moving
         if self.angle == constants.NORTH:  # CAR FACING NORTH
@@ -170,7 +171,7 @@ class Robot(object):
             return False
 
     def move_forward_steer_right(self):
-        print("STEERING RIGHT FORWARD FACING", self.angle)
+        # print("STEERING RIGHT FORWARD FACING", self.angle)
         # Pause to simulate time taken for wheels to full rotate
         # time.sleep(constants.STEERING_TIME_DELAY)
 
@@ -222,7 +223,7 @@ class Robot(object):
             return False
 
     def move_forward_steer_left(self):
-        print("STEERING LEFT FORWARD FACING", self.angle)
+        # print("STEERING LEFT FORWARD FACING", self.angle)
         # Pause to simulate time taken for wheels to full rotate
         # time.sleep(constants.STEERING_TIME_DELAY)
 
@@ -274,7 +275,7 @@ class Robot(object):
             return False
 
     def move_backward_steer_right(self):
-        print("STEERING RIGHT BACKWARD FACING", self.angle)
+        # print("STEERING RIGHT BACKWARD FACING", self.angle)
         # Pause to simulate time taken for wheels to full rotate
         # time.sleep(constants.STEERING_TIME_DELAY)
 
@@ -326,7 +327,7 @@ class Robot(object):
             return False
 
     def move_backward_steer_left(self):
-        print("STEERING LEFT BACKWARD FACING", self.angle)
+        # print("STEERING LEFT BACKWARD FACING", self.angle)
 
         initial_pixel_pos = self.get_pixel_pos()
         initial_angle = self.angle
@@ -471,39 +472,31 @@ class Robot(object):
         if initial_angle == constants.NORTH:
             if turn == "FORWARD_R" or turn == "FORWARD_L":
                 # + 3y
-                grid_x, grid_y = grid_x, grid_y + 3
-                pass
+                grid_x, grid_y = grid_x, grid_y + BUFFER
             elif turn == "BACKWARD_R" or turn == "BACKWARD_L":
                 # - 3y
-                grid_x, grid_y = grid_x, grid_y - 3
-                pass
+                grid_x, grid_y = grid_x, grid_y - BUFFER
         elif initial_angle == constants.SOUTH:
             if turn == "FORWARD_R" or turn == "FORWARD_L":
                 # - 3y
-                grid_x, grid_y = grid_x, grid_y - 3
-                pass
+                grid_x, grid_y = grid_x, grid_y - BUFFER
             elif turn == "BACKWARD_R" or turn == "BACKWARD_L":
                 # + 3y
-                grid_x, grid_y = grid_x, grid_y + 3
-                pass
+                grid_x, grid_y = grid_x, grid_y + BUFFER
         elif initial_angle == constants.EAST:
             if turn == "FORWARD_R" or turn == "FORWARD_L":
                 # + 3x
-                grid_x, grid_y = grid_x + 3, grid_y
-                pass
+                grid_x, grid_y = grid_x + BUFFER, grid_y
             elif turn == "BACKWARD_R" or turn == "BACKWARD_L":
                 # - 3x
-                grid_x, grid_y = grid_x - 3, grid_y
-                pass
+                grid_x, grid_y = grid_x - BUFFER, grid_y
         elif initial_angle == constants.WEST:
             if turn == "FORWARD_R" or turn == "FORWARD_L":
                 # - 3x
-                grid_x, grid_y = grid_x - 3, grid_y
-                pass
+                grid_x, grid_y = grid_x - BUFFER, grid_y
             elif turn == "BACKWARD_R" or turn == "BACKWARD_L":
                 # + 3x
-                grid_x, grid_y = grid_x + 3, grid_y
-                pass
+                grid_x, grid_y = grid_x + BUFFER, grid_y
 
         for obstacle_id in self.grid.get_obstacle_cells():
             obstacle_grid_coord = obstacle_id.split("-")
@@ -534,9 +527,6 @@ class Robot(object):
         if self.check_exclude_obstacles_straight(final_pixel_pos):
             return self.check_turning_radius(turn)
         return False
-
-    # TODO: (slightly later) PATH PLANNING: define sets of robot movements according to destination
-    #  image facing direction and robot facing direction (refer to lecture vid for the permutations)
 
     def reset(self):
         self.angle = constants.ROBOT_STARTING_ANGLE

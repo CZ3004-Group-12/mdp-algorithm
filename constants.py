@@ -22,6 +22,7 @@ ROBOT_H = 30
 ROBOT_STARTING_X = 1
 ROBOT_STARTING_Y = 1
 ROBOT_STARTING_ANGLE = NORTH
+BUFFER = 3  # This is the front/back buffer of grids for turning obstacle detection
 
 # Grid
 # if (120 < pos[0] < 560) and (120 < pos[1] < 560): to define area within grid
