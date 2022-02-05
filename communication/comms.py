@@ -1,69 +1,82 @@
-import queue
+"""
+Testing Algorithm Socket Only - Not used in production.
+"""
 import socket
-import threading
 
-# Encoding / Decoding Format
-FORMAT = "utf-8"
+# from misc.config import FORMAT, ALGO_SOCKET_BUFFER_SIZE, WIFI_IP, PORT
+
+# Wifi IP: RPI's ip address -> 192.168.12.12
+# Port: 5050
+
+FORMAT = "UTF-8"
 ALGO_SOCKET_BUFFER_SIZE = 1024
+WIFI_IP = "192.168.68.110"
+PORT = 5050
 
 
-class Communication:
-    def __init__(self):
-        self.ip_address = "192.168.2.1"
-        self.port = 5050
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+class AlgoClient:
+
+    def __init__(self, server_ip=WIFI_IP, server_port=PORT) -> None:
+        print("[Algo Client] Initilising Algo Client.")
         self.client_socket = None
-        self.addr = None
-        self.message = "Connected"
-        # self.s.connect((self.ip_address, self.port))
-        self.message_sender = threading.Thread(target=self.message_sender_thread)
-        self.message_receiver = threading.Thread(target=self.message_receiver_thread)
-        # self.printer = threading.Thread(target=self.print_messages)
-        print("[RPI] Receiver Thread started")
-        self.message_receiver.start()
-        print("[RPI] Sender Thread started")
-        self.message_sender.start()
+        self.server_address = (server_ip, server_port)
+        print("[Algo Client] Client has been initilised.")
 
-    def connect(self):
-        # try:
-        self.s.bind((self.ip_address, self.port))
-        self.s.listen(10)
-        self.client_socket, self.addr = self.s.accept()
-        print(self.message)
-        # except Exception as e:
-        #     print(e)
-
-    def message_sender_thread(self) -> None:
-        # We want to encode into bytes.
+    def connect(self) -> bool:
         while True:
             try:
-                msg = input("[RPI] Message to server: ")
-                message = msg.encode(FORMAT)
-                # Pad to Socket buffer size
-                # message += (ALGO_SOCKET_BUFFER_SIZE - len(message)) * b' '
-                self.s.send(message)
-                print(f"[RPI] Message Sent: {msg}")
-            except Exception as e:
-                print(e)
+                # Connect to RPI via TCP
+                self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.client_socket.connect((WIFI_IP, PORT))
+                return True
+            except Exception as error:
+                print(f'[Algo] Failed to connect to Algorithm Server at {self.server_address}')
+                print(f"[Error Message]: {error}")
+                return False
 
-    def message_receiver_thread(self) -> None:
-        while True:
-            try:
-                message = self.s.recv(ALGO_SOCKET_BUFFER_SIZE).decode(FORMAT)
-                print(message)
-            except Exception as e:
-                print(e)
+    def disconnect(self) -> bool:
+        try:
+            if self.client_socket is not None:
+                self.client_socket.close()
+                self.client_socket = None
+        except Exception as error:
+            print(f'[Algo] Failed to disconnect from Algorithm Server at {self.server_address}')
+            print(f"[Error Message]: {error}")
+            return False
+        return True
 
-    def print_messages(self) -> None:
-        while True:
-            try:
-                # msg = self.incoming_message_queue.get_nowait()
-                print("msg")
-            except queue.Empty:
-                pass
+    def recv(self) -> str:
+        try:
+            # Decode : Converting from Byte to UTF-8 format.
+            message = self.client_socket.recv(ALGO_SOCKET_BUFFER_SIZE).strip().decode(FORMAT)
+            if len(message) > 0:
+                print(f'[Algo] Received Message from Algo Server: {message}')
+                return message
+            return None
+        except Exception as error:
+            print("[Algo] Failed to receive message from Algo Server.")
+            print(f"[Error Message]: {error}")
+            raise error
+
+    def send(self, message) -> str:
+        try:
+            print(f'[Algo] Message to Algo Server: {message}')
+            self.client_socket.send(message.encode(FORMAT))
+
+        except Exception as error:
+            print("[Algo] Failed to send to Algo Server.")
+            print(f"[Error Message]: {error}")
+            raise error
 
 
 # Standalone testing.
 if __name__ == '__main__':
-    comms = Communication()
-    comms.connect()
+    client = AlgoClient()
+    client.connect()
+
+    while True:
+        message = input("[Client] Send Message to server: ")
+        client.send(message)
+        recieved = client.recv()
+        if recieved is not None:
+            print(f"[Server] Received message from client: {recieved}")

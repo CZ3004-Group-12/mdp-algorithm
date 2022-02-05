@@ -1,8 +1,7 @@
 import os
 import constants
-from pygame import time
 
-from communication.comms import Communication
+from communication.comms import AlgoClient
 from map.grid import Grid
 from interface.panel import Panel
 from robot.robot import Robot
@@ -106,10 +105,12 @@ class Simulator:
                     self.reset_button_clicked()
                 if button_func == "CONNECT":
                     print("Connect button pressed.")
-                    # self.comms = Communication()
-                    # self.comms.connect()
+                    self.comms = AlgoClient()
+                    self.comms.connect()
                 elif button_func == "DISCONNECT":
                     print("Disconnect button pressed.")
+                    self.comms.disconnect()
+                    self.comms = None
 
                 # for testing purposes
                 elif button_func == "FORWARD":
