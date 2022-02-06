@@ -90,13 +90,13 @@ class Simulator:
 
     def check_button_clicked(self, pos):
         # Check if start button was pressed first:
-        start_button = self.panel.buttons[0]
+        start_button = self.panel.buttons[-1]
         x, y, l, h = start_button.get_xy_and_lh()
         if (x < pos[0] < (l + x)) and (y < pos[1] < (h + y)):
             self.start_button_clicked()
             return
 
-        for button in self.panel.buttons[1:]:
+        for button in self.panel.buttons[0:-1]:
             x, y, l, h = button.get_xy_and_lh()
             if (x < pos[0] < (l + x)) and (y < pos[1] < (h + y)):
                 button_func = self.panel.get_button_clicked(button)
@@ -139,7 +139,7 @@ class Simulator:
         logging.info("Astar route: " + str(fastest_route))
 
         # Path finding
-        path_planner = PathPlan(self.grid, self.car, fastest_route)
+        path_planner = PathPlan(self, self.grid, self.car, fastest_route)
         path_planner.start_robot()
 
     def reset_button_clicked(self):

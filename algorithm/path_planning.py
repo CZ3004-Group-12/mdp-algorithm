@@ -13,8 +13,8 @@ MARGIN = 2
 
 class PathPlan(object):
 
-    def __init__(self, grid, robot, fastest_route):
-
+    def __init__(self, simulator, grid, robot, fastest_route):
+        self.simulator = simulator
         self.grid = grid
         self.robot = robot
         self.fastest_route = fastest_route
@@ -1241,6 +1241,10 @@ class PathPlan(object):
             print(self.get_movements_string())
             print(self.get_current_obstacle_id())
             print(self.get_robot_pos_and_dir())
+
+            # Send to RPI
+            self.simulator.comms.send(self.get_movements_string())
+
             self.reset_collection_of_movements()
 
             # Move car 2 steps backwards for next move
@@ -1393,7 +1397,6 @@ class PathPlan(object):
             # return False
 
         except CheckingException:
-
             # Reset robot position
             self.robot.correct_coords_and_angle(initial_dir, self.grid.grid_to_pixel((initial_x, initial_y)))
 
