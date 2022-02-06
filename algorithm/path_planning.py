@@ -29,6 +29,7 @@ class PathPlan(object):
         self.collection_of_movements = []
         self.EXCEPTION_COUNT = 0
         self.REPEATED_LAST_TARGET = 0
+        self.IS_ON_PATH = False
 
     def start_robot(self):
         # Remove robot starting position from fastest_route
@@ -62,43 +63,63 @@ class PathPlan(object):
             self.robot_y = self.robot.get_grid_pos()[1]
             self.robot_direction = self.robot.get_angle_of_rotation()
 
-            # Target Coordinates: (a, b); Robot Coordinates: (x, y)
-            # self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot_x, self.robot_y,
-            #                                           self.robot_direction, self.target_direction)
+            # if no obstacle exceptions, can use hardcoded shortest path
+            if self.check_movement_possible(self.target_x, self.target_y, self.robot_x, self.robot_y,
+                                            self.robot_direction, self.target_direction):
+                # Target Coordinates: (a, b); Robot Coordinates: (x, y)
+                self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot_x, self.robot_y,
+                                                          self.robot_direction, self.target_direction)
 
-            # x-coord = column; y-coord = 19-row
-            start = [19 - self.robot_y, self.robot_x, self.robot_direction]
-            end = [19 - self.target_y,
-                   self.target_x,
-                   self.target_direction]  # ending position
-            cost = 10  # cost per movement
-            maze = self.grid.cells_virtual
-            draw_path, path = search(maze, cost, start, end)
-            for r in range(20):
-                for c in range(20):
-                    if draw_path[r][c] >= 5:
-                        self.grid.cells[r][c].set_path_status(draw_path[r][c])
-            # Colour rough route gray
-            self.robot.redraw_car()
+            # else, plan a path using astar search on virtual grid
+            else:
+                # x-coord = column; y-coord = 19-row
+                start = [19 - self.robot.grid_y, self.robot.grid_x, self.robot.angle]
+                end = [19 - self.target_y,
+                       self.target_x,
+                       self.target_direction]  # ending position
+                cost = 10  # cost per movement
+                maze = self.grid.cells_virtual
+                draw_path, path = search(maze, cost, start, end)
+                for r in range(20):
+                    for c in range(20):
+                        if draw_path[r][c] >= 5:
+                            self.grid.cells[r][c].set_path_status(draw_path[r][c])
+                # Colour rough route gray
+                self.robot.redraw_car()
 
-            # Pre-process path
-            # path = self.preprocess_path(path)
-            # print(path)
-            #
-            # # Now feed the path (grid by grid) into the plan_trip function
-            # constants.IS_ON_PATH = True
-            # for step in path[1:]:
-            #     self.plan_trip_by_robot_target_directions(step[0], step[1], self.robot.grid_x, self.robot.grid_y,
-            #                                               self.robot.angle, step[2])
-            # constants.IS_ON_PATH = False
-            # Last step is to rotate on the spot
-            self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot.grid_x,
-                                                      self.robot.grid_y,
-                                                      self.robot.angle, self.target_direction)
+                movements = self.translate_path_to_movements(path)
+                self.IS_ON_PATH = True
+                for move in movements:
+                    self.do_move(move)
+                self.IS_ON_PATH = False
+
+                # Last step is to rotate on the spot
+                print("LAST STEP")
+                self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot.grid_x,
+                                                          self.robot.grid_y,
+                                                          self.robot.angle, self.target_direction)
+
+                # Pre-process path
+                # path = self.preprocess_path(path)
+                # print(path)
+
+                # # Now feed the path (grid by grid) into the plan_trip function
+                # self.IS_ON_PATH = True
+                # for step in path:
+                #     self.plan_trip_by_robot_target_directions(step[0], step[1], self.robot.grid_x, self.robot.grid_y,
+                #                                               self.robot.angle, step[2])
+                # self.IS_ON_PATH = False
+                # # Last step is to rotate on the spot
+                # print("LAST STEP")
+                # self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot.grid_x, self.robot.grid_y,
+                #                                           self.robot.angle, self.target_direction)
 
     def preprocess_path(self, path):
         index = 1
+        no_inserted = 0
         curr_dir = path[0][2]
+        no_of_steps = len(path)
+        prev_step = path[0]
         for step in path[1:]:
             # Convert to grid coordinates x-coord = col; y-coord = 19-row
             prev_dir = curr_dir
@@ -106,34 +127,157 @@ class PathPlan(object):
             step[0] = col
             step[1] = 19 - row
 
-            # Add backwards movement before turns
-            if prev_dir == constants.NORTH and (curr_dir == constants.EAST or curr_dir == constants.WEST):
-                path.insert(index, [path[index - 1][0], step[1] - 3, prev_dir])
-                if curr_dir == constants.EAST:
-                    path.insert(index + 1, [step[0] + 2, step[1], curr_dir])
-                else:
-                    path.insert(index + 1, [step[0] - 2, step[1], curr_dir])
-            elif prev_dir == constants.EAST and (curr_dir == constants.SOUTH or curr_dir == constants.NORTH):
-                path.insert(index, [step[0] - 3, path[index - 1][1], prev_dir])
-                if curr_dir == constants.SOUTH:
-                    path.insert(index + 1, [step[0], step[1] - 2, curr_dir])
-                else:
-                    path.insert(index + 1, [step[0], step[1] + 2, curr_dir])
-            elif prev_dir == constants.SOUTH and (curr_dir == constants.WEST or curr_dir == constants.EAST):
-                path.insert(index, [path[index - 1][0], step[1] + 3, prev_dir])
-                if curr_dir == constants.WEST:
-                    path.insert(index + 1, [step[0] - 2, step[1], curr_dir])
-                else:
-                    path.insert(index + 1, [step[0] + 2, step[1], curr_dir])
-            elif prev_dir == constants.WEST and (curr_dir == constants.NORTH or curr_dir == constants.SOUTH):
-                path.insert(index, [step[0] + 3, path[index - 1][1], prev_dir])
-                if curr_dir == constants.NORTH:
-                    path.insert(index + 1, [step[0], step[1] + 2, curr_dir])
-                else:
-                    path.insert(index + 1, [step[0], step[1] - 2, curr_dir])
+            # Add steps to trigger CR9 or DR9 when there are turns
+            if prev_dir != curr_dir:
+                path.insert(index + no_inserted, [prev_step[0], prev_step[1], curr_dir])
+                no_inserted += 1
 
             index += 1
+            prev_step = step
+
+        # Add step is robot starting loc and first step is already a turn
+        row, col, curr_dir = path[0][0], path[0][1], path[0][2]
+        path.insert(1, [col, 19-row, path[1][2]])
+        path.pop(0)
+
         return path
+
+    def do_move(self, move):
+        if move == "F":
+            self.move_forward_by(1)
+        elif move == "B":
+            self.move_backward_by(1)
+        elif move == "FR":
+            self.turn_forward_right()
+        elif move == "FL":
+            self.turn_forward_left()
+
+    def translate_path_to_movements(self, path):
+        no_of_steps = len(path)
+        list_of_movements = []
+        grid_path = path
+
+        # Process robot starting node
+        row, col, curr_dir = grid_path[0][0], grid_path[0][1], grid_path[0][2]
+        path.insert(1, [col, 19 - row, grid_path[0][2]])
+        path.pop(0)
+        # Process the rest of the nodes
+        for step in grid_path[1:]:
+            # Convert to grid coordinates x-coord = col; y-coord = 19-row
+            row, col, curr_dir = step[0], step[1], step[2]
+            step[0] = col
+            step[1] = 19 - row
+
+        prev_dir = grid_path[0][2]
+        prev_x = grid_path[0][0]
+        prev_y = grid_path[0][1]
+
+        for step in grid_path[1:]:
+            curr_dir = step[2]
+            if prev_dir == constants.NORTH:
+                if curr_dir == constants.EAST:
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("FR")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                elif curr_dir == constants.WEST:
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("FL")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                elif curr_dir == prev_dir:
+                    if prev_y > step[1]:
+                        list_of_movements.append("B")
+                    else:
+                        list_of_movements.append("F")
+            elif prev_dir == constants.SOUTH:
+                if curr_dir == constants.WEST:
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("FR")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                elif curr_dir == constants.EAST:
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("FL")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                elif curr_dir == prev_dir:
+                    if prev_y < step[1]:
+                        list_of_movements.append("B")
+                    else:
+                        list_of_movements.append("F")
+            elif prev_dir == constants.EAST:
+                if curr_dir == constants.SOUTH:
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("FR")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                elif curr_dir == constants.NORTH:
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("FL")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                elif curr_dir == prev_dir:
+                    if prev_x > step[0]:
+                        list_of_movements.append("B")
+                    else:
+                        list_of_movements.append("F")
+            elif prev_dir == constants.WEST:
+                if curr_dir == constants.NORTH:
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("FR")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                elif curr_dir == constants.SOUTH:
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                    list_of_movements.append("FL")
+                    list_of_movements.append("B")
+                    list_of_movements.append("B")
+                elif curr_dir == prev_dir:
+                    if prev_x < step[0]:
+                        list_of_movements.append("B")
+                    else:
+                        list_of_movements.append("F")
+            print(list_of_movements)
+
+            prev_dir = curr_dir
+            prev_x = step[0]
+            prev_y = step[1]
+
+        # Clean up and eliminate all FB pairs
+        FB_present = True
+        while FB_present:
+            prev_move = list_of_movements[0]
+            index = -1
+            initial_len = len(list_of_movements)
+            for move in list_of_movements:
+                index += 1
+                if (prev_move == "F" and move == "B") or (prev_move == "B" and move == "F"):
+                    list_of_movements.pop(index)
+                    list_of_movements.pop(index-1)
+                    break
+                prev_move = move
+
+            if len(list_of_movements) == initial_len:
+                FB_present = False
+
+        return list_of_movements
 
     def transpose_orientation(self, target_x, target_y, target_direction, robot_x, robot_y):
         if target_direction == constants.NORTH:
@@ -356,7 +500,7 @@ class PathPlan(object):
             else:
                 return
 
-            if not constants.IS_CHECKING and not constants.IS_ON_PATH:
+            if not constants.IS_CHECKING and not self.IS_ON_PATH:
                 if self.check_reached_target(initial_a, initial_b):
                     return
                 else:
@@ -525,40 +669,6 @@ class PathPlan(object):
 
             # TODO: Write how to handle obstacle collision
 
-            # self.explore_empty_space()
-            if self.reposition_robot():
-                while not \
-                        self.check_movement_possible(self.target_x, self.target_y, self.robot.grid_x, self.robot.grid_y,
-                                                     self.robot.angle, self.target_direction)[0]:
-                    self.reposition_robot()
-
-            self.replan_trip()
-
-            a, b, x, y = self.target_x, self.target_y, self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1]
-            robot_direction, target_direction = self.robot.get_angle_of_rotation(), self.target_direction
-
-            # Try to get to other sides of obstacle
-            if target_direction == constants.NORTH:
-                constants.IS_EXCEPTION = True
-                self.plan_trip_by_robot_target_directions(a, b + 8, x, y, robot_direction, constants.EAST)
-                constants.IS_EXCEPTION = False
-                self.replan_trip()
-            elif target_direction == constants.SOUTH:
-                constants.IS_EXCEPTION = True
-                self.plan_trip_by_robot_target_directions(a, b - 8, x, y, robot_direction, constants.WEST)
-                constants.IS_EXCEPTION = False
-                self.replan_trip()
-            elif target_direction == constants.EAST:
-                constants.IS_EXCEPTION = True
-                self.plan_trip_by_robot_target_directions(a + 8, b, x, y, robot_direction, constants.SOUTH)
-                constants.IS_EXCEPTION = False
-                self.replan_trip()
-            elif target_direction == constants.WEST:
-                constants.IS_EXCEPTION = True
-                self.plan_trip_by_robot_target_directions(a - 8, b, x, y, robot_direction, constants.NORTH)
-                constants.IS_EXCEPTION = False
-                self.replan_trip()
-
             self.replan_trip()
 
         except ObstacleTurnException:
@@ -570,108 +680,6 @@ class PathPlan(object):
             # TODO: Write how to handle "unable to turn due to obstacle" collisions
 
             self.replan_trip()
-
-    def reposition_robot(self):
-        result = self.check_movement_possible(self.target_x, self.target_y, self.robot.grid_x, self.robot.grid_y,
-                                              self.robot.angle, self.target_direction)
-        is_path_possible, path = result[0], result[1]
-        # Replan path if current position has possible path
-        if is_path_possible:
-            return False
-
-        # Move robot to next nearest possible R
-        if path == "AR1":
-            initial_x, initial_y, initial_dir = self.robot.grid_x, self.robot.grid_y, self.robot.angle
-
-            constants.IS_EXCEPTION = True
-            pass
-        elif path == "AR2":
-            pass
-        elif path == "AR3":
-            pass
-        elif path == "AR4":
-            pass
-        elif path == "AR5":
-            pass
-        elif path == "AR6":
-            pass
-        elif path == "AR7":
-            pass
-        elif path == "AR8":
-            pass
-        elif path == "BR1":
-            pass
-        elif path == "BR2":
-            pass
-        elif path == "BR3":
-            pass
-        elif path == "BR4":
-            pass
-        elif path == "BR5":
-            pass
-        elif path == "BR6":
-            pass
-        elif path == "BR7":
-            pass
-        elif path == "BR8":
-            pass
-        elif path == "CR1":
-            pass
-        elif path == "CR2":
-            pass
-        elif path == "CR3":
-            pass
-        elif path == "CR4":
-            pass
-        elif path == "CR5":
-            pass
-        elif path == "CR6":
-            pass
-        elif path == "CR7":
-            pass
-        elif path == "CR8":
-            pass
-        elif path == "DR1":
-            pass
-        elif path == "DR2":
-            pass
-        elif path == "DR3":
-            pass
-        elif path == "DR4":
-            pass
-        elif path == "DR5":
-            pass
-        elif path == "DR6":
-            pass
-        elif path == "DR7":
-            pass
-        elif path == "DR8":
-            pass
-
-        return True
-
-    def explore_empty_space(self):
-        # Check if can turn forward right/left
-        if self.check_3by3_area(self.get_grid_pos_straight("FORWARD", BUFFER)):
-            if self.check_3by3_area(self.get_grid_pos_turn("FORWARD_L")):
-                self.turn_forward_left()
-                self.move_backward_by(3)
-            elif self.check_3by3_area(self.get_grid_pos_turn("FORWARD_R")):
-                self.turn_forward_right()
-                self.move_backward_by(3)
-        # Check if can turn backward right/left
-        # elif self.check_3by3_area(self.get_grid_pos_straight("BACKWARD", BUFFER)):
-        #     if self.check_3by3_area(self.get_grid_pos_turn("BACKWARD_L")):
-        #         self.turn_backward_left()
-        #     elif self.check_3by3_area(self.get_grid_pos_turn("BACKWARD_R")):
-        #         self.turn_backward_right()
-        # Check if can move forwards by 1
-        elif self.check_3by3_area(self.get_grid_pos_straight("FORWARD", 1)):
-            self.move_forward_by(1)
-        elif self.check_3by3_area(self.get_grid_pos_straight("BACKWARD", 1)):
-            self.move_backward_by(1)
-        else:
-            print("Nothing done for obstacle avoidance")
 
     def check_exceed_exception_count(self):
         if self.EXCEPTION_COUNT > 5:
@@ -1097,6 +1105,11 @@ class PathPlan(object):
         #     self.AR7(a, b, x, y)
 
     def CR9(self, a, b, x, y):
+        if self.IS_ON_PATH:
+            self.move_backward_by(3)
+            self.turn_forward_right()
+            return
+
         self.move_forward_by(3)
         self.turn_backward_left()
         self.move_forward_by(3)
@@ -1194,6 +1207,11 @@ class PathPlan(object):
             self.turn_forward_left()
 
     def DR9(self, a, b, x, y):
+        if self.IS_ON_PATH:
+            self.move_backward_by(3)
+            self.turn_forward_left()
+            return
+
         self.move_forward_by(3)
         self.turn_backward_right()
         self.move_forward_by(3)
@@ -1398,11 +1416,19 @@ class PathPlan(object):
                 else:
                     area = "DR0"
 
+            # Reset robot position
+            self.robot.correct_coords_and_angle(initial_dir, self.grid.grid_to_pixel((initial_x, initial_y)))
+
             constants.IS_CHECKING = False
-            print("Checking:", area)
+            print("Check-pass:", area)
             return True
+            # return False
 
         except CheckingException:
+
+            # Reset robot position
+            self.robot.correct_coords_and_angle(initial_dir, self.grid.grid_to_pixel((initial_x, initial_y)))
+
             constants.IS_CHECKING = False
             print("Check-fail:", area)
             return False
