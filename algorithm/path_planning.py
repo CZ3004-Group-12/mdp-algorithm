@@ -1243,9 +1243,9 @@ class PathPlan(object):
             print(self.get_robot_pos_and_dir())
 
             # Send to RPI
-            self.simulator.comms.send(self.get_movements_string())
-
-            self.reset_collection_of_movements()
+            if constants.RPI_CONNECTED:
+                self.simulator.comms.send(self.get_movements_string())
+                self.reset_collection_of_movements()
 
             # Move car 2 steps backwards for next move
             # time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)

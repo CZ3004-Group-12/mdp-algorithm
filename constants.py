@@ -38,3 +38,6 @@ IS_EXCEPTION = False
 IS_CHECKING = False
 IS_ON_PATH = False
 
+# RPI Connection
+RPI_CONNECTED = False
+

@@ -107,9 +107,11 @@ class Simulator:
                     print("Connect button pressed.")
                     self.comms = AlgoClient()
                     self.comms.connect()
+                    constants.RPI_CONNECTED = True
                 elif button_func == "DISCONNECT":
                     print("Disconnect button pressed.")
                     self.comms.disconnect()
+                    constants.RPI_CONNECTED = False
                     self.comms = None
 
                 # for testing purposes
