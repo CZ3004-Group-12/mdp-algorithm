@@ -370,7 +370,111 @@ class PathPlan(object):
                 return
 
             # TODO: Write how to handle border collision
+                if direction == constants.NORTH:
+                    if x == 1:
+                        if y >= 16:
+                            self.move_backward_by(y - 18)
+                        self.robot.move_forward_steer_right()
+                    elif x == 18:
+                        if y >= 16:
+                            self.move_backward_by(y - 16)
+                        self.robot.move_forward_steer_left()
+                    elif y == 18:
+                        self.move_backward_by(3)
+                        try:
+                            i = 0
+                            self.robot.move_forward_steer_right()
+                            self.move_backward_by(3)
+                            i += 1
+                            self.robot.move_forward_steer_right()
+                        except:
+                            if i == 0:
+                                self.robot.move_forward_steer_left()
+                                self.move_backward_by(3)
+                                self.robot.move_forward_steer_left()
+                            self.replan_trip()
+                    elif y == 1:
+                        i = 0
+                        try:
+                            self.robot.move_forward_steer_right()
+                            i += 1
+                            self.robot.move_forward_steer_left()
+                        except:
+                            if i == 0:
+                                self.robot.move_forward_steer_left()
+                                self.robot.move_forward_steer_right()
+                        self.replan_trip()
+                # if robot direction is south
+                elif direction == constants.SOUTH:
+                    if x == 1:
+                        if y <= 5:
+                            self.move_backward_by(6 - y)
+                        self.robot.move_forward_steer_left()
+                    elif x == 18:
+                        i = 0
+                        try:
+                            self.robot.move_forward_steer_right()
+                            i += 1
+                            self.robot.move_forward_steer_left()
+                        except:
+                            if i == 0:
+                                self.robot.move_forward_steer_left()
+                                self.robot.move_forward_steer_right()
+                            self.replan_trip()
 
+                    elif y == 1:
+                        self.move_backward_by(3)
+                        try:
+                            i = 0
+                            self.robot.move_forward_steer_right()
+                            self.move_backward_by(3)
+                            i += 1
+                            self.robot.move_forward_steer_right()
+
+                        except:
+                            if i == 0:
+                                self.robot.move_forward_steer_left()
+                                self.move_backward_by(3)
+                                self.robot.move_forward_steer_left()
+                            self.replan_trip()
+
+                # if robot direction is east
+
+                elif direction == constants.EAST:
+                    if x == 1:
+                        if y <= 5:
+                            self.move_backward_by(6 - y)
+                        self.robot.move_forward_steer_left()
+
+                    elif x == 18:
+                        i = 0
+                        try:
+                            self.robot.move_forward_steer_right()
+                            i += 1
+                            self.robot.move_forward_steer_left()
+                        except:
+                            if i == 0:
+                                self.robot.move_forward_steer_left()
+                                self.robot.move_forward_steer_right()
+                            self.replan_trip()
+
+                    elif y == 1:
+                        self.move_backward_by(3)
+                        try:
+                            i = 0
+                            self.robot.move_forward_steer_right()
+                            self.move_backward_by(3)
+                            i += 1
+                            self.robot.move_forward_steer_right()
+
+                        except:
+                            if i == 0:
+                                self.robot.move_forward_steer_left()
+                                self.move_backward_by(3)
+                                self.robot.move_forward_steer_left()
+                            self.replan_trip()
+
+                    self.replan_trip()
             self.replan_trip()
 
         except ObstacleException:
