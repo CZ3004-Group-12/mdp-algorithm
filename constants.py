@@ -19,8 +19,8 @@ NEXT_OBSTACLE_TIME_DELAY = 1
 ROBOT_W = 30
 ROBOT_H = 30
 # Starting grid positions of car
-ROBOT_STARTING_X = 1
-ROBOT_STARTING_Y = 1
+ROBOT_STARTING_X = 2
+ROBOT_STARTING_Y = 2
 ROBOT_STARTING_ANGLE = NORTH
 BUFFER = 3  # This is the front/back buffer of grids for turning obstacle detection
 

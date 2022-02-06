@@ -402,7 +402,7 @@ class Robot(object):
             #raise BorderException("BORDER")
             pass
         else:
-            #raise CheckingException("CHECK-FAIL")
+            raise CheckingException("CHECK-FAIL")
             pass
         return True
         #return False
