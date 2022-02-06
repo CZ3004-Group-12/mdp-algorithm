@@ -11,7 +11,7 @@ import pygame
 import logging
 
 # Set the HEIGHT and WIDTH of the screen
-WINDOW_SIZE = [1020, 720]
+WINDOW_SIZE = [960, 660]
 
 class Simulator:
 
