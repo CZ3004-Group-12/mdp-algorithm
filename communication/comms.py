@@ -10,7 +10,8 @@ import socket
 
 FORMAT = "UTF-8"
 ALGO_SOCKET_BUFFER_SIZE = 1024
-WIFI_IP = "192.168.68.110"
+# WIFI_IP = "192.168.68.110"
+WIFI_IP = "192.168.2.145"
 PORT = 5050
 
 
@@ -77,6 +78,6 @@ if __name__ == '__main__':
     while True:
         message = input("[Client] Send Message to server: ")
         client.send(message)
-        recieved = client.recv()
-        if recieved is not None:
-            print(f"[Server] Received message from client: {recieved}")
+        received = client.recv()
+        if received is not None:
+            print(f"[Server] Received message from client: {received}")

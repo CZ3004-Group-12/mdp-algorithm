@@ -9,7 +9,7 @@ from constants import BUFFER
 MARGIN = 2
 ONE_CELL = 20 + MARGIN
 THREE_CELL = 3 * ONE_CELL
-dt = 1
+dt = 0.3
 
 
 # dt = round(self.clock.get_time() / 1000, 2)
@@ -23,6 +23,9 @@ class ObstacleException(Exception):
 
 
 class ObstacleTurnException(Exception):
+    pass
+
+class CheckingException(Exception):
     pass
 
 
@@ -87,8 +90,10 @@ class Robot(object):
         self.draw_car()
 
     def check_movement_complete(self, final_pixel_pos):
-        return abs(self.get_pixel_pos()[0] - final_pixel_pos[0]) > 2 or abs(
-            self.get_pixel_pos()[1] - final_pixel_pos[1]) > 2
+        if constants.IS_CHECKING:
+            return True
+        return abs(self.get_pixel_pos()[0] - final_pixel_pos[0]) < 2 and abs(
+            self.get_pixel_pos()[1] - final_pixel_pos[1]) < 2
 
     # TODO: define possible movements (for turning motions picture steering wheel direction)
     # ALL MOTIONS take place in minimal unit.
@@ -118,7 +123,7 @@ class Robot(object):
         if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles_straight(final_pixel_pos):
             # Set velocity of car
             self.velocity += (0, -self.speed)
-            while self.check_movement_complete(final_pixel_pos):
+            while not self.check_movement_complete(final_pixel_pos):
                 self.pixel_pos += self.velocity.rotate(-self.angle) * dt
                 self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
                                             self.pixel_pos[1] - (0.5 * self.screen_height),
@@ -128,7 +133,6 @@ class Robot(object):
             # Reset velocity to 0
             self.velocity -= (0, -self.speed)
             self.correct_coords_and_angle(final_angle, final_pixel_pos)
-            self.redraw_car()
 
             self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
@@ -154,7 +158,7 @@ class Robot(object):
         if self.check_within_border(final_pixel_pos) and self.check_exclude_obstacles_straight(final_pixel_pos):
             # Set velocity of car
             self.velocity += (0, self.speed)
-            while self.check_movement_complete(final_pixel_pos):
+            while not self.check_movement_complete(final_pixel_pos):
                 self.pixel_pos += self.velocity.rotate(-self.angle) * dt
                 self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
                                             self.pixel_pos[1] - (0.5 * self.screen_height),
@@ -163,7 +167,6 @@ class Robot(object):
             # Reset velocity to 0
             self.velocity -= (0, self.speed)
             self.correct_coords_and_angle(final_angle, final_pixel_pos)
-            self.redraw_car()
 
             self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
@@ -200,7 +203,7 @@ class Robot(object):
 
             # Set velocity of car
             self.velocity += (0, -self.speed)
-            while not self.check_if_reached(initial_angle, final_pixel_pos):
+            while not self.check_if_turned(initial_angle, final_pixel_pos):
                 turning_radius = THREE_CELL
                 angular_velocity = self.velocity.y / turning_radius
 
@@ -215,7 +218,6 @@ class Robot(object):
             # Reset velocity to 0 and do corrections for angle and coordinates
             self.velocity -= (0, -self.speed)
             self.correct_coords_and_angle(final_angle, final_pixel_pos)
-            self.redraw_car()
 
             self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
@@ -252,7 +254,7 @@ class Robot(object):
 
             # Set velocity of car
             self.velocity += (0, -self.speed)
-            while not self.check_if_reached(initial_angle, final_pixel_pos):
+            while not self.check_if_turned(initial_angle, final_pixel_pos):
                 turning_radius = THREE_CELL
                 angular_velocity = self.velocity.y / turning_radius
 
@@ -267,7 +269,6 @@ class Robot(object):
             # Reset velocity to 0 and do corrections for angle and coordinates
             self.velocity -= (0, -self.speed)
             self.correct_coords_and_angle(final_angle, final_pixel_pos)
-            self.redraw_car()
 
             self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
@@ -304,7 +305,7 @@ class Robot(object):
 
             # Set velocity of car
             self.velocity += (0, -self.speed)
-            while not self.check_if_reached(initial_angle, final_pixel_pos):
+            while not self.check_if_turned(initial_angle, final_pixel_pos):
                 turning_radius = THREE_CELL
                 angular_velocity = self.velocity.y / turning_radius
 
@@ -319,7 +320,6 @@ class Robot(object):
             # Reset velocity to 0 and do corrections for angle and coordinates
             self.velocity -= (0, -self.speed)
             self.correct_coords_and_angle(final_angle, final_pixel_pos)
-            self.redraw_car()
 
             self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
@@ -354,7 +354,7 @@ class Robot(object):
 
             # Set velocity of car
             self.velocity += (0, -self.speed)
-            while not self.check_if_reached(initial_angle, final_pixel_pos):
+            while not self.check_if_turned(initial_angle, final_pixel_pos):
                 turning_radius = THREE_CELL
                 angular_velocity = self.velocity.y / turning_radius
 
@@ -369,7 +369,6 @@ class Robot(object):
             # Reset velocity to 0 and do corrections for angle and coordinates
             self.velocity -= (0, -self.speed)
             self.correct_coords_and_angle(final_angle, final_pixel_pos)
-            self.redraw_car()
 
             self.check_if_target_reached(final_pixel_pos, final_angle)
             return True
@@ -384,23 +383,29 @@ class Robot(object):
         self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
                                     self.pixel_pos[1] - (0.5 * self.screen_height),
                                     self.screen_width, self.screen_height)
+        if constants.IS_CHECKING:
+            return
+        self.redraw_car()
 
-    def check_if_reached(self, initial_angle, final_pixel_pos):
-        # Set position to stop moving
-        if self.check_movement_complete(final_pixel_pos) \
-                and abs(self.angle - initial_angle) > 85:
+    def check_if_turned(self, initial_angle, final_pixel_pos):
+        if constants.IS_CHECKING:
             return True
-        else:
-            return False
+        # Set position to stop moving
+        return self.check_movement_complete(final_pixel_pos) and abs(self.angle - initial_angle) > 85
 
     # TODO: it is possible for robot to move outside of border for now (to meet some of the limitations of path planning
     def check_within_border(self, pos):
-        if (constants.min_pixel_pos_x + self.robot_w < pos[0] < constants.max_pixel_pos_x - self.robot_w) \
-                and (constants.min_pixel_pos_y + self.robot_h < pos[1] < constants.max_pixel_pos_y - self.robot_h):
+        if (constants.min_pixel_pos_x + self.robot_w - (THREE_CELL*2) < pos[0] < constants.max_pixel_pos_x - self.robot_w + (THREE_CELL*2)) \
+                and (constants.min_pixel_pos_y + self.robot_h - (THREE_CELL*2) < pos[1] < constants.max_pixel_pos_y - self.robot_h + (THREE_CELL*2)):
             return True
-        #raise BorderException("BORDER")
+        if not constants.IS_CHECKING:
+            #raise BorderException("BORDER")
+            pass
+        else:
+            #raise CheckingException("CHECK-FAIL")
+            pass
         return True
-        # return False
+        #return False
 
     # TODO: for now, it is strictly right in front of the image, 4 grids away (counting from the centre of car)
     def check_if_target_reached(self, final_pixel_pos, final_angle):
@@ -416,14 +421,15 @@ class Robot(object):
             final_grid_y = final_grid_pos[1]
             # print("Checking for obstacles visited:", target_loc)
 
-            # Check if in target grid
-            if (final_grid_x == target_grid_x) and (final_grid_y == target_grid_y) and (
-                    final_angle == target_direction):
-                self.grid.set_obstacle_as_visited(obstacle_cell)
+            if not constants.IS_CHECKING:
+                # Check if in target grid
+                if (final_grid_x == target_grid_x) and (final_grid_y == target_grid_y) and (
+                        final_angle == target_direction):
+                    self.grid.set_obstacle_as_visited(obstacle_cell)
 
-                # Repaint grid and car
-                self.redraw_car()
-                print("--Obstacle was visited!")
+                    # Repaint grid and car
+                    self.redraw_car()
+                    print("--Obstacle was visited!")
 
     # def get_cells_occupied_by_car(self):
     #     cells = [self.grid.get_cell_by_xycoords(self.grid_x - 1, self.grid_y - 1),
@@ -450,8 +456,14 @@ class Robot(object):
             if (obstacle_pixel_x - border_pixel_length < final_pixel_pos[0] < obstacle_pixel_x + border_pixel_length) \
                     and (obstacle_pixel_y - border_pixel_length < final_pixel_pos[
                 1] < obstacle_pixel_y + border_pixel_length):
-                raise ObstacleException("OBSTACLE")
+                if not constants.IS_CHECKING:
+                    #raise ObstacleException("OBSTACLE")
+                    pass
+                else:
+                    raise CheckingException("CHECK-FAIL")
+                    pass
                 return True
+                # return False
 
             # Using grid position
             # grid_coord = self.grid.pixel_to_grid(final_pixel_pos)
@@ -511,8 +523,13 @@ class Robot(object):
             if (obstacle_pixel_x - border_pixel_length < turning_pixel[0] < obstacle_pixel_x + border_pixel_length) \
                     and (
                     obstacle_pixel_y - border_pixel_length < turning_pixel[1] < obstacle_pixel_y + border_pixel_length):
-                #raise ObstacleTurnException("OBSTACLE_TURN")
+                if not constants.IS_CHECKING:
+                    #raise ObstacleTurnException("OBSTACLE_TURN")
+                    pass
+                else:
+                    raise CheckingException("CHECK-FAIL")
                 return True
+                # return False
 
             # Using grid position
             # if (obstacle_grid_x - 3 <= grid_x <= obstacle_grid_x + 3) \
@@ -538,3 +555,5 @@ class Robot(object):
                                     self.pixel_pos[1] - (0.5 * self.screen_height),
                                     self.screen_width, self.screen_height)
         self.redraw_car()
+
+

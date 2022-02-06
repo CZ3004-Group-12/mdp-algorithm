@@ -4,6 +4,7 @@
 # 2 is boundary area around obstacle
 # 3 is obstacle
 # 4 is obstacle visited
+# 5 and above is path to take
 from map.obstacle import Obstacle
 
 
@@ -38,6 +39,9 @@ class Cell:
 
     def set_obstacle_visited_status(self):
         self.status = 4
+
+    def set_path_status(self, num):
+        self.status = 5
 
     def get_obstacle(self):
         return self.obstacle

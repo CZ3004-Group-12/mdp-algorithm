@@ -18,6 +18,7 @@ class Grid(object):
         self.grid_row = grid_row
         self.block_size = block_size
         self.cells = [[0 for x in range(grid_column)] for y in range(grid_row)]
+        self.cells_virtual = [[0 for x in range(grid_column)] for y in range(grid_row)]
 
         # NOTE!! row and columns start from the top right, but coordinates have to start from the bottom left
         # x-coord = column; y-coord = 19-row
@@ -94,6 +95,12 @@ class Grid(object):
             for c in range(self.grid_column):
                 a = self.get_cell(r, c)
                 self.set_obstacle_boundary_cells(a)  # runs only for obstacle cell
+
+        # Update virtual map for path planning
+        for r in range(20):
+            for c in range(20):
+                cell_status = self.cells[r][c].get_cell_status()
+                self.cells_virtual[r][c] = cell_status
 
         logging.info("Clicked (x,y): (" + str(x_coordinate) + "," + str(y_coordinate) + "); column, row: " + str(column)
                      + "," + str(row) + "; Grid coordinates: " + str(cell.get_xcoord()) + " " + str(cell.get_ycoord())
@@ -215,6 +222,8 @@ class Grid(object):
                     color = constants.GREEN
                 if cell.get_cell_status() == 4:  # obstacle cell has been visited
                     color = constants.LIGHT_GREEN
+                if cell.get_cell_status() >= 5:  # cell is part of path
+                    color = constants.GRAY
                 pygame.draw.rect(screen,
                                  color,
                                  [OUTER_MARGIN + (MARGIN + self.block_size) * column + MARGIN,

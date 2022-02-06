@@ -33,3 +33,8 @@ max_pixel_pos_y = 560
 
 FPS = 60
 
+# Path planning
+IS_EXCEPTION = False
+IS_CHECKING = False
+IS_ON_PATH = False
+
