@@ -35,8 +35,8 @@ class PathPlan(object):
         # Remove robot starting position from fastest_route
         self.fastest_route.pop(0)
 
+        # Using this cannot reset the robot position at the checking function
         # route = self.brute_force_possible_path()
-
         # self.fastest_route = route
 
         while len(self.fastest_route) != 0:
@@ -99,49 +99,6 @@ class PathPlan(object):
                                                           self.robot.grid_y,
                                                           self.robot.angle, self.target_direction)
 
-                # Pre-process path
-                # path = self.preprocess_path(path)
-                # print(path)
-
-                # # Now feed the path (grid by grid) into the plan_trip function
-                # self.IS_ON_PATH = True
-                # for step in path:
-                #     self.plan_trip_by_robot_target_directions(step[0], step[1], self.robot.grid_x, self.robot.grid_y,
-                #                                               self.robot.angle, step[2])
-                # self.IS_ON_PATH = False
-                # # Last step is to rotate on the spot
-                # print("LAST STEP")
-                # self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot.grid_x, self.robot.grid_y,
-                #                                           self.robot.angle, self.target_direction)
-
-    def preprocess_path(self, path):
-        index = 1
-        no_inserted = 0
-        curr_dir = path[0][2]
-        no_of_steps = len(path)
-        prev_step = path[0]
-        for step in path[1:]:
-            # Convert to grid coordinates x-coord = col; y-coord = 19-row
-            prev_dir = curr_dir
-            row, col, curr_dir = step[0], step[1], step[2]
-            step[0] = col
-            step[1] = 19 - row
-
-            # Add steps to trigger CR9 or DR9 when there are turns
-            if prev_dir != curr_dir:
-                path.insert(index + no_inserted, [prev_step[0], prev_step[1], curr_dir])
-                no_inserted += 1
-
-            index += 1
-            prev_step = step
-
-        # Add step is robot starting loc and first step is already a turn
-        row, col, curr_dir = path[0][0], path[0][1], path[0][2]
-        path.insert(1, [col, 19-row, path[1][2]])
-        path.pop(0)
-
-        return path
-
     def do_move(self, move):
         if move == "F":
             self.move_forward_by(1)
@@ -199,14 +156,14 @@ class PathPlan(object):
                     list_of_movements.append("B")
                     list_of_movements.append("B")
                     list_of_movements.append("B")
-                    list_of_movements.append("FR")
+                    list_of_movements.append("FL")
                     list_of_movements.append("B")
                     list_of_movements.append("B")
                 elif curr_dir == constants.EAST:
                     list_of_movements.append("B")
                     list_of_movements.append("B")
                     list_of_movements.append("B")
-                    list_of_movements.append("FL")
+                    list_of_movements.append("FR")
                     list_of_movements.append("B")
                     list_of_movements.append("B")
                 elif curr_dir == prev_dir:
@@ -276,6 +233,7 @@ class PathPlan(object):
 
             if len(list_of_movements) == initial_len:
                 FB_present = False
+        print("FINAL: ", list_of_movements)
 
         return list_of_movements
 
@@ -512,7 +470,7 @@ class PathPlan(object):
             print("BorderException--")
             if self.check_exceed_exception_count():
                 return
-            
+
             direction = self.robot.angle
             # TODO: Write how to handle border collision
             if direction == constants.NORTH:
