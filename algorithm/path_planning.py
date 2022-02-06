@@ -79,7 +79,16 @@ class PathPlan(object):
                        self.target_direction]  # ending position
                 cost = 10  # cost per movement
                 maze = self.grid.cells_virtual
-                draw_path, path = search(maze, cost, start, end)
+                search_result = search(maze, cost, start, end)
+
+                if search_result is None:
+                    # Force run hardcoded path
+                    self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot_x, self.robot_y,
+                                                              self.robot_direction, self.target_direction)
+                    return
+
+                draw_path, path = search_result[0], search_result[1]
+
                 for r in range(20):
                     for c in range(20):
                         if draw_path[r][c] >= 5:

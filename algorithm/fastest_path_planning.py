@@ -42,7 +42,7 @@ def return_path(current_node, maze):
     for i in range(len(path)):
         result[int(path[i][0])][int(path[i][1])] = start_value
         start_value += 1
-    return result, path
+    return (result, path)
 
 
 # maze is in grid.cells_virtual
