@@ -81,7 +81,6 @@ class PathPlan(object):
             # Colour rough route gray
             self.robot.redraw_car()
 
-
             # Pre-process path
             # path = self.preprocess_path(path)
             # print(path)
@@ -93,7 +92,8 @@ class PathPlan(object):
             #                                               self.robot.angle, step[2])
             # constants.IS_ON_PATH = False
             # Last step is to rotate on the spot
-            self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot.grid_x, self.robot.grid_y,
+            self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot.grid_x,
+                                                      self.robot.grid_y,
                                                       self.robot.angle, self.target_direction)
 
     def preprocess_path(self, path):
@@ -104,7 +104,7 @@ class PathPlan(object):
             prev_dir = curr_dir
             row, col, curr_dir = step[0], step[1], step[2]
             step[0] = col
-            step[1] = 19-row
+            step[1] = 19 - row
 
             # Add backwards movement before turns
             if prev_dir == constants.NORTH and (curr_dir == constants.EAST or curr_dir == constants.WEST):
@@ -114,19 +114,19 @@ class PathPlan(object):
                 else:
                     path.insert(index + 1, [step[0] - 2, step[1], curr_dir])
             elif prev_dir == constants.EAST and (curr_dir == constants.SOUTH or curr_dir == constants.NORTH):
-                path.insert(index, [step[0] - 3, path[index-1][1], prev_dir])
+                path.insert(index, [step[0] - 3, path[index - 1][1], prev_dir])
                 if curr_dir == constants.SOUTH:
                     path.insert(index + 1, [step[0], step[1] - 2, curr_dir])
                 else:
                     path.insert(index + 1, [step[0], step[1] + 2, curr_dir])
             elif prev_dir == constants.SOUTH and (curr_dir == constants.WEST or curr_dir == constants.EAST):
-                path.insert(index, [path[index-1][0], step[1] + 3, prev_dir])
+                path.insert(index, [path[index - 1][0], step[1] + 3, prev_dir])
                 if curr_dir == constants.WEST:
                     path.insert(index + 1, [step[0] - 2, step[1], curr_dir])
                 else:
                     path.insert(index + 1, [step[0] + 2, step[1], curr_dir])
             elif prev_dir == constants.WEST and (curr_dir == constants.NORTH or curr_dir == constants.SOUTH):
-                path.insert(index, [step[0] + 3, path[index-1][1], prev_dir])
+                path.insert(index, [step[0] + 3, path[index - 1][1], prev_dir])
                 if curr_dir == constants.NORTH:
                     path.insert(index + 1, [step[0], step[1] + 2, curr_dir])
                 else:
@@ -369,7 +369,7 @@ class PathPlan(object):
             if self.check_exceed_exception_count():
                 return
 
-            # TODO: Write how to handle border collision
+                # TODO: Write how to handle border collision
                 if direction == constants.NORTH:
                     if x == 1:
                         if y >= 16:
@@ -411,6 +411,10 @@ class PathPlan(object):
                             self.move_backward_by(6 - y)
                         self.robot.move_forward_steer_left()
                     elif x == 18:
+                        if y <= 5:
+                            self.move_backward_by(6 - y)
+                        self.robot.move_forward_steer_left()
+                    elif y == 18:
                         i = 0
                         try:
                             self.robot.move_forward_steer_right()
@@ -421,7 +425,6 @@ class PathPlan(object):
                                 self.robot.move_forward_steer_left()
                                 self.robot.move_forward_steer_right()
                             self.replan_trip()
-
                     elif y == 1:
                         self.move_backward_by(3)
                         try:
@@ -441,12 +444,15 @@ class PathPlan(object):
                 # if robot direction is east
 
                 elif direction == constants.EAST:
-                    if x == 1:
-                        if y <= 5:
-                            self.move_backward_by(6 - y)
+                    if y == 1:
+                        if x >= 16:
+                            self.move_backward_by(x-18)
                         self.robot.move_forward_steer_left()
-
-                    elif x == 18:
+                    if y == 18:
+                        if x >= 16:
+                            self.move_backward_by(x-18)
+                        self.robot.move_forward_steer_right()
+                    elif x == 1:
                         i = 0
                         try:
                             self.robot.move_forward_steer_right()
@@ -458,7 +464,7 @@ class PathPlan(object):
                                 self.robot.move_forward_steer_right()
                             self.replan_trip()
 
-                    elif y == 1:
+                    elif x == 18:
                         self.move_backward_by(3)
                         try:
                             i = 0
@@ -473,8 +479,42 @@ class PathPlan(object):
                                 self.move_backward_by(3)
                                 self.robot.move_forward_steer_left()
                             self.replan_trip()
+                # if robot direction is west
+                elif direction == constants.WEST:
+                    if y == 18:
+                        if x <= 5:
+                            self.move_backward_by(6 - x)
+                        self.robot.move_forward_steer_left()
+                    if y == 1:
+                        if x <= 5:
+                            self.move_backward_by(6 - x)
+                        self.robot.move_forward_steer_right()
+                    elif x == 18:
+                        i = 0
+                        try:
+                            self.robot.move_forward_steer_right()
+                            i += 1
+                            self.robot.move_forward_steer_left()
+                        except:
+                            if i == 0:
+                                self.robot.move_forward_steer_left()
+                                self.robot.move_forward_steer_right()
+                            self.replan_trip()
+                    elif x == 1:
+                        self.move_backward_by(3)
+                        try:
+                            i = 0
+                            self.robot.move_forward_steer_right()
+                            self.move_backward_by(3)
+                            i += 1
+                            self.robot.move_forward_steer_right()
 
-                    self.replan_trip()
+                        except:
+                            if i == 0:
+                                self.robot.move_forward_steer_left()
+                                self.move_backward_by(3)
+                                self.robot.move_forward_steer_left()
+                            self.replan_trip()
             self.replan_trip()
 
         except ObstacleException:
@@ -487,13 +527,12 @@ class PathPlan(object):
 
             # self.explore_empty_space()
             if self.reposition_robot():
-                while not self.check_movement_possible(self.target_x, self.target_y, self.robot.grid_x, self.robot.grid_y, self.robot.angle, self.target_direction)[0]:
+                while not \
+                        self.check_movement_possible(self.target_x, self.target_y, self.robot.grid_x, self.robot.grid_y,
+                                                     self.robot.angle, self.target_direction)[0]:
                     self.reposition_robot()
 
             self.replan_trip()
-
-
-
 
             a, b, x, y = self.target_x, self.target_y, self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1]
             robot_direction, target_direction = self.robot.get_angle_of_rotation(), self.target_direction
@@ -530,12 +569,11 @@ class PathPlan(object):
 
             # TODO: Write how to handle "unable to turn due to obstacle" collisions
 
-
             self.replan_trip()
 
     def reposition_robot(self):
         result = self.check_movement_possible(self.target_x, self.target_y, self.robot.grid_x, self.robot.grid_y,
-                                     self.robot.angle, self.target_direction)
+                                              self.robot.angle, self.target_direction)
         is_path_possible, path = result[0], result[1]
         # Replan path if current position has possible path
         if is_path_possible:
@@ -715,8 +753,10 @@ class PathPlan(object):
         pos = self.grid.grid_to_pixel(grid_pos)
 
         # First check if exceeding borders
-        if not ((constants.min_pixel_pos_x + self.robot.robot_w < pos[0] < constants.max_pixel_pos_x - self.robot.robot_w) \
-                and (constants.min_pixel_pos_y + self.robot.robot_h < pos[1] < constants.max_pixel_pos_y - self.robot.robot_h)):
+        if not ((constants.min_pixel_pos_x + self.robot.robot_w < pos[
+            0] < constants.max_pixel_pos_x - self.robot.robot_w) \
+                and (constants.min_pixel_pos_y + self.robot.robot_h < pos[
+                    1] < constants.max_pixel_pos_y - self.robot.robot_h)):
             print("exceed border")
             return False
 
@@ -1197,7 +1237,8 @@ class PathPlan(object):
         return ','.join([str(movement) for movement in self.collection_of_movements])
 
     def get_movements_string(self):
-        movement_list = ["MOVEMENTS", self.obstacle_cell.get_obstacle().get_obstacle_id(), self.get_collection_of_movements_string()]
+        movement_list = ["MOVEMENTS", self.obstacle_cell.get_obstacle().get_obstacle_id(),
+                         self.get_collection_of_movements_string()]
         return '/'.join([str(elem) for elem in movement_list])
 
     def get_current_obstacle_id(self):
@@ -1381,7 +1422,7 @@ class PathPlan(object):
             robot_y = self.robot.get_grid_pos()[1]
             robot_direction = self.robot.get_angle_of_rotation()
             if not self.check_movement_possible(target_x, target_y, robot_x, robot_y,
-                                         robot_direction, target_direction):
+                                                robot_direction, target_direction):
                 possible = False
                 break
 
@@ -1410,6 +1451,6 @@ class PathPlan(object):
             # Find a place to reposition n recheck
             return self.fastest_route
         else:
-            for obstacle in possible_routes[randint(0, len(possible_routes))-1]:
+            for obstacle in possible_routes[randint(0, len(possible_routes)) - 1]:
                 new_route.append(obstacle)
             return new_route
