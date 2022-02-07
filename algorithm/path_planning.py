@@ -41,6 +41,7 @@ class PathPlan(object):
 
         while len(self.fastest_route) != 0:
             target = self.fastest_route.pop(0)
+            print("Current Target: ", target)
 
             # if self.target == target:
             #     self.REPEATED_LAST_TARGET += 1
@@ -85,28 +86,28 @@ class PathPlan(object):
                     # Force run hardcoded path
                     self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot_x, self.robot_y,
                                                               self.robot_direction, self.target_direction)
-                    return
+                else:
+                    # Execute gray route
+                    draw_path, path = search_result[0], search_result[1]
 
-                draw_path, path = search_result[0], search_result[1]
+                    for r in range(20):
+                        for c in range(20):
+                            if draw_path[r][c] >= 5:
+                                self.grid.cells[r][c].set_path_status(draw_path[r][c])
+                    # Colour rough route gray
+                    self.robot.redraw_car()
 
-                for r in range(20):
-                    for c in range(20):
-                        if draw_path[r][c] >= 5:
-                            self.grid.cells[r][c].set_path_status(draw_path[r][c])
-                # Colour rough route gray
-                self.robot.redraw_car()
+                    movements = self.translate_path_to_movements(path)
+                    self.IS_ON_PATH = True
+                    for move in movements:
+                        self.do_move(move)
+                    self.IS_ON_PATH = False
 
-                movements = self.translate_path_to_movements(path)
-                self.IS_ON_PATH = True
-                for move in movements:
-                    self.do_move(move)
-                self.IS_ON_PATH = False
-
-                # Last step is to rotate on the spot
-                print("LAST STEP")
-                self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot.grid_x,
-                                                          self.robot.grid_y,
-                                                          self.robot.angle, self.target_direction)
+                    # Last step is to rotate on the spot
+                    print("LAST STEP")
+                    self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot.grid_x,
+                                                              self.robot.grid_y,
+                                                              self.robot.angle, self.target_direction)
 
     def do_move(self, move):
         if move == "F":
