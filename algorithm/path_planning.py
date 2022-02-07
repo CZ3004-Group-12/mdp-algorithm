@@ -138,23 +138,15 @@ class PathPlan(object):
         prev_x = grid_path[0][0]
         prev_y = grid_path[0][1]
 
+        print(grid_path)
+
         for step in grid_path[1:]:
             curr_dir = step[2]
             if prev_dir == constants.NORTH:
                 if curr_dir == constants.EAST:
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("FR")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
+                    self.forward_r(list_of_movements)
                 elif curr_dir == constants.WEST:
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("FL")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
+                    self.forward_l(list_of_movements)
                 elif curr_dir == prev_dir:
                     if prev_y > step[1]:
                         list_of_movements.append("B")
@@ -162,19 +154,9 @@ class PathPlan(object):
                         list_of_movements.append("F")
             elif prev_dir == constants.SOUTH:
                 if curr_dir == constants.WEST:
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("FL")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
+                    self.forward_r(list_of_movements)
                 elif curr_dir == constants.EAST:
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("FR")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
+                    self.forward_l(list_of_movements)
                 elif curr_dir == prev_dir:
                     if prev_y < step[1]:
                         list_of_movements.append("B")
@@ -182,19 +164,9 @@ class PathPlan(object):
                         list_of_movements.append("F")
             elif prev_dir == constants.EAST:
                 if curr_dir == constants.SOUTH:
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("FR")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
+                    self.forward_r(list_of_movements)
                 elif curr_dir == constants.NORTH:
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("FL")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
+                    self.forward_l(list_of_movements)
                 elif curr_dir == prev_dir:
                     if prev_x > step[0]:
                         list_of_movements.append("B")
@@ -202,19 +174,9 @@ class PathPlan(object):
                         list_of_movements.append("F")
             elif prev_dir == constants.WEST:
                 if curr_dir == constants.NORTH:
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("FR")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
+                    self.forward_r(list_of_movements)
                 elif curr_dir == constants.SOUTH:
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
-                    list_of_movements.append("FL")
-                    list_of_movements.append("B")
-                    list_of_movements.append("B")
+                    self.forward_l(list_of_movements)
                 elif curr_dir == prev_dir:
                     if prev_x < step[0]:
                         list_of_movements.append("B")
@@ -245,6 +207,22 @@ class PathPlan(object):
         print("FINAL: ", list_of_movements)
 
         return list_of_movements
+
+    def forward_l(self, list_of_movements):
+        list_of_movements.append("B")
+        list_of_movements.append("B")
+        list_of_movements.append("B")
+        list_of_movements.append("FL")
+        list_of_movements.append("B")
+        list_of_movements.append("B")
+
+    def forward_r(self, list_of_movements):
+        list_of_movements.append("B")
+        list_of_movements.append("B")
+        list_of_movements.append("B")
+        list_of_movements.append("FR")
+        list_of_movements.append("B")
+        list_of_movements.append("B")
 
     def transpose_orientation(self, target_x, target_y, target_direction, robot_x, robot_y):
         if target_direction == constants.NORTH:
@@ -1246,6 +1224,8 @@ class PathPlan(object):
             if constants.RPI_CONNECTED:
                 self.simulator.comms.send(self.get_movements_string())
                 self.reset_collection_of_movements()
+
+            self.reset_collection_of_movements()
 
             # Move car 2 steps backwards for next move
             # time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)

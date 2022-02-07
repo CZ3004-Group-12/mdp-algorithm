@@ -46,9 +46,9 @@ def return_path(current_node, maze):
 
 
 # maze is in grid.cells_virtual
-# start consists of [row, column, dir]  usually would be start = [18, 1, 10]
+# start consists of [row, column, dir]  usually would be start = [18, 1, 0]
 # target consists of [row, column, dir]
-# dir is 10: NORTH, 11: EAST, 12: SOUTH, 13: WEST
+# dir is according to constants.py file
 def search(maze, cost, start, end):
     """
         Returns a list of tuples as a path from the given start to the given end in the given maze
@@ -210,13 +210,13 @@ def search(maze, cost, start, end):
                 if [child.position[0] - child.parent.position[0],
                     child.position[1] - child.parent.position[1]] == move[1]:
                     tempCost *= 2
-                    child.position[2] = constants.WEST
+                    child.position[2] = constants.EAST
                 elif [child.position[0] - child.parent.position[0],
                       child.position[1] - child.parent.position[1]] == move[3]:
                     tempCost *= 2
-                    child.position[2] = constants.EAST
+                    child.position[2] = constants.WEST
             # Robot facing East or West and making Left/Right turns
-            elif child.parent.position[2] in [constants.WEST]:
+            elif child.parent.position[2] in [constants.EAST]:
                 if [child.position[0] - child.parent.position[0],
                     child.position[1] - child.parent.position[1]] == move[0]:
                     tempCost *= 2
@@ -229,11 +229,11 @@ def search(maze, cost, start, end):
                 if [child.position[0] - child.parent.position[0],
                     child.position[1] - child.parent.position[1]] == move[0]:
                     tempCost *= 2
-                    child.position[2] = constants.SOUTH
+                    child.position[2] = constants.NORTH
                 elif [child.position[0] - child.parent.position[0],
                       child.position[1] - child.parent.position[1]] == move[2]:
                     tempCost *= 2
-                    child.position[2] = constants.NORTH
+                    child.position[2] = constants.SOUTH
 
             # Create the f, g, and h values
             child.g = current_node.g + tempCost
