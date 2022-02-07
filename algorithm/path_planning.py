@@ -84,6 +84,7 @@ class PathPlan(object):
 
                 if search_result is None:
                     # Force run hardcoded path
+                    print("Search result: ", search_result, " ; FORCING hardcoded path...")
                     self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot_x, self.robot_y,
                                                               self.robot_direction, self.target_direction)
                 else:
