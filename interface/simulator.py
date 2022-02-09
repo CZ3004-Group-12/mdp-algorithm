@@ -117,7 +117,7 @@ class Simulator:
                         message_split = message.split("/", 2)
                         command = message_split[0]
                         task = message_split[1]
-                        # E.g. message_split[1] = START/EXPLORE/(00,13,04,180)/(01,14,06,-90)/(02,11,07,0)/(03,13,10,0)/(04,16,09,90)
+                        # E.g. message_split = START/EXPLORE/(00,13,04,180)/(01,14,06,-90)/(02,11,07,0)/(03,13,10,0)/(04,16,09,90)
                         if command == "START" and task == "EXPLORE":    # Week 8 Task
                             # Create obstacles given parameters
                             print("Creating obstacle...")
@@ -126,9 +126,9 @@ class Simulator:
                             for obstacle in obstacles_split:
                                 obstacle = obstacle[1:-1]
                                 params = obstacle.split(",")
-                                id, grid_x, grid_y, dir = params[0], params[1], params[2], params[3]
+                                id, grid_x, grid_y, dir = params[0], int(params[1]), int(params[2]), int(params[3])
                                 self.grid.create_obstacle(grid_x, grid_y, dir)
-                                self.car.redraw_car()
+                            self.car.redraw_car()
                             print("[AND] Doing path calculation...")
                             self.start_button_clicked()
                         elif command == "START" and task == "PATH":    # Week 9 Task

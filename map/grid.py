@@ -87,6 +87,12 @@ class Grid(object):
                 a = self.get_cell(r, c)
                 self.set_obstacle_boundary_cells(a)  # runs only for obstacle cell
 
+        # Update virtual map for path planning
+        for r in range(20):
+            for c in range(20):
+                cell_status = self.cells[r][c].get_cell_status()
+                self.cells_virtual[r][c] = cell_status
+
     def grid_clicked(self, x_coordinate, y_coordinate):
         # Change the x/y screen coordinates to grid coordinates
         column = (x_coordinate - 120) // (self.block_size + MARGIN)
