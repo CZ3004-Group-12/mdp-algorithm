@@ -22,12 +22,18 @@ class AStar:
     def get_displacement(self, pos1, pos2):
         return math.sqrt((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2)
 
+    def min(self, num1, num2):
+        if num1 < num2:
+            return num1
+        else:
+            return num2
+
     def direction_diff_to_weight(self, target_direction, robot_direction):
-        if abs(target_direction - robot_direction) == 0:
+        if min(abs(target_direction - robot_direction), abs(robot_direction - target_direction)) == 0:
             return 1
-        elif abs(target_direction - robot_direction) == 90:
+        elif min(abs(target_direction - robot_direction), abs(robot_direction - target_direction)) == 90:
             return 2
-        elif abs(target_direction - robot_direction) == 180:
+        elif min(abs(target_direction - robot_direction), abs(robot_direction - target_direction)) == 180:
             return 4
         return 0
 
@@ -47,9 +53,10 @@ class AStar:
                                              [all_target_unordered[0][0], all_target_unordered[0][1]])
             for i in range(len(all_target_unordered)):
                 print(i)
-                displacement=self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
-                                                    [all_target_unordered[i][0], all_target_unordered[i][1]])
-                cost_turn= weight* self.direction_diff_to_weight(all_target_unordered[i][2], all_target_ordered[temp][2])
+                displacement = self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
+                                                     [all_target_unordered[i][0], all_target_unordered[i][1]])
+                cost_turn = weight * self.direction_diff_to_weight(all_target_unordered[i][2],
+                                                                   all_target_ordered[temp][2])
                 if smallest > (displacement + cost_turn):
                     smallest = displacement + cost_turn
                     index = i
