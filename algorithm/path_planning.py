@@ -27,6 +27,7 @@ class PathPlan(object):
         self.robot_direction = self.robot.get_angle_of_rotation()
         self.obstacle_cell = None
         self.collection_of_movements = []
+        self.collection_of_robot_pos = []
         self.EXCEPTION_COUNT = 0
         self.REPEATED_LAST_TARGET = 0
         self.IS_ON_PATH = False
@@ -1168,33 +1169,39 @@ class PathPlan(object):
         self.robot.move_forward_steer_right()
         if not constants.IS_CHECKING:
             self.collection_of_movements.append("FR")
+            self.collection_of_robot_pos.append(self.get_robot_pos())
 
     def turn_forward_left(self):
         self.robot.move_forward_steer_left()
         if not constants.IS_CHECKING:
             self.collection_of_movements.append("FL")
+            self.collection_of_robot_pos.append(self.get_robot_pos())
 
     def turn_backward_right(self):
         self.robot.move_backward_steer_right()
         if not constants.IS_CHECKING:
             self.collection_of_movements.append("BR")
+            self.collection_of_robot_pos.append(self.get_robot_pos())
 
     def turn_backward_left(self):
         self.robot.move_backward_steer_left()
         if not constants.IS_CHECKING:
             self.collection_of_movements.append("BL")
+            self.collection_of_robot_pos.append(self.get_robot_pos())
 
     def move_forward_by(self, no_of_steps):
         for i in range(int(no_of_steps)):
             self.robot.move_forward()
             if not constants.IS_CHECKING:
                 self.collection_of_movements.append("F")
+                self.collection_of_robot_pos.append(self.get_robot_pos())
 
     def move_backward_by(self, no_of_steps):
         for i in range(int(no_of_steps)):
             self.robot.move_backward()
             if not constants.IS_CHECKING:
                 self.collection_of_movements.append("B")
+                self.collection_of_robot_pos.append(self.get_robot_pos())
 
     def reset_collection_of_movements(self):
         self.collection_of_movements = []
@@ -1211,8 +1218,15 @@ class PathPlan(object):
         obstacle_id_list = ["OBSTACLE", self.obstacle_cell.get_obstacle().get_obstacle_id()]
         return '/'.join([str(elem) for elem in obstacle_id_list])
 
-    def get_robot_pos_and_dir(self):
-        robot_list = ["ROBOT", self.robot.grid_x, self.robot.grid_y, self.robot.angle]
+    def get_robot_pos(self):
+        return (self.robot.grid_x, self.robot.grid_y, self.robot.angle)
+
+    def get_collection_of_robot_pos_string(self):
+        return '/'.join([str(pos) for pos in self.collection_of_robot_pos])
+
+    def get_robot_pos_string(self):
+        robot_list = ["ROBOT", self.obstacle_cell.get_obstacle().get_obstacle_id(),
+                      self.get_collection_of_robot_pos_string()]
         return '/'.join([str(elem) for elem in robot_list])
 
     def check_reached_target(self, target_a, target_b):
@@ -1220,12 +1234,12 @@ class PathPlan(object):
         if target_a == x and target_b == y:
             print(self.get_movements_string())
             print(self.get_current_obstacle_id())
-            print(self.get_robot_pos_and_dir())
+            print(self.get_robot_pos_string())
 
             # Send to RPI
             if constants.RPI_CONNECTED:
                 self.simulator.comms.send(self.get_movements_string())
-                self.reset_collection_of_movements()
+                self.simulator.comms.send(self.get_robot_pos_string())
 
             self.reset_collection_of_movements()
 
@@ -1237,7 +1251,7 @@ class PathPlan(object):
             return True
         print(self.get_movements_string())
         print(self.get_current_obstacle_id())
-        print(self.get_robot_pos_and_dir())
+        print(self.get_robot_pos_string())
         return False
 
     def check_movement_possible(self, a, b, x, y, robot_direction, target_direction):
@@ -1386,50 +1400,50 @@ class PathPlan(object):
             print("Check-fail:", area)
             return False
 
-    def check_permutation(self, perm):
-        initial_x = self.robot_x
-        initial_y = self.robot_y
-        initial_dir = self.robot_direction
-        possible = True
-        for target in perm:
-            target_x = target[0]
-            target_y = target[1]
-            target_direction = target[2]
-            obstacle_cell = target[3]
-
-            robot_x = self.robot.get_grid_pos()[0]
-            robot_y = self.robot.get_grid_pos()[1]
-            robot_direction = self.robot.get_angle_of_rotation()
-            if not self.check_movement_possible(target_x, target_y, robot_x, robot_y,
-                                                robot_direction, target_direction):
-                possible = False
-                break
-
-        # Reset robot position
-        self.robot.correct_coords_and_angle(initial_dir, self.grid.grid_to_pixel((initial_x, initial_y)))
-
-        if possible:
-            return True
-        return False
-
-    def brute_force_possible_path(self):
-        no_of_obstacles = len(self.fastest_route)
-        possible_routes = []
-        list_of_possible_perms = list(itertools.permutations(self.fastest_route))
-
-        for perm in list_of_possible_perms:
-            if self.check_permutation(perm):
-                possible_routes.append(perm)
-
-        print("PRINTING POSSIBLE ROUTES")
-        for route in possible_routes:
-            print(route)
-
-        new_route = []
-        if len(possible_routes) == 0:
-            # Find a place to reposition n recheck
-            return self.fastest_route
-        else:
-            for obstacle in possible_routes[randint(0, len(possible_routes)) - 1]:
-                new_route.append(obstacle)
-            return new_route
+    # def check_permutation(self, perm):
+    #     initial_x = self.robot_x
+    #     initial_y = self.robot_y
+    #     initial_dir = self.robot_direction
+    #     possible = True
+    #     for target in perm:
+    #         target_x = target[0]
+    #         target_y = target[1]
+    #         target_direction = target[2]
+    #         obstacle_cell = target[3]
+    #
+    #         robot_x = self.robot.get_grid_pos()[0]
+    #         robot_y = self.robot.get_grid_pos()[1]
+    #         robot_direction = self.robot.get_angle_of_rotation()
+    #         if not self.check_movement_possible(target_x, target_y, robot_x, robot_y,
+    #                                             robot_direction, target_direction):
+    #             possible = False
+    #             break
+    #
+    #     # Reset robot position
+    #     self.robot.correct_coords_and_angle(initial_dir, self.grid.grid_to_pixel((initial_x, initial_y)))
+    #
+    #     if possible:
+    #         return True
+    #     return False
+    #
+    # def brute_force_possible_path(self):
+    #     no_of_obstacles = len(self.fastest_route)
+    #     possible_routes = []
+    #     list_of_possible_perms = list(itertools.permutations(self.fastest_route))
+    #
+    #     for perm in list_of_possible_perms:
+    #         if self.check_permutation(perm):
+    #             possible_routes.append(perm)
+    #
+    #     print("PRINTING POSSIBLE ROUTES")
+    #     for route in possible_routes:
+    #         print(route)
+    #
+    #     new_route = []
+    #     if len(possible_routes) == 0:
+    #         # Find a place to reposition n recheck
+    #         return self.fastest_route
+    #     else:
+    #         for obstacle in possible_routes[randint(0, len(possible_routes)) - 1]:
+    #             new_route.append(obstacle)
+    #         return new_route
