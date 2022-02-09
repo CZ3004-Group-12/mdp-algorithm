@@ -49,7 +49,7 @@ class AStar:
         self.grid.get_obstacle_cells()
         for obstacle_id in self.grid.get_obstacle_cells().values():
             obstacle_x, obstacle_y = obstacle_id.get_xcoord(), obstacle_id.get_ycoord()
-            if small_x <= obstacle_x <= big_x and small_y <= obstacle_y <= big_y:
+            if small_x-2 <= obstacle_x <= big_x+2 and small_y-2 <= obstacle_y <= big_y+2:
                 cost += 1
         return cost
 
@@ -70,10 +70,13 @@ class AStar:
                                              [all_target_unordered[0][0], all_target_unordered[0][1]])
             for i in range(len(all_target_unordered)):
                 print(i)
+                #cost based on displacement
                 displacement = self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
                                                      [all_target_unordered[i][0], all_target_unordered[i][1]])
+                #cost based on the difference in the direction of the target and the robot
                 cost_turn = weight_turn * self.direction_diff_to_weight(all_target_unordered[i][2],
                                                                         all_target_ordered[temp][2])
+                #cost based on the number of obstacles in the box created with the robot position and the target
                 cost_obstacle = weight_obstacle * self.cost_by_obstacle(all_target_unordered[i][0],
                                                                         all_target_unordered[i][1],
                                                                         all_target_ordered[temp][0],
