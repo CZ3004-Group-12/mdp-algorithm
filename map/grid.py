@@ -73,6 +73,20 @@ class Grid(object):
 
         return target_locations
 
+    def create_obstacle(self, grid_x, grid_y, dir):
+        # Set that location to one
+        cell = self.get_cell_by_xycoords(grid_x, grid_y)
+        cell.create_obstacle(dir)
+
+        # Add/remove cell from dict of obstacles accordingly
+        if cell.get_cell_status() == 3:
+            if cell.get_obstacle().get_obstacle_id() not in self.obstacle_cells.keys():
+                self.obstacle_cells[cell.get_obstacle().get_obstacle_id()] = cell  # '1-12': cell()
+        for r in range(self.grid_row):
+            for c in range(self.grid_column):
+                a = self.get_cell(r, c)
+                self.set_obstacle_boundary_cells(a)  # runs only for obstacle cell
+
     def grid_clicked(self, x_coordinate, y_coordinate):
         # Change the x/y screen coordinates to grid coordinates
         column = (x_coordinate - 120) // (self.block_size + MARGIN)

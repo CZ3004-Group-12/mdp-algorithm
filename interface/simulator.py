@@ -108,6 +108,29 @@ class Simulator:
                     self.comms = AlgoClient()
                     self.comms.connect()
                     constants.RPI_CONNECTED = True
+
+                    while constants.RPI_CONNECTED == True:
+                        txt = self.comms.recv()
+                        txt_split = txt.split("|")
+                        source, message = txt_split[0], txt_split[1]
+                        if source == "AND":
+                            print("Received command from ANDROID")
+                            message_split = message.split("/", 1)
+                            command = message_split[0]
+                            if command == "CREATE":
+                                # Create obstacles given parameters
+                                print("[AND] Creating obstacle...")
+                                parameters = message_split[1]
+                                param_split = parameters.split("/")
+                                id, grid_x, grid_y, dir = param_split[0], param_split[1], param_split[2], param_split[3]
+                                self.grid.create_obstacle(grid_x, grid_y, dir)
+                            elif command == "RESET":
+                                print("[AND] Resetting obstacles...")
+                                self.reset_button_clicked()
+                            elif command == "START":
+                                print("[AND] Starting path calculation...")
+                                self.start_button_clicked()
+
                 elif button_func == "DISCONNECT":
                     print("Disconnect button pressed.")
                     self.comms.disconnect()
