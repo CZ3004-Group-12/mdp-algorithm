@@ -119,6 +119,8 @@ class Simulator:
                         task = message_split[1]
                         # E.g. message_split = START/EXPLORE/(00,13,04,180)/(01,14,06,-90)/(02,11,07,0)/(03,13,10,0)/(04,16,09,90)
                         if command == "START" and task == "EXPLORE":    # Week 8 Task
+                            # Reset first
+                            self.reset_button_clicked()
                             # Create obstacles given parameters
                             print("Creating obstacle...")
                             obstacles = message_split[2]
