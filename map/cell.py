@@ -28,6 +28,11 @@ class Cell:
             self.obstacle = None
             self.status = 0
 
+    def create_obstacle(self, dir):
+        self.obstacle = Obstacle(self.x_coordinate, self.y_coordinate)
+        self.status = 3
+        self.obstacle.set_direction(dir)
+
     def set_obstacle_boundary_status(self):
         self.status = 2
 

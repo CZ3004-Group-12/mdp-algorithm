@@ -32,6 +32,9 @@ class Obstacle:
             self.direction = None
             return
 
+    def set_direction(self, dir):
+        self.direction = dir
+
     def get_direction(self):
         return self.direction
 
