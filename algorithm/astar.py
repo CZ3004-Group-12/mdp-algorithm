@@ -28,6 +28,12 @@ class AStar:
         else:
             return num2
 
+    def max(self, num1, num2):
+        if num1 < num2:
+            return num2
+        else:
+            return num1
+
     def direction_diff_to_weight(self, target_direction, robot_direction):
         if min(abs(target_direction - robot_direction), abs(robot_direction - target_direction)) == 0:
             return 1
@@ -37,9 +43,20 @@ class AStar:
             return 4
         return 0
 
+    def cost_by_obstacle(self, x1, y1, x2, y2):
+        small_x, big_x, small_y, big_y = min(x1, x2), max(x1, x2), min(y1, y2), max(y1, y2)
+        cost = 0
+        self.grid.get_obstacle_cells()
+        for obstacle_id in self.grid.get_obstacle_cells().values():
+            obstacle_x, obstacle_y = obstacle_id.get_xcoord(), obstacle_id.get_ycoord()
+            if small_x <= obstacle_x <= big_x and small_y <= obstacle_y <= big_y:
+                cost += 1
+        return cost
+
     def get_astar_route(self):
         # weight for difference in direction
-        weight = 1
+        weight_turn = 1
+        weight_obstacle = 1
         all_target_unordered = self.grid.get_target_locations()
         all_target_ordered = []
         all_target_ordered.append(
@@ -55,11 +72,17 @@ class AStar:
                 print(i)
                 displacement = self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
                                                      [all_target_unordered[i][0], all_target_unordered[i][1]])
-                cost_turn = weight * self.direction_diff_to_weight(all_target_unordered[i][2],
-                                                                   all_target_ordered[temp][2])
-                if smallest > (displacement + cost_turn):
-                    smallest = displacement + cost_turn
-                    index = i
+                cost_turn = weight_turn * self.direction_diff_to_weight(all_target_unordered[i][2],
+                                                                        all_target_ordered[temp][2])
+                cost_obstacle = weight_obstacle * self.cost_by_obstacle(all_target_unordered[i][0],
+                                                                        all_target_unordered[i][1],
+                                                                        all_target_ordered[temp][0],
+                                                                        all_target_ordered[temp][1])
+
+                total_cost = displacement + cost_turn + cost_obstacle
+                if smallest > total_cost:
+                    smallest = total_cost
+                index = i
             all_target_ordered.append(all_target_unordered.pop(index))
-        # print(all_target_ordered)
+        print(all_target_ordered)
         return all_target_ordered
