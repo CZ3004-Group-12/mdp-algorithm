@@ -109,27 +109,30 @@ class Simulator:
                     self.comms.connect()
                     constants.RPI_CONNECTED = True
 
-                    while constants.RPI_CONNECTED == True:
-                        txt = self.comms.recv()
-                        txt_split = txt.split("|")
-                        source, message = txt_split[0], txt_split[1]
-                        if source == "AND":
-                            print("Received command from ANDROID")
-                            message_split = message.split("/", 1)
-                            command = message_split[0]
-                            if command == "CREATE":
-                                # Create obstacles given parameters
-                                print("[AND] Creating obstacle...")
-                                parameters = message_split[1]
-                                param_split = parameters.split("/")
-                                id, grid_x, grid_y, dir = param_split[0], param_split[1], param_split[2], param_split[3]
+                    txt = self.comms.recv()
+                    txt_split = txt.split("|")
+                    source, message = txt_split[0], txt_split[1]
+                    if source == "AND":  # From Android
+                        print("Received command from ANDROID")
+                        message_split = message.split("/", 2)
+                        command = message_split[0]
+                        task = message_split[1]
+                        # E.g. message_split[1] = START/EXPLORE/(00,13,04,180)/(01,14,06,-90)/(02,11,07,0)/(03,13,10,0)/(04,16,09,90)
+                        if command == "START" and task == "EXPLORE":    # Week 8 Task
+                            # Create obstacles given parameters
+                            print("Creating obstacle...")
+                            obstacles = message_split[2]
+                            obstacles_split = obstacles.split("/")
+                            for obstacle in obstacles_split:
+                                obstacle = obstacle[1:-1]
+                                params = obstacle.split(",")
+                                id, grid_x, grid_y, dir = params[0], params[1], params[2], params[3]
                                 self.grid.create_obstacle(grid_x, grid_y, dir)
-                            elif command == "RESET":
-                                print("[AND] Resetting obstacles...")
-                                self.reset_button_clicked()
-                            elif command == "START":
-                                print("[AND] Starting path calculation...")
-                                self.start_button_clicked()
+                                self.car.redraw_car()
+                            print("[AND] Doing path calculation...")
+                            self.start_button_clicked()
+                        elif command == "START" and task == "PATH":    # Week 9 Task
+                            pass
 
                 elif button_func == "DISCONNECT":
                     print("Disconnect button pressed.")
