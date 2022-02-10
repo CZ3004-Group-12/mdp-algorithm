@@ -238,10 +238,12 @@ def search(maze, cost, start, end):
             # Create the f, g, and h values
             child.g = current_node.g + tempCost
 
-            # TODO: can try out Manhattan distance to see if it works better as well
-            # Heuristic costs calculated here, this is using euclidean distance
-            child.h = (((child.position[0] - end_node.position[0]) ** 2) +
-                       ((child.position[1] - end_node.position[1]) ** 2))
+            # Heuristic costs calculated here, this is using MANHATTAN distance
+            child.h = abs(child.position[0] - end_node.position[0]) + abs(child.position[1] - end_node.position[1])
+
+            # Heuristic costs calculated here, this is using EUCLIDEAN distance
+            # child.h = (((child.position[0] - end_node.position[0]) ** 2) +
+            #            ((child.position[1] - end_node.position[1]) ** 2))
 
             child.f = child.g + child.h
 
