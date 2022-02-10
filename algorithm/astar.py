@@ -55,8 +55,8 @@ class AStar:
 
     def get_astar_route(self):
         # weight for difference in direction
-        weight_turn = 1
-        weight_obstacle = 1
+        weight_turn = 0.5
+        weight_obstacle = 0.5
         all_target_unordered = self.grid.get_target_locations()
         all_target_ordered = []
         all_target_ordered.append(
@@ -82,7 +82,7 @@ class AStar:
                                                                         all_target_ordered[temp][0],
                                                                         all_target_ordered[temp][1])
 
-                total_cost = displacement #+ cost_turn + cost_obstacle
+                total_cost = displacement + cost_turn + cost_obstacle
                 if smallest > total_cost:
                     smallest = total_cost
                     index = i
