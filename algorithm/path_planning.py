@@ -120,6 +120,10 @@ class PathPlan(object):
             self.turn_forward_right()
         elif move == "FL":
             self.turn_forward_left()
+        # elif move == "BR":
+        #     self.turn_backward_right()
+        # elif move == "BL":
+        #     self.turn_backward_left()
 
     def translate_path_to_movements(self, path):
         no_of_steps = len(path)
@@ -150,6 +154,8 @@ class PathPlan(object):
                     self.forward_r(list_of_movements)
                 elif curr_dir == constants.WEST:
                     self.forward_l(list_of_movements)
+                elif curr_dir == constants.SOUTH:
+                    self.uturn(list_of_movements)
                 elif curr_dir == prev_dir:
                     if prev_y > step[1]:
                         list_of_movements.append("B")
@@ -160,6 +166,8 @@ class PathPlan(object):
                     self.forward_r(list_of_movements)
                 elif curr_dir == constants.EAST:
                     self.forward_l(list_of_movements)
+                elif curr_dir == constants.NORTH:
+                    self.uturn(list_of_movements)
                 elif curr_dir == prev_dir:
                     if prev_y < step[1]:
                         list_of_movements.append("B")
@@ -170,6 +178,8 @@ class PathPlan(object):
                     self.forward_r(list_of_movements)
                 elif curr_dir == constants.NORTH:
                     self.forward_l(list_of_movements)
+                elif curr_dir == constants.WEST:
+                    self.uturn(list_of_movements)
                 elif curr_dir == prev_dir:
                     if prev_x > step[0]:
                         list_of_movements.append("B")
@@ -180,6 +190,8 @@ class PathPlan(object):
                     self.forward_r(list_of_movements)
                 elif curr_dir == constants.SOUTH:
                     self.forward_l(list_of_movements)
+                elif curr_dir == constants.EAST:
+                    self.uturn(list_of_movements)
                 elif curr_dir == prev_dir:
                     if prev_x < step[0]:
                         list_of_movements.append("B")
@@ -226,6 +238,17 @@ class PathPlan(object):
         list_of_movements.append("FR")
         list_of_movements.append("B")
         list_of_movements.append("B")
+
+    def uturn(self, list_of_movements):
+        list_of_movements.append("FR")
+        list_of_movements.append("B")
+        list_of_movements.append("B")
+        list_of_movements.append("B")
+        list_of_movements.append("B")
+        list_of_movements.append("B")
+        list_of_movements.append("B")
+        list_of_movements.append("FR")
+        list_of_movements.append("F")
 
     def transpose_orientation(self, target_x, target_y, target_direction, robot_x, robot_y):
         if target_direction == constants.NORTH:

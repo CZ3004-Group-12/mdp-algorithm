@@ -395,8 +395,8 @@ class Robot(object):
 
     # TODO: it is possible for robot to move outside of border for now (to meet some of the limitations of path planning
     def check_within_border(self, pos):
-        if (constants.min_pixel_pos_x + self.robot_w - (THREE_CELL*2) < pos[0] < constants.max_pixel_pos_x - self.robot_w + (THREE_CELL*2)) \
-                and (constants.min_pixel_pos_y + self.robot_h - (THREE_CELL*2) < pos[1] < constants.max_pixel_pos_y - self.robot_h + (THREE_CELL*2)):
+        if (constants.min_pixel_pos_x + self.robot_w < pos[0] < constants.max_pixel_pos_x - self.robot_w) \
+                and (constants.min_pixel_pos_y + self.robot_h < pos[1] < constants.max_pixel_pos_y - self.robot_h):
             return True
         if not constants.IS_CHECKING:
             #raise BorderException("BORDER")
