@@ -82,7 +82,7 @@ class AStar:
                                                                         all_target_ordered[temp][0],
                                                                         all_target_ordered[temp][1])
 
-                total_cost = displacement + cost_turn + cost_obstacle
+                total_cost = displacement #+ cost_turn + cost_obstacle
                 if smallest > total_cost:
                     smallest = total_cost
                     index = i
