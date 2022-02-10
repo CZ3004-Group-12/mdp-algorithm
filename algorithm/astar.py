@@ -20,7 +20,7 @@ class AStar:
         self.recorded_movements = []
 
     def get_displacement(self, pos1, pos2):
-        return math.sqrt((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2)
+        return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
 
     def min(self, num1, num2):
         if num1 < num2:
@@ -85,7 +85,7 @@ class AStar:
                 total_cost = displacement + cost_turn + cost_obstacle
                 if smallest > total_cost:
                     smallest = total_cost
-                index = i
+                    index = i
             all_target_ordered.append(all_target_unordered.pop(index))
         print(all_target_ordered)
         return all_target_ordered
