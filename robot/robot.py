@@ -9,7 +9,7 @@ from constants import BUFFER
 MARGIN = 2
 ONE_CELL = 20 + MARGIN
 THREE_CELL = 3 * ONE_CELL
-dt = 0.3
+dt = 0.8     # Max without messing up is 0.8
 
 
 # dt = round(self.clock.get_time() / 1000, 2)
@@ -92,8 +92,8 @@ class Robot(object):
     def check_movement_complete(self, final_pixel_pos):
         if constants.IS_CHECKING:
             return True
-        return abs(self.get_pixel_pos()[0] - final_pixel_pos[0]) < 2 and abs(
-            self.get_pixel_pos()[1] - final_pixel_pos[1]) < 2
+        return abs(self.get_pixel_pos()[0] - final_pixel_pos[0]) < 4 and abs(
+            self.get_pixel_pos()[1] - final_pixel_pos[1]) < 4
 
     # TODO: define possible movements (for turning motions picture steering wheel direction)
     # ALL MOTIONS take place in minimal unit.
@@ -391,7 +391,7 @@ class Robot(object):
         if constants.IS_CHECKING:
             return True
         # Set position to stop moving
-        return self.check_movement_complete(final_pixel_pos) and abs(self.angle - initial_angle) > 85
+        return self.check_movement_complete(final_pixel_pos) and abs(self.angle - initial_angle) > 80
 
     # TODO: it is possible for robot to move outside of border for now (to meet some of the limitations of path planning
     def check_within_border(self, pos):
