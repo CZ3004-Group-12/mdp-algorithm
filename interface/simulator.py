@@ -207,7 +207,7 @@ class Simulator:
         print("START button clicked!")
 
         # Get fastest route
-        self.astar = AStar(self.grid, 1, 1)
+        self.astar = AStar(self.grid, self.car.grid_x, self.car.grid_y)
         fastest_route = self.astar.get_astar_route()
         logging.info("Astar route: " + str(fastest_route))
 
