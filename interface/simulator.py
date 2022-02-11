@@ -177,8 +177,8 @@ class Simulator:
                     self.comms = AlgoClient()
                     self.comms.connect()
                     self.recv_thread = threading.Thread(target=self.receiving_process)
-                    self.recv_thread.start()
                     constants.RPI_CONNECTED = True
+                    self.recv_thread.start()
                 elif button_func == "DISCONNECT":
                     print("Disconnect button pressed.")
                     self.comms.disconnect()
