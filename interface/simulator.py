@@ -1,6 +1,7 @@
 import os
 import constants
 
+import threading
 from communication.comms import AlgoClient
 from map.grid import Grid
 from interface.panel import Panel
@@ -21,6 +22,8 @@ class Simulator:
         # Initialize pygame
         self.root = pygame
         self.root.init()
+        self.recv_thread = threading.Thread(target=self.receiving_process)
+
         self.root.display.set_caption("MDP Algorithm Simulator")
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         self.screen.fill(constants.GRAY)
@@ -84,6 +87,35 @@ class Simulator:
         # Be IDLE friendly. If you forget this line, the program will 'hang' on exit.
         self.root.quit()
 
+    def receiving_process(self):
+        print("Testing")
+        txt = self.comms.recv()
+        txt_split = txt.split("|")
+        source, message = txt_split[0], txt_split[1]
+        if source == "AND":  # From Android
+            print("Received command from ANDROID")
+            message_split = message.split("/", 2)
+            command = message_split[0]
+            task = message_split[1]
+            # E.g. message_split = START/EXPLORE/(00,13,04,180)/(01,14,06,-90)/(02,11,07,0)/(03,13,10,0)/(04,16,09,90)
+            if command == "START" and task == "EXPLORE":  # Week 8 Task
+                # Reset first
+                self.reset_button_clicked()
+                # Create obstacles given parameters
+                print("Creating obstacle...")
+                obstacles = message_split[2]
+                obstacles_split = obstacles.split("/")
+                for obstacle in obstacles_split:
+                    obstacle = obstacle[1:-1]
+                    params = obstacle.split(",")
+                    id, grid_x, grid_y, dir = params[0], int(params[1]), int(params[2]), int(params[3])
+                    self.grid.create_obstacle(grid_x, grid_y, dir)
+                self.car.redraw_car()
+                print("[AND] Doing path calculation...")
+                self.start_button_clicked()
+            elif command == "START" and task == "PATH":  # Week 9 Task
+                pass
+
     def reprint_screen_and_buttons(self):
         self.screen.fill(constants.GRAY)
         self.panel.redraw_buttons()
@@ -107,8 +139,9 @@ class Simulator:
                     print("Connect button pressed.")
                     self.comms = AlgoClient()
                     self.comms.connect()
+                    self.recv_thread.start()
                     constants.RPI_CONNECTED = True
-
+                    """
                     txt = self.comms.recv()
                     txt_split = txt.split("|")
                     source, message = txt_split[0], txt_split[1]
@@ -135,7 +168,7 @@ class Simulator:
                             self.start_button_clicked()
                         elif command == "START" and task == "PATH":    # Week 9 Task
                             pass
-
+                    """
                 elif button_func == "DISCONNECT":
                     print("Disconnect button pressed.")
                     self.comms.disconnect()
@@ -164,7 +197,7 @@ class Simulator:
         print("START button clicked!")
 
         # Get fastest route
-        self.astar = AStar(self.grid, self.car.grid_x, self.car.grid_y)
+        self.astar = AStar(self.grid, 1, 1)
         fastest_route = self.astar.get_astar_route()
         logging.info("Astar route: " + str(fastest_route))
 
@@ -175,3 +208,4 @@ class Simulator:
     def reset_button_clicked(self):
         self.grid.reset(self.screen)
         self.car.reset()
+
