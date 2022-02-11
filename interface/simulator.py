@@ -17,7 +17,7 @@ WINDOW_SIZE = [960, 660]
 
 class Simulator:
 
-    def __init__(self):
+    def __init__(self, headless):
         self.comms = None
 
         # Initialize pygame
@@ -66,43 +66,61 @@ class Simulator:
         done = False
 
         # -------- Main Program Loop -----------
-        while not done:
-            # Check for callbacks from worker thread
+        if headless: # to simpify implementation, we use 2 threads even if headless
+            print("Waiting to connect")
+            self.comms = AlgoClient()
+            self.comms.connect()
+            print("Connected!")
+            self.recv_thread = threading.Thread(target=self.receiving_process)
+            constants.RPI_CONNECTED = True
+            self.recv_thread.start()
             while True:
                 try:
                     callback = self.callback_queue.get(False) #doesn't block
                 except queue.Empty: #raised when queue is empty
                     break
                 callback()
-            
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    done = True
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # User clicks the mouse. Get the position
-                    pos = pygame.mouse.get_pos()
-                    if (120 < pos[0] < 560) and (120 < pos[1] < 560):  # if area clicked is within grid
-                        # wait for worker thread to finish obstacle edits
-                        while (self.grid_semaphore):
-                            pass 
-                        self.grid_semaphore = True
 
-                        self.grid.grid_clicked(pos[0], pos[1])
-                        self.grid_semaphore = False
-                        self.screen.blit(self.grid_surface, (120, 120))  # Redraw the grid outlines
-                        self.grid.update_grid(self.screen)  # Update grid if obstacles added
-                        self.car.draw_car()  # Redraw the car
+        else:
+            while not done:
+                # Check for callbacks from worker thread
+                while True:
+                    try:
+                        callback = self.callback_queue.get(False) #doesn't block
+                    except queue.Empty: #raised when queue is empty
+                        break
+                    callback()
+                
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        done = True
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        # User clicks the mouse. Get the position
+                        pos = pygame.mouse.get_pos()
+                        if (120 < pos[0] < 560) and (120 < pos[1] < 560):  # if area clicked is within grid
+                            # wait for worker thread to finish obstacle edits
+                            while (self.grid_semaphore):
+                                pass 
+                            self.grid_semaphore = True
 
-                        # reset semaphore once obstacle changes are done
-                        self.grid_semaphore = False
-                    else:  # otherwise, area clicked is outside of grid
-                        self.check_button_clicked(pos)
+                            self.grid.grid_clicked(pos[0], pos[1])
+                            self.grid_semaphore = False
+                            self.screen.blit(self.grid_surface, (120, 120))  # Redraw the grid outlines
+                            self.grid.update_grid(self.screen)  # Update grid if obstacles added
+                            self.car.draw_car()  # Redraw the car
 
-            # Limit to 20 frames per second
-            now = pygame.time.get_ticks()/1000
-            if now - self.startTime > 1 / constants.FPS:
-                self.startTime = now
-                self.root.display.flip()
+                            # reset semaphore once obstacle changes are done
+                            self.grid_semaphore = False
+                        else:  # otherwise, area clicked is outside of grid
+                            self.check_button_clicked(pos)
+                
+                # Limit to 20 frames per second
+                now = pygame.time.get_ticks()/1000
+                if now - self.startTime > 1 / constants.FPS:
+                    self.startTime = now
+                    self.root.display.flip()
+
+        
 
         # Be IDLE friendly. If you forget this line, the program will 'hang' on exit.
         self.root.quit()
@@ -154,7 +172,7 @@ class Simulator:
                         
                     elif command == "START" and task == "PATH":  # Week 9 Task
                         pass
-                    
+
             except IndexError:
                 self.comms.send("Invalid command: " + txt)
                 print("Invalid command: " + txt)
