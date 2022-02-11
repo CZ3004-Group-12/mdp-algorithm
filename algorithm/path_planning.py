@@ -1082,9 +1082,16 @@ class PathPlan(object):
             self.turn_forward_right()
             return
 
-        self.move_forward_by(3)
-        self.turn_backward_left()
-        self.move_forward_by(3)
+        if x < 4:
+            self.turn_backward_right()
+            self.move_forward_by(3)
+            self.turn_forward_right()
+            self.move_backward_by(3)
+            self.turn_forward_right()
+        else:
+            self.move_forward_by(3)
+            self.turn_backward_left()
+            self.move_forward_by(3)
 
     def DR1(self, a, b, x, y):
         if abs(b - y) <= 2:
@@ -1184,9 +1191,16 @@ class PathPlan(object):
             self.turn_forward_left()
             return
 
-        self.move_forward_by(3)
-        self.turn_backward_right()
-        self.move_forward_by(3)
+        if x > 15:
+            self.turn_backward_left()
+            self.move_forward_by(3)
+            self.turn_forward_left()
+            self.move_backward_by(3)
+            self.turn_forward_left()
+        else:
+            self.move_forward_by(3)
+            self.turn_backward_right()
+            self.move_forward_by(3)
 
     def turn_forward_right(self):
         self.robot.move_forward_steer_right()
