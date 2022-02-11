@@ -11,8 +11,9 @@ import socket
 FORMAT = "UTF-8"
 ALGO_SOCKET_BUFFER_SIZE = 1024
 # WIFI_IP = "192.168.68.110"
-WIFI_IP = "192.168.2.145"
+# WIFI_IP = "192.168.2.145"
 WIFI_IP = "192.168.0.189"
+# WIFI_IP = "localhost" # Use this for easier testing if server is in same environment
 PORT = 5050
 
 

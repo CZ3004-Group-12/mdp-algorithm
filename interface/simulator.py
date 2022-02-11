@@ -10,6 +10,7 @@ from algorithm.astar import AStar
 from algorithm.path_planning import PathPlan
 import pygame
 import logging
+import queue
 
 # Set the HEIGHT and WIDTH of the screen
 WINDOW_SIZE = [960, 660]
@@ -22,17 +23,19 @@ class Simulator:
         # Initialize pygame
         self.root = pygame
         self.root.init()
-        self.recv_thread = threading.Thread(target=self.receiving_process)
-
         self.root.display.set_caption("MDP Algorithm Simulator")
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         self.screen.fill(constants.GRAY)
+
+        # Callback methods queue - for passing of callback functions from worker thread to main UI thread
+        self.callback_queue = queue.Queue()
 
         # Astar class
         self.astar = None
 
         # Initialise 20 by 20 Grid
         self.grid = Grid(20, 20, 20)
+        self.grid_semaphore = False # to ensure worker thread does not edit grid at the same time
         self.grid.draw_grid(self.screen)
         # Outline Grid
         self.grid_surface = self.root.Surface((442, 442))
@@ -64,6 +67,14 @@ class Simulator:
 
         # -------- Main Program Loop -----------
         while not done:
+            # Check for callbacks from worker thread
+            while True:
+                try:
+                    callback = self.callback_queue.get(False) #doesn't block
+                except queue.Empty: #raised when queue is empty
+                    break
+                callback()
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True
@@ -71,10 +82,19 @@ class Simulator:
                     # User clicks the mouse. Get the position
                     pos = pygame.mouse.get_pos()
                     if (120 < pos[0] < 560) and (120 < pos[1] < 560):  # if area clicked is within grid
+                        # wait for worker thread to finish obstacle edits
+                        while (self.grid_semaphore):
+                            pass 
+                        self.grid_semaphore = True
+
                         self.grid.grid_clicked(pos[0], pos[1])
+                        self.grid_semaphore = False
                         self.screen.blit(self.grid_surface, (120, 120))  # Redraw the grid outlines
                         self.grid.update_grid(self.screen)  # Update grid if obstacles added
                         self.car.draw_car()  # Redraw the car
+
+                        # reset semaphore once obstacle changes are done
+                        self.grid_semaphore = False
                     else:  # otherwise, area clicked is outside of grid
                         self.check_button_clicked(pos)
 
@@ -88,33 +108,50 @@ class Simulator:
         self.root.quit()
 
     def receiving_process(self):
-        print("Testing")
-        txt = self.comms.recv()
-        txt_split = txt.split("|")
-        source, message = txt_split[0], txt_split[1]
-        if source == "AND":  # From Android
-            print("Received command from ANDROID")
-            message_split = message.split("/", 2)
-            command = message_split[0]
-            task = message_split[1]
-            # E.g. message_split = START/EXPLORE/(00,13,04,180)/(01,14,06,-90)/(02,11,07,0)/(03,13,10,0)/(04,16,09,90)
-            if command == "START" and task == "EXPLORE":  # Week 8 Task
-                # Reset first
-                self.reset_button_clicked()
-                # Create obstacles given parameters
-                print("Creating obstacle...")
-                obstacles = message_split[2]
-                obstacles_split = obstacles.split("/")
-                for obstacle in obstacles_split:
-                    obstacle = obstacle[1:-1]
-                    params = obstacle.split(",")
-                    id, grid_x, grid_y, dir = params[0], int(params[1]), int(params[2]), int(params[3])
-                    self.grid.create_obstacle(grid_x, grid_y, dir)
-                self.car.redraw_car()
-                print("[AND] Doing path calculation...")
-                self.start_button_clicked()
-            elif command == "START" and task == "PATH":  # Week 9 Task
-                pass
+        """
+        Method to be run in a separate thread to listen for commands from the socket
+        Methods that update the UI must be passed into self.callback_queue for running in the main UI thread
+        Running UI updating methods in a worker thread will cause a flashing effect as both threads attempt to update the UI
+        """
+        while constants.RPI_CONNECTED:
+            txt = self.comms.recv()
+            txt_split = txt.split("|")
+            source, message = txt_split[0], txt_split[1]
+            if source == "AND":  # From Android
+                print("Received command from ANDROID")
+                message_split = message.split("/", 2)
+                command = message_split[0]
+                task = message_split[1]
+                # E.g. message_split = START/EXPLORE/(00,13,04,180)/(01,14,06,-90)/(02,11,07,0)/(03,13,10,0)/(04,16,09,90)
+                if command == "START" and task == "EXPLORE":  # Week 8 Task
+                    # Reset first
+                    self.callback_queue.put(self.reset_button_clicked)
+
+                    # wait for other thread to release semaphore before editing obstacles
+                    while (self.grid_semaphore): 
+                        pass 
+                    self.grid_semaphore = True
+
+                    # Create obstacles given parameters
+                    print("Creating obstacle...")
+                    obstacles = message_split[2]
+                    obstacles_split = obstacles.split("/")
+                    for obstacle in obstacles_split:
+                        obstacle = obstacle[1:-1]
+                        params = obstacle.split(",")
+                        id, grid_x, grid_y, dir = params[0], int(params[1]), int(params[2]), int(params[3])
+                        self.grid.create_obstacle(grid_x, grid_y, dir)
+
+                    # release semaphore once obstacles updated
+                    self.grid_semaphore = False 
+
+                    # Update grid, start explore
+                    self.callback_queue.put(self.car.redraw_car)
+                    print("[AND] Doing path calculation...")
+                    self.callback_queue.put(self.start_button_clicked)
+                    
+                elif command == "START" and task == "PATH":  # Week 9 Task
+                    pass
 
     def reprint_screen_and_buttons(self):
         self.screen.fill(constants.GRAY)
@@ -139,36 +176,9 @@ class Simulator:
                     print("Connect button pressed.")
                     self.comms = AlgoClient()
                     self.comms.connect()
+                    self.recv_thread = threading.Thread(target=self.receiving_process)
                     self.recv_thread.start()
                     constants.RPI_CONNECTED = True
-                    """
-                    txt = self.comms.recv()
-                    txt_split = txt.split("|")
-                    source, message = txt_split[0], txt_split[1]
-                    if source == "AND":  # From Android
-                        print("Received command from ANDROID")
-                        message_split = message.split("/", 2)
-                        command = message_split[0]
-                        task = message_split[1]
-                        # E.g. message_split = START/EXPLORE/(00,13,04,180)/(01,14,06,-90)/(02,11,07,0)/(03,13,10,0)/(04,16,09,90)
-                        if command == "START" and task == "EXPLORE":    # Week 8 Task
-                            # Reset first
-                            self.reset_button_clicked()
-                            # Create obstacles given parameters
-                            print("Creating obstacle...")
-                            obstacles = message_split[2]
-                            obstacles_split = obstacles.split("/")
-                            for obstacle in obstacles_split:
-                                obstacle = obstacle[1:-1]
-                                params = obstacle.split(",")
-                                id, grid_x, grid_y, dir = params[0], int(params[1]), int(params[2]), int(params[3])
-                                self.grid.create_obstacle(grid_x, grid_y, dir)
-                            self.car.redraw_car()
-                            print("[AND] Doing path calculation...")
-                            self.start_button_clicked()
-                        elif command == "START" and task == "PATH":    # Week 9 Task
-                            pass
-                    """
                 elif button_func == "DISCONNECT":
                     print("Disconnect button pressed.")
                     self.comms.disconnect()
