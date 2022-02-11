@@ -113,45 +113,52 @@ class Simulator:
         Methods that update the UI must be passed into self.callback_queue for running in the main UI thread
         Running UI updating methods in a worker thread will cause a flashing effect as both threads attempt to update the UI
         """
+        
         while constants.RPI_CONNECTED:
-            txt = self.comms.recv()
-            txt_split = txt.split("|")
-            source, message = txt_split[0], txt_split[1]
-            if source == "AND":  # From Android
-                print("Received command from ANDROID")
-                message_split = message.split("/", 2)
-                command = message_split[0]
-                task = message_split[1]
-                # E.g. message_split = START/EXPLORE/(00,13,04,180)/(01,14,06,-90)/(02,11,07,0)/(03,13,10,0)/(04,16,09,90)
-                if command == "START" and task == "EXPLORE":  # Week 8 Task
-                    # Reset first
-                    self.callback_queue.put(self.reset_button_clicked)
+            try:
+                txt = self.comms.recv()
+                txt_split = txt.split("|")
+                source, message = txt_split[0], txt_split[1]
+                if source == "AND":  # From Android
+                    print("Received command from ANDROID")
+                    message_split = message.split("/", 2)
+                    command = message_split[0]
+                    task = message_split[1]
+                    # E.g. message_split = START/EXPLORE/(00,13,04,180)/(01,14,06,-90)/(02,11,07,0)/(03,13,10,0)/(04,16,09,90)
+                    if command == "START" and task == "EXPLORE":  # Week 8 Task
+                        # Reset first
+                        self.callback_queue.put(self.reset_button_clicked)
 
-                    # wait for other thread to release semaphore before editing obstacles
-                    while (self.grid_semaphore): 
-                        pass 
-                    self.grid_semaphore = True
+                        # wait for other thread to release semaphore before editing obstacles
+                        while (self.grid_semaphore): 
+                            pass 
+                        self.grid_semaphore = True
 
-                    # Create obstacles given parameters
-                    print("Creating obstacle...")
-                    obstacles = message_split[2]
-                    obstacles_split = obstacles.split("/")
-                    for obstacle in obstacles_split:
-                        obstacle = obstacle[1:-1]
-                        params = obstacle.split(",")
-                        id, grid_x, grid_y, dir = params[0], int(params[1]), int(params[2]), int(params[3])
-                        self.grid.create_obstacle(grid_x, grid_y, dir)
+                        # Create obstacles given parameters
+                        print("Creating obstacle...")
+                        obstacles = message_split[2]
+                        obstacles_split = obstacles.split("/")
+                        for obstacle in obstacles_split:
+                            obstacle = obstacle[1:-1]
+                            params = obstacle.split(",")
+                            id, grid_x, grid_y, dir = params[0], int(params[1]), int(params[2]), int(params[3])
+                            self.grid.create_obstacle(grid_x, grid_y, dir)
 
-                    # release semaphore once obstacles updated
-                    self.grid_semaphore = False 
+                        # release semaphore once obstacles updated
+                        self.grid_semaphore = False 
 
-                    # Update grid, start explore
-                    self.callback_queue.put(self.car.redraw_car)
-                    print("[AND] Doing path calculation...")
-                    self.callback_queue.put(self.start_button_clicked)
+                        # Update grid, start explore
+                        self.callback_queue.put(self.car.redraw_car)
+                        print("[AND] Doing path calculation...")
+                        self.callback_queue.put(self.start_button_clicked)
+                        
+                    elif command == "START" and task == "PATH":  # Week 9 Task
+                        pass
                     
-                elif command == "START" and task == "PATH":  # Week 9 Task
-                    pass
+            except IndexError:
+                self.comms.send("Invalid command: " + txt)
+                print("Invalid command: " + txt)
+        
 
     def reprint_screen_and_buttons(self):
         self.screen.fill(constants.GRAY)
