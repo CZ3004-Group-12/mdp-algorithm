@@ -128,6 +128,8 @@ class Robot(object):
             # Set velocity of car
             self.velocity += (0, -self.speed)
             while not self.check_movement_complete(final_pixel_pos):
+                if constants.HEADLESS:
+                    break
                 self.pixel_pos += self.velocity.rotate(-self.angle) * dt
                 self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
                                             self.pixel_pos[1] - (0.5 * self.screen_height),
@@ -163,6 +165,8 @@ class Robot(object):
             # Set velocity of car
             self.velocity += (0, self.speed)
             while not self.check_movement_complete(final_pixel_pos):
+                if constants.HEADLESS:
+                    break
                 self.pixel_pos += self.velocity.rotate(-self.angle) * dt
                 self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
                                             self.pixel_pos[1] - (0.5 * self.screen_height),
@@ -208,6 +212,8 @@ class Robot(object):
             # Set velocity of car
             self.velocity += (0, -self.speed)
             while not self.check_if_turned(initial_angle, final_pixel_pos):
+                if constants.HEADLESS:
+                    break
                 turning_radius = THREE_CELL
                 angular_velocity = self.velocity.y / turning_radius
 
@@ -259,6 +265,8 @@ class Robot(object):
             # Set velocity of car
             self.velocity += (0, -self.speed)
             while not self.check_if_turned(initial_angle, final_pixel_pos):
+                if constants.HEADLESS:
+                    break
                 turning_radius = THREE_CELL
                 angular_velocity = self.velocity.y / turning_radius
 
@@ -310,6 +318,8 @@ class Robot(object):
             # Set velocity of car
             self.velocity += (0, -self.speed)
             while not self.check_if_turned(initial_angle, final_pixel_pos):
+                if constants.HEADLESS:
+                    break
                 turning_radius = THREE_CELL
                 angular_velocity = self.velocity.y / turning_radius
 
@@ -359,6 +369,8 @@ class Robot(object):
             # Set velocity of car
             self.velocity += (0, -self.speed)
             while not self.check_if_turned(initial_angle, final_pixel_pos):
+                if constants.HEADLESS:
+                    break
                 turning_radius = THREE_CELL
                 angular_velocity = self.velocity.y / turning_radius
 
