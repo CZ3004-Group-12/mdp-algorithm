@@ -41,3 +41,6 @@ IS_ON_PATH = False
 # RPI Connection
 RPI_CONNECTED = False
 
+# Headless execution
+HEADLESS = False
+

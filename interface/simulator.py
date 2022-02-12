@@ -1,3 +1,4 @@
+from ast import Constant
 import os
 import constants
 
@@ -17,7 +18,7 @@ WINDOW_SIZE = [960, 660]
 
 class Simulator:
 
-    def __init__(self, headless):
+    def __init__(self):
         self.comms = None
 
         # Initialize pygame
@@ -66,7 +67,7 @@ class Simulator:
         done = False
 
         # -------- Main Program Loop -----------
-        if headless: # to simpify implementation, we use 2 threads even if headless
+        if constants.HEADLESS: # to simpify implementation, we use 2 threads even if headless
             print("Waiting to connect")
             self.comms = AlgoClient()
             self.comms.connect()
