@@ -69,6 +69,8 @@ class Robot(object):
         return self.angle
 
     def draw_car(self):
+        if constants.HEADLESS:
+            return
         rotated = pygame.transform.rotate(self.car_image, self.angle)
         rect = rotated.get_rect()
         rect.center = self.car_rect.center
@@ -83,6 +85,8 @@ class Robot(object):
             self.simulator.root.display.flip()
 
     def redraw_car(self):
+        if constants.HEADLESS:
+            return
         # Need to redraw over everything (grid_surface, grid and car)
         self.simulator.reprint_screen_and_buttons()
         self.screen.blit(self.grid_surface, (120, 120))

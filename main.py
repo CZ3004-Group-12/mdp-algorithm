@@ -1,6 +1,6 @@
 import logging
 from sys import argv
-from constants import HEADLESS
+import constants
 
 from interface.simulator import Simulator
 
@@ -11,9 +11,9 @@ logging.basicConfig(level=logging.INFO)
 def main():
     print(argv)
     if len(argv) == 2 and str(argv[1]) == "hl":
-        HEADLESS = True
+        constants.HEADLESS = True
     else:
-        HEADLESS = False
+        constants.HEADLESS = False
     x = Simulator()
     
 

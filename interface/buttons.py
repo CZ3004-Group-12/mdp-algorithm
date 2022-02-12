@@ -1,4 +1,5 @@
 import pygame
+import constants
 
 
 class Button:
@@ -37,6 +38,8 @@ class Button:
         return self.x, self.y, self.length, self.height
 
     def draw_button(self, surface, color, length, height, x, y, width):
+        if constants.HEADLESS:
+            return
         for i in range(1, 3):
             s = pygame.Surface((length + (i * 2), height + (i * 2)))
             s.fill(color)
@@ -51,6 +54,8 @@ class Button:
         return surface
 
     def write_text(self, surface, text, text_color, length, height, x, y):
+        if constants.HEADLESS:
+            return
         font_size = 16
         my_font = pygame.font.SysFont("Calibri", font_size)
         my_text = my_font.render(text, 1, text_color)

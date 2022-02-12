@@ -290,6 +290,8 @@ class Grid(object):
         obstacle_cell.set_obstacle_visited_status()
 
     def draw_grid(self, screen):
+        if constants.HEADLESS:
+            return
         # Draw the grid
         for row in range(20):
             for column in range(20):
@@ -305,6 +307,8 @@ class Grid(object):
                                   self.block_size])
 
     def update_grid(self, screen):
+        if constants.HEADLESS:
+            return
         # Draw the grid
         for row in range(20):
             for column in range(20):

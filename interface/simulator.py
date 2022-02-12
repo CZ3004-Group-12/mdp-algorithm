@@ -1,4 +1,5 @@
 from ast import Constant
+from asyncio.windows_events import NULL
 import os
 import constants
 
@@ -25,8 +26,10 @@ class Simulator:
         self.root = pygame
         self.root.init()
         self.root.display.set_caption("MDP Algorithm Simulator")
-        self.screen = pygame.display.set_mode(WINDOW_SIZE)
-        self.screen.fill(constants.GRAY)
+        self.screen = NULL
+        if not constants.HEADLESS:
+            self.screen = pygame.display.set_mode(WINDOW_SIZE)
+            self.screen.fill(constants.GRAY)
 
         # Callback methods queue - for passing of callback functions from worker thread to main UI thread
         self.callback_queue = queue.Queue()
@@ -41,7 +44,8 @@ class Simulator:
         # Outline Grid
         self.grid_surface = self.root.Surface((442, 442))
         self.grid_surface.fill(constants.BLACK)
-        self.screen.blit(self.grid_surface, (120, 120))
+        if not constants.HEADLESS:
+            self.screen.blit(self.grid_surface, (120, 120))
         # Draw the grid
         self.grid.draw_grid(self.screen)
 
@@ -79,7 +83,7 @@ class Simulator:
                 try:
                     callback = self.callback_queue.get(False) #doesn't block
                 except queue.Empty: #raised when queue is empty
-                    break
+                    continue
                 callback()
 
         else:
@@ -136,6 +140,8 @@ class Simulator:
         while constants.RPI_CONNECTED:
             try:
                 txt = self.comms.recv()
+                if (txt == None):
+                    continue
                 txt_split = txt.split("|")
                 source, message = txt_split[0], txt_split[1]
                 if source == "AND":  # From Android
