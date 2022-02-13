@@ -39,7 +39,6 @@ class Simulator:
 
         # Initialise 20 by 20 Grid
         self.grid = Grid(20, 20, 20)
-        self.grid_semaphore = False # to ensure worker thread does not edit grid at the same time
         self.grid.draw_grid(self.screen)
         # Outline Grid
         self.grid_surface = self.root.Surface((442, 442))
@@ -111,19 +110,11 @@ class Simulator:
                         # User clicks the mouse. Get the position
                         pos = pygame.mouse.get_pos()
                         if (120 < pos[0] < 560) and (120 < pos[1] < 560):  # if area clicked is within grid
-                            # wait for worker thread to finish obstacle edits
-                            while (self.grid_semaphore):
-                                pass 
-                            self.grid_semaphore = True
-
                             self.grid.grid_clicked(pos[0], pos[1])
-                            self.grid_semaphore = False
                             self.screen.blit(self.grid_surface, (120, 120))  # Redraw the grid outlines
                             self.grid.update_grid(self.screen)  # Update grid if obstacles added
                             self.car.draw_car()  # Redraw the car
 
-                            # reset semaphore once obstacle changes are done
-                            self.grid_semaphore = False
                         else:  # otherwise, area clicked is outside of grid
                             self.check_button_clicked(pos)
                 
@@ -162,8 +153,6 @@ class Simulator:
                         # Reset first
                         self.callback_queue.put(self.reset_button_clicked)
 
-                        
-
                         obstacles = message_split[2]
                         obstacles_split = obstacles.split("/")
 
@@ -178,12 +167,6 @@ class Simulator:
                         self.callback_queue.put([self.car.update_robot, [robot_dir, self.grid.grid_to_pixel((robot_x, robot_y))]])
                         self.callback_queue.put(self.car.redraw_car)
                         print("````````", self.car.grid_x, self.car.grid_y)
-
-                        
-                        # wait for other thread to release semaphore before editing obstacles
-                        while (self.grid_semaphore):
-                            pass 
-                        self.grid_semaphore = True
                         
                         # Create obstacles given parameters
                         print("Creating obstacles...")
@@ -191,10 +174,7 @@ class Simulator:
                             obstacle = obstacle[1:-1]
                             params = obstacle.split(",")
                             id, grid_x, grid_y, dir = params[0], int(params[1]), int(params[2]), int(params[3])
-                            self.grid.create_obstacle([grid_x, grid_y, dir])
-
-                        # release semaphore once obstacles updated
-                        self.grid_semaphore = False 
+                            self.callback_queue.put([self.grid.create_obstacle, [grid_x, grid_y, dir]])
 
                         # Update grid, start explore
                         self.callback_queue.put(self.car.redraw_car)
