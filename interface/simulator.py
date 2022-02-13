@@ -162,10 +162,7 @@ class Simulator:
                         # Reset first
                         self.callback_queue.put(self.reset_button_clicked)
 
-                        # wait for other thread to release semaphore before editing obstacles
-                        while (self.grid_semaphore):
-                            pass 
-                        self.grid_semaphore = True
+                        
 
                         obstacles = message_split[2]
                         obstacles_split = obstacles.split("/")
@@ -183,7 +180,11 @@ class Simulator:
                         print("````````", self.car.grid_x, self.car.grid_y)
 
                         
-
+                        # wait for other thread to release semaphore before editing obstacles
+                        while (self.grid_semaphore):
+                            pass 
+                        self.grid_semaphore = True
+                        
                         # Create obstacles given parameters
                         print("Creating obstacles...")
                         for obstacle in obstacles_split[1:]:
