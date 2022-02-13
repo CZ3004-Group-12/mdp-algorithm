@@ -40,6 +40,7 @@ class Simulator:
         # Initialise 20 by 20 Grid
         self.grid = Grid(20, 20, 20)
         self.grid_semaphore = False # to ensure worker thread does not edit grid at the same time
+        self.robot_semaphore = False # to ensure worker thread does not edit robot at the same time
         self.grid.draw_grid(self.screen)
         # Outline Grid
         self.grid_surface = self.root.Surface((442, 442))
@@ -149,21 +150,38 @@ class Simulator:
                     message_split = message.split("/", 2)
                     command = message_split[0]
                     task = message_split[1]
-                    # E.g. message_split = START/EXPLORE/(00,13,04,180)/(01,14,06,-90)/(02,11,07,0)/(03,13,10,0)/(04,16,09,90)
+                    # E.g. message_split = START/EXPLORE/(R,1,1,0)/(00,04,15,-90)/(01,16,17,90)/(02,12,11,180)/(03,07,03,0)/(04,17,04,90)
                     if command == "START" and task == "EXPLORE":  # Week 8 Task
                         # Reset first
                         self.callback_queue.put(self.reset_button_clicked)
 
                         # wait for other thread to release semaphore before editing obstacles
-                        while (self.grid_semaphore): 
+                        while (self.grid_semaphore):
                             pass 
                         self.grid_semaphore = True
 
-                        # Create obstacles given parameters
-                        print("Creating obstacle...")
+                        # wait for other thread to release semaphore for robot before editing robot position
+                        while (self.robot_semaphore):
+                            pass
+                        self.robot_semaphore = True
+
                         obstacles = message_split[2]
                         obstacles_split = obstacles.split("/")
-                        for obstacle in obstacles_split:
+
+                        # Set robot starting pos
+                        print("Setting robot position...")
+                        robot_starting_pos = obstacles_split[0]
+                        robot_params = robot_starting_pos.split(",")
+                        robot_x, robot_y, robot_dir = int(robot_params[1]), int(robot_params[2]), robot_params[3]
+
+                        self.car.correct_coords_and_angle(robot_dir, self.grid.grid_to_pixel((robot_x, robot_y)))
+                        print("````````", self.car.grid_x, self.car.grid_y)
+
+                        self.robot_semaphore = False
+
+                        # Create obstacles given parameters
+                        print("Creating obstacles...")
+                        for obstacle in obstacles_split[1:]:
                             obstacle = obstacle[1:-1]
                             params = obstacle.split(",")
                             id, grid_x, grid_y, dir = params[0], int(params[1]), int(params[2]), int(params[3])
