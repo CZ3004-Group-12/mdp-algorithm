@@ -40,7 +40,6 @@ class Simulator:
         # Initialise 20 by 20 Grid
         self.grid = Grid(20, 20, 20)
         self.grid_semaphore = False # to ensure worker thread does not edit grid at the same time
-        self.robot_semaphore = False # to ensure worker thread does not edit robot at the same time
         self.grid.draw_grid(self.screen)
         # Outline Grid
         self.grid_surface = self.root.Surface((442, 442))
@@ -85,7 +84,11 @@ class Simulator:
                     callback = self.callback_queue.get(False) #doesn't block
                 except queue.Empty: #raised when queue is empty
                     continue
-                callback()
+                if isinstance(callback, list):
+                        print(callback)
+                        callback[0](callback[1])
+                else:
+                    callback()
 
         else:
             while not done:
@@ -95,7 +98,11 @@ class Simulator:
                         callback = self.callback_queue.get(False) #doesn't block
                     except queue.Empty: #raised when queue is empty
                         break
-                    callback()
+                    if isinstance(callback, list):
+                        print(callback)
+                        callback[0](callback[1])
+                    else:
+                        callback()
                 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -160,24 +167,22 @@ class Simulator:
                             pass 
                         self.grid_semaphore = True
 
-                        # wait for other thread to release semaphore for robot before editing robot position
-                        while (self.robot_semaphore):
-                            pass
-                        self.robot_semaphore = True
-
                         obstacles = message_split[2]
                         obstacles_split = obstacles.split("/")
 
                         # Set robot starting pos
                         print("Setting robot position...")
-                        robot_starting_pos = obstacles_split[0]
+                        robot_starting_pos = obstacles_split[0].strip("()")
                         robot_params = robot_starting_pos.split(",")
-                        robot_x, robot_y, robot_dir = int(robot_params[1]), int(robot_params[2]), robot_params[3]
+                        print(robot_params)
+                        robot_x, robot_y, robot_dir = int(robot_params[1]), int(robot_params[2]), int(robot_params[3])
 
-                        self.car.correct_coords_and_angle(robot_dir, self.grid.grid_to_pixel((robot_x, robot_y)))
+                        #self.car.correct_coords_and_angle(robot_dir, self.grid.grid_to_pixel((robot_x, robot_y)))
+                        self.callback_queue.put([self.car.update_robot, [robot_dir, self.grid.grid_to_pixel((robot_x, robot_y))]])
+                        self.callback_queue.put(self.car.redraw_car)
                         print("````````", self.car.grid_x, self.car.grid_y)
 
-                        self.robot_semaphore = False
+                        
 
                         # Create obstacles given parameters
                         print("Creating obstacles...")
@@ -185,7 +190,7 @@ class Simulator:
                             obstacle = obstacle[1:-1]
                             params = obstacle.split(",")
                             id, grid_x, grid_y, dir = params[0], int(params[1]), int(params[2]), int(params[3])
-                            self.grid.create_obstacle(grid_x, grid_y, dir)
+                            self.grid.create_obstacle([grid_x, grid_y, dir])
 
                         # release semaphore once obstacles updated
                         self.grid_semaphore = False 

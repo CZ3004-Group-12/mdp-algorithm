@@ -391,7 +391,9 @@ class Robot(object):
         else:
             return False
 
-    def correct_coords_and_angle(self, final_angle, final_pixel_pos):
+    def update_robot(self, arglist):
+        final_angle = arglist[0]
+        final_pixel_pos = arglist[1]
         self.angle = final_angle
         self.pixel_pos = final_pixel_pos
         self.grid_x = self.grid.pixel_to_grid(final_pixel_pos)[0]
@@ -399,9 +401,13 @@ class Robot(object):
         self.car_rect = pygame.Rect(self.pixel_pos[0] - (0.5 * self.screen_width),
                                     self.pixel_pos[1] - (0.5 * self.screen_height),
                                     self.screen_width, self.screen_height)
+
+    def correct_coords_and_angle(self, final_angle, final_pixel_pos):
+        self.update_robot([final_angle, final_pixel_pos])
         if constants.IS_CHECKING:
             return
         self.redraw_car()
+    
 
     def check_if_turned(self, initial_angle, final_pixel_pos):
         if constants.IS_CHECKING:
