@@ -28,6 +28,9 @@ class PathPlan(object):
         self.obstacle_cell = None
         self.collection_of_movements = []
         self.collection_of_robot_pos = []
+        self.all_movements_dict = {}
+        self.all_robot_pos_dict = {}
+        self.obstacle_list_rpi = []
         self.EXCEPTION_COUNT = 0
         self.REPEATED_LAST_TARGET = 0
         self.IS_ON_PATH = False
@@ -1273,23 +1276,33 @@ class PathPlan(object):
             print(self.get_current_obstacle_id())
             print(self.get_robot_pos_string())
 
-            # Send to RPI
-            if constants.RPI_CONNECTED:
-                self.simulator.comms.send(self.get_movements_string())
-                self.simulator.comms.send(self.get_robot_pos_string())
+            # Add into dictionary
+            self.all_movements_dict[self.get_current_obstacle_id()] = self.get_movements_string()
+            self.all_robot_pos_dict[self.get_current_obstacle_id()] = self.get_robot_pos_string()
+            self.obstacle_list_rpi.append(self.get_current_obstacle_id())
 
-            self.reset_collection_of_movements()
+            # Send to RPI
+            # if constants.RPI_CONNECTED:
+            #
+            #     self.simulator.comms.send(self.get_movements_string())
+            #     self.simulator.comms.send(self.get_robot_pos_string())
+            #
+            # self.reset_collection_of_movements()
 
             # Move car 2 steps backwards for next move
-            # time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
             self.move_backward_by(2)
-            # time.sleep(constants.NEXT_OBSTACLE_TIME_DELAY)
 
             return True
         print(self.get_movements_string())
         print(self.get_current_obstacle_id())
         print(self.get_robot_pos_string())
         return False
+
+    def send_to_rpi(self):
+        obstacle_key = self.obstacle_list_rpi.pop(0)
+        print("Remaining obstacles: ", self.obstacle_list_rpi)
+        self.simulator.comms.send(self.all_movements_dict[obstacle_key])
+        self.simulator.comms.send(self.all_robot_pos_dict[obstacle_key])
 
     def check_movement_possible(self, a, b, x, y, robot_direction, target_direction):
         constants.IS_CHECKING = True

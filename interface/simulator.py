@@ -36,6 +36,8 @@ class Simulator:
 
         # Astar class
         self.astar = None
+        # Path planner class
+        self.path_planner = None
 
         # Initialise 20 by 20 Grid
         self.grid = Grid(20, 20, 20)
@@ -124,8 +126,6 @@ class Simulator:
                     self.startTime = now
                     self.root.display.flip()
 
-        
-
         # Be IDLE friendly. If you forget this line, the program will 'hang' on exit.
         self.root.quit()
 
@@ -163,11 +163,9 @@ class Simulator:
                         print(robot_params)
                         robot_x, robot_y, robot_dir = int(robot_params[1]), int(robot_params[2]), int(robot_params[3])
 
-                        #self.car.correct_coords_and_angle(robot_dir, self.grid.grid_to_pixel((robot_x, robot_y)))
                         self.callback_queue.put([self.car.update_robot, [robot_dir, self.grid.grid_to_pixel((robot_x, robot_y))]])
                         self.callback_queue.put(self.car.redraw_car)
-                        print("````````", self.car.grid_x, self.car.grid_y)
-                        
+
                         # Create obstacles given parameters
                         print("Creating obstacles...")
                         for obstacle in obstacles_split[1:]:
@@ -180,9 +178,24 @@ class Simulator:
                         self.callback_queue.put(self.car.redraw_car)
                         print("[AND] Doing path calculation...")
                         self.callback_queue.put(self.start_button_clicked)
+
+                        # Send first movement and robot set to RPI
+                        # print("[AND] Path calculation done. Sending first ROBOT and MOVEMENTS to RPI...")
+                        # self.callback_queue.put(self.path_planner.send_to_rpi)
+                        # print("[AND] First ROBOT and MOVEMENTS sent to RPI...")
+
                         
                     elif command == "START" and task == "PATH":  # Week 9 Task
                         pass
+
+                elif source == "RPI":
+                    print("Received command from RPI")
+                    # E.g. ROBOT/NEXT
+                    message_split = message.split("/", 1)
+                    command = message_split[0]
+                    params = message_split[1]
+                    if command == "ROBOT" and params == "NEXT":
+                        self.callback_queue.put(self.path_planner.send_to_rpi)
 
             except IndexError:
                 self.comms.send("Invalid command: " + txt)
@@ -248,8 +261,10 @@ class Simulator:
         logging.info("Astar route: " + str(fastest_route))
 
         # Path finding
-        path_planner = PathPlan(self, self.grid, self.car, fastest_route)
-        path_planner.start_robot()
+        self.path_planner = PathPlan(self, self.grid, self.car, fastest_route)
+        self.path_planner.start_robot()
+
+        self.path_planner.send_to_rpi()
 
     def reset_button_clicked(self):
         self.grid.reset(self.screen)
