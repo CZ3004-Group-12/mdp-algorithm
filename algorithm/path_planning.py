@@ -200,11 +200,12 @@ class PathPlan(object):
                         list_of_movements.append("B")
                     else:
                         list_of_movements.append("F")
-            print(list_of_movements)
 
             prev_dir = curr_dir
             prev_x = step[0]
             prev_y = step[1]
+
+        print(list_of_movements)
 
         # Clean up and eliminate all FB pairs
         FB_present = True
@@ -302,7 +303,6 @@ class PathPlan(object):
             return 0, 0
 
     # Refer to Google Doc for details of different permutations
-    # TODO: robot at target location but wrong direction
     def plan_trip_by_robot_target_directions(self, a, b, x, y, robot_direction, target_direction):
         try:
             print(a, b, x, y)
@@ -479,7 +479,6 @@ class PathPlan(object):
                     return
                 else:
                     print("!! Target position not reached! Check", path_to_run)
-                    print("Replanning trip...")
                     self.replan_trip()
 
         except BorderException:
@@ -642,8 +641,6 @@ class PathPlan(object):
             if self.check_exceed_exception_count():
                 return
 
-            # TODO: Write how to handle obstacle collision
-
             self.replan_trip()
 
         except ObstacleTurnException:
@@ -651,8 +648,6 @@ class PathPlan(object):
             print(self.EXCEPTION_COUNT)
             if self.check_exceed_exception_count():
                 return
-
-            # TODO: Write how to handle "unable to turn due to obstacle" collisions
 
             self.replan_trip()
 
@@ -1009,18 +1004,6 @@ class PathPlan(object):
         self.turn_backward_left()
         self.move_forward_by(2)
 
-        # self.robot.move_backward_steer_left()
-        # if abs(y - b) > 3:
-        #     a, b, x, y = self.preprocess_coords(a, b, x, y)
-        #     self.AR5(a, b, x, y)
-        # elif abs(y - b) == 3:
-        #     a, b, x, y = self.preprocess_coords(a, b, x, y)
-        #     self.AR2(a, b, x, y)
-        # else:
-        #     a, b, x, y = self.preprocess_coords(a, b, x, y)
-        #     self.AR6(a, b, x, y)
-        pass
-
     def CR6(self, a, b, x, y):
         if abs(a - x) == 3 and abs(b - y) == 3:
             self.turn_forward_right()
@@ -1065,19 +1048,6 @@ class PathPlan(object):
             self.robot.move_forward_steer_left()
             self.move_backward_by(3)
             self.robot.move_forward_steer_left()
-
-        # if abs(x - a) <= 5:
-        #     self.move_forward_by(6 - abs(x - a))
-        # self.turn_backward_left()
-        # if abs(y - b) > 3:
-        #     a, b, x, y = self.preprocess_coords(a, b, x, y)
-        #     self.AR8(a, b, x, y)
-        # elif abs(y - b) == 3:
-        #     a, b, x, y = self.preprocess_coords(a, b, x, y)
-        #     self.AR4(a, b, x, y)
-        # else:
-        #     a, b, x, y = self.preprocess_coords(a, b, x, y)
-        #     self.AR7(a, b, x, y)
 
     def CR9(self, a, b, x, y):
         if self.IS_ON_PATH:

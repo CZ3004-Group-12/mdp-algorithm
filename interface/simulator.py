@@ -1,4 +1,3 @@
-from ast import Constant
 from asyncio.windows_events import NULL
 import os
 import constants
@@ -16,6 +15,7 @@ import queue
 
 # Set the HEIGHT and WIDTH of the screen
 WINDOW_SIZE = [960, 660]
+
 
 class Simulator:
 
@@ -72,7 +72,7 @@ class Simulator:
         done = False
 
         # -------- Main Program Loop -----------
-        if constants.HEADLESS: # to simpify implementation, we use 2 threads even if headless
+        if constants.HEADLESS:  # to simplify implementation, we use 2 threads even if headless
             print("Waiting to connect")
             self.comms = AlgoClient()
             self.comms.connect()
@@ -82,8 +82,8 @@ class Simulator:
             self.recv_thread.start()
             while True:
                 try:
-                    callback = self.callback_queue.get(False) #doesn't block
-                except queue.Empty: #raised when queue is empty
+                    callback = self.callback_queue.get(False)  # doesn't block
+                except queue.Empty:  # raised when queue is empty
                     continue
                 if isinstance(callback, list):
                         print(callback)
@@ -96,8 +96,8 @@ class Simulator:
                 # Check for callbacks from worker thread
                 while True:
                     try:
-                        callback = self.callback_queue.get(False) #doesn't block
-                    except queue.Empty: #raised when queue is empty
+                        callback = self.callback_queue.get(False)  # doesn't block
+                    except queue.Empty:  # raised when queue is empty
                         break
                     if isinstance(callback, list):
                         print(callback)
@@ -178,12 +178,6 @@ class Simulator:
                         self.callback_queue.put(self.car.redraw_car)
                         print("[AND] Doing path calculation...")
                         self.callback_queue.put(self.start_button_clicked)
-
-                        # Send first movement and robot set to RPI
-                        # print("[AND] Path calculation done. Sending first ROBOT and MOVEMENTS to RPI...")
-                        # self.callback_queue.put(self.path_planner.send_to_rpi)
-                        # print("[AND] First ROBOT and MOVEMENTS sent to RPI...")
-
                         
                     elif command == "START" and task == "PATH":  # Week 9 Task
                         pass
@@ -200,7 +194,6 @@ class Simulator:
             except IndexError:
                 self.comms.send("Invalid command: " + txt)
                 print("Invalid command: " + txt)
-        
 
     def reprint_screen_and_buttons(self):
         self.screen.fill(constants.GRAY)
