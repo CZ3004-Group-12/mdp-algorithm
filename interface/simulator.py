@@ -264,7 +264,8 @@ class Simulator:
         self.path_planner = PathPlan(self, self.grid, self.car, fastest_route)
         self.path_planner.start_robot()
 
-        self.path_planner.send_to_rpi()
+        if constants.RPI_CONNECTED:
+            self.path_planner.send_to_rpi()
 
     def reset_button_clicked(self):
         self.grid.reset(self.screen)
