@@ -479,8 +479,8 @@ class PathPlan(object):
                     return
                 else:
                     print("!! Target position not reached! Check", path_to_run)
-                    # print("Replanning trip...")
-                    # self.replan_trip()
+                    print("Replanning trip...")
+                    self.replan_trip()
 
         except BorderException:
             print("BorderException--")
