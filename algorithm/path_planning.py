@@ -1085,7 +1085,8 @@ class PathPlan(object):
             self.turn_forward_right()
             return
 
-        if x < 4:
+        if abs(a) > 15:
+            print("```Border case CR9")
             self.turn_backward_right()
             self.move_forward_by(3)
             self.turn_forward_right()
@@ -1194,7 +1195,8 @@ class PathPlan(object):
             self.turn_forward_left()
             return
 
-        if x > 15:
+        if abs(x) < 4:
+            print("```Border case DR9")
             self.turn_backward_left()
             self.move_forward_by(3)
             self.turn_forward_left()
