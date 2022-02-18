@@ -1,4 +1,4 @@
-from asyncio.windows_events import NULL
+
 import os
 import constants
 
@@ -26,7 +26,7 @@ class Simulator:
         self.root = pygame
         self.root.init()
         self.root.display.set_caption("MDP Algorithm Simulator")
-        self.screen = NULL
+        self.screen = None
         if not constants.HEADLESS:
             self.screen = pygame.display.set_mode(WINDOW_SIZE)
             self.screen.fill(constants.GRAY)
