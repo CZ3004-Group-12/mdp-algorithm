@@ -150,10 +150,10 @@ def search(maze, cost, start, end):
                 current_node.position[0] + new_position[0], current_node.position[1] + new_position[1], direction[i]]
             i += 1
             # Make sure within range (check if within maze boundary)
-            if (node_position[0] > (no_rows - 1) or
-                    node_position[0] < 0 or
-                    node_position[1] > (no_columns - 1) or
-                    node_position[1] < 0):
+            if (node_position[0] > (no_rows - 2) or
+                    node_position[0] < 1 or
+                    node_position[1] > (no_columns - 2) or
+                    node_position[1] < 1):
                 continue
 
             # Make sure walkable terrain
