@@ -1271,10 +1271,13 @@ class PathPlan(object):
         return False
 
     def send_to_rpi(self):
-        obstacle_key = self.obstacle_list_rpi.pop(0)
-        print("Remaining obstacles: ", self.obstacle_list_rpi)
-        self.simulator.comms.send(self.all_movements_dict[obstacle_key])
-        self.simulator.comms.send(self.all_robot_pos_dict[obstacle_key])
+        if self.obstacle_list_rpi:
+            obstacle_key = self.obstacle_list_rpi.pop(0)
+            print("Remaining obstacles: ", self.obstacle_list_rpi)
+            self.simulator.comms.send(self.all_movements_dict[obstacle_key])
+            self.simulator.comms.send(self.all_robot_pos_dict[obstacle_key])
+        else:
+            self.simulator.comms.send("No more movements.")
 
     def check_movement_possible(self, a, b, x, y, robot_direction, target_direction):
         constants.IS_CHECKING = True
