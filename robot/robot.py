@@ -9,7 +9,7 @@ from constants import BUFFER
 MARGIN = 2
 ONE_CELL = 20 + MARGIN
 THREE_CELL = 3 * ONE_CELL
-dt = 0.8     # Max without messing up is 0.8
+dt = 0.2     # Max without messing up is 0.8
 
 
 # dt = round(self.clock.get_time() / 1000, 2)
