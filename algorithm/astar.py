@@ -78,10 +78,19 @@ class AStar:
             index = 0
             temp = len(all_target_ordered) - 1
 
-            smallest = self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
-                                             [all_target_unordered[0][0], all_target_unordered[0][1]])
+            # cost based on displacement
+            init_displacement = self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
+                                                      [all_target_unordered[0][0], all_target_unordered[0][1]])
+            # cost based on the difference in the direction of the target and the robot
+            init_cost_turn = weight_turn * self.direction_diff_to_weight(all_target_unordered[0],
+                                                                         all_target_ordered[temp])
+            # cost based on the number of obstacles in the box created with the robot position and the target
+            init_cost_obstacle = weight_obstacle * self.cost_by_obstacle(all_target_unordered[0][0],
+                                                                         all_target_unordered[0][1],
+                                                                         all_target_ordered[temp][0],
+                                                                         all_target_ordered[temp][1])
+            smallest = init_displacement ** 2 + init_cost_turn + init_cost_obstacle
             for i in range(len(all_target_unordered)):
-                print(i)
                 # cost based on displacement
                 displacement = self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
                                                      [all_target_unordered[i][0], all_target_unordered[i][1]])
@@ -98,6 +107,7 @@ class AStar:
                 if smallest > total_cost:
                     smallest = total_cost
                     index = i
+            print(str(index) + ":" + str(smallest) + str(all_target_unordered[index]))
             all_target_ordered.append(all_target_unordered.pop(index))
         print(all_target_ordered)
         return all_target_ordered

@@ -217,7 +217,7 @@ class PathPlan(object):
                 index += 1
                 if (prev_move == "F" and move == "B") or (prev_move == "B" and move == "F"):
                     list_of_movements.pop(index)
-                    list_of_movements.pop(index-1)
+                    list_of_movements.pop(index - 1)
                     break
                 prev_move = move
 
@@ -564,11 +564,11 @@ class PathPlan(object):
             elif direction == constants.EAST:
                 if y == 1:
                     if x >= 16:
-                        self.move_backward_by(x-18)
+                        self.move_backward_by(x - 18)
                     self.robot.move_forward_steer_left()
                 if y == 18:
                     if x >= 16:
-                        self.move_backward_by(x-18)
+                        self.move_backward_by(x - 18)
                     self.robot.move_forward_steer_right()
                 elif x == 1:
                     i = 0
@@ -1055,7 +1055,7 @@ class PathPlan(object):
             self.turn_forward_right()
             return
 
-        if abs(a) > 15:
+        if abs(a) > 15 or abs(a) < 4:
             print("```Border case CR9")
             self.turn_backward_right()
             self.move_forward_by(3)
@@ -1160,12 +1160,14 @@ class PathPlan(object):
             self.turn_forward_left()
 
     def DR9(self, a, b, x, y):
+
+        print("x: " + str(abs(x)))
         if self.IS_ON_PATH:
             self.move_backward_by(3)
             self.turn_forward_left()
             return
 
-        if abs(x) < 4:
+        if abs(x) < 4 or abs(x) > 15:
             print("```Border case DR9")
             self.turn_backward_left()
             self.move_forward_by(3)
