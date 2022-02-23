@@ -67,8 +67,8 @@ class AStar:
 
     def get_astar_route(self):
         # weight for difference in direction
-        weight_turn = 0.5
-        weight_obstacle = 0.5
+        weight_turn = 1
+        weight_obstacle = 1
         all_target_unordered = self.grid.get_target_locations()
         all_target_ordered = []
         all_target_ordered.append(
