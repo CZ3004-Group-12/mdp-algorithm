@@ -985,9 +985,14 @@ class PathPlan(object):
             self.move_forward_by(3)
 
     def BR9(self, a, b, x, y):
-        self.turn_forward_right()
-        self.move_backward_by(6)
-        self.turn_forward_right()
+        if abs(y)<5:
+            self.turn_forward_right()
+            self.move_backward_by(6)
+            self.turn_forward_right()
+        else:
+            self.turn_backward_left()
+            self.move_forward_by(6)
+            self.turn_backward_left()
 
     def CR1(self, a, b, x, y):
         if abs(b - y) <= 2:
