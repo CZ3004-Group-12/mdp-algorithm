@@ -1204,17 +1204,19 @@ class PathPlan(object):
             self.turn_forward_left()
             return
 
-        if abs(x) < 4 or abs(x) > 15:
+        if abs(y) < 4:
             print("```Border case DR9")
-            self.turn_backward_left()
-            self.move_forward_by(3)
-            self.turn_forward_left()
+            self.move_backward_by(2)
+            self.turn_forward_right()
             self.move_backward_by(3)
             self.turn_forward_left()
-        else:
-            self.move_forward_by(3)
+            self.move_backward_by(1)
             self.turn_backward_right()
-            self.move_forward_by(3)
+            self.move_forward_by(6)
+        else:
+            self.move_backward_by(3)
+            self.turn_forward_left()
+            self.move_backward_by(3)
 
     def turn_forward_right(self):
         self.robot.move_forward_steer_right()
