@@ -1257,6 +1257,9 @@ class PathPlan(object):
     def reset_collection_of_movements(self):
         self.collection_of_movements = []
 
+    def reset_robot_pos_list(self):
+        self.collection_of_robot_pos = []
+
     def get_collection_of_movements_string(self):
         return ','.join([str(movement) for movement in self.collection_of_movements])
 
@@ -1302,6 +1305,8 @@ class PathPlan(object):
 
             # Move car 2 steps backwards for next move
             # self.move_backward_by(2)
+            self.reset_collection_of_movements()
+            self.reset_robot_pos_list()
 
             return True
         print(self.get_movements_string())
