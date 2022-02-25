@@ -55,18 +55,32 @@ class Grid(object):
             target_grid_x, target_grid_y = obstacle_cell.get_xcoord(), obstacle_cell.get_ycoord()
             obstacle_direction = obstacle_cell.get_obstacle_direction()
             target_direction = constants.NORTH
+
             if obstacle_direction == constants.NORTH:
-                target_direction = constants.SOUTH
+                target_direction = constants.EAST
                 target_grid_x, target_grid_y = obstacle_cell.get_xcoord(), obstacle_cell.get_ycoord() + 4
             elif obstacle_direction == constants.SOUTH:
-                target_direction = constants.NORTH
+                target_direction = constants.WEST
                 target_grid_x, target_grid_y = obstacle_cell.get_xcoord(), obstacle_cell.get_ycoord() - 4
             elif obstacle_direction == constants.EAST:
-                target_direction = constants.WEST
+                target_direction = constants.SOUTH
                 target_grid_x, target_grid_y = obstacle_cell.get_xcoord() + 4, obstacle_cell.get_ycoord()
             elif obstacle_direction == constants.WEST:
-                target_direction = constants.EAST
+                target_direction = constants.NORTH
                 target_grid_x, target_grid_y = obstacle_cell.get_xcoord() - 4, obstacle_cell.get_ycoord()
+
+            # if obstacle_direction == constants.NORTH:
+            #     target_direction = constants.SOUTH
+            #     target_grid_x, target_grid_y = obstacle_cell.get_xcoord(), obstacle_cell.get_ycoord() + 4
+            # elif obstacle_direction == constants.SOUTH:
+            #     target_direction = constants.NORTH
+            #     target_grid_x, target_grid_y = obstacle_cell.get_xcoord(), obstacle_cell.get_ycoord() - 4
+            # elif obstacle_direction == constants.EAST:
+            #     target_direction = constants.WEST
+            #     target_grid_x, target_grid_y = obstacle_cell.get_xcoord() + 4, obstacle_cell.get_ycoord()
+            # elif obstacle_direction == constants.WEST:
+            #     target_direction = constants.EAST
+            #     target_grid_x, target_grid_y = obstacle_cell.get_xcoord() - 4, obstacle_cell.get_ycoord()
 
             target_loc = (target_grid_x, target_grid_y, target_direction, obstacle_cell)
             target_locations.append(target_loc)
