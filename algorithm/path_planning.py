@@ -1267,9 +1267,9 @@ class PathPlan(object):
             # self.reset_collection_of_movements()
 
             # Move car 2 steps backwards for next move
-            self.move_backward_by(2)
             self.reset_collection_of_movements()
             self.reset_robot_pos_list()
+            self.move_backward_by(2)
 
             return True
         print(self.get_movements_string())
