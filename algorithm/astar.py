@@ -63,7 +63,7 @@ class AStar:
             obstacle_x, obstacle_y = obstacle_id.get_xcoord(), obstacle_id.get_ycoord()
             if small_x - 2 <= obstacle_x <= big_x + 2 and small_y - 2 <= obstacle_y <= big_y + 2:
                 cost += 1
-        return cost
+        return cost**2
 
     def get_astar_route(self):
         # weight for difference in direction
@@ -89,7 +89,7 @@ class AStar:
                                                                          all_target_unordered[0][1],
                                                                          all_target_ordered[temp][0],
                                                                          all_target_ordered[temp][1])
-            smallest = init_displacement ** 2 + init_cost_turn + init_cost_obstacle
+            smallest = init_displacement + init_cost_turn + init_cost_obstacle
             for i in range(len(all_target_unordered)):
                 # cost based on displacement
                 displacement = self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
@@ -103,7 +103,7 @@ class AStar:
                                                                         all_target_ordered[temp][0],
                                                                         all_target_ordered[temp][1])
 
-                total_cost = displacement ** 2 + cost_turn + cost_obstacle
+                total_cost = displacement + cost_turn + cost_obstacle
                 if smallest > total_cost:
                     smallest = total_cost
                     index = i
