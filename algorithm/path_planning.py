@@ -894,14 +894,24 @@ class PathPlan(object):
                 self.DR8(a, b, x, y)
 
         else:
+            # if abs(b - y) - 3 >= 0:
+            #     self.move_forward_by(abs(b - y) - 3)
+            # else:
+            #     self.move_backward_by(3 - abs(b - y))
+            # self.turn_forward_right()
+            # self.move_forward_by(abs(a - x))
+            # self.turn_backward_left()
+            # self.move_forward_by(3)
             if abs(b - y) - 3 >= 0:
-                self.move_forward_by(abs(b - y) - 3)
+                self.move_forward_by(abs(b - y))
             else:
-                self.move_backward_by(3 - abs(b - y))
+                self.move_backward_by(abs(b - y))
             self.turn_forward_right()
-            self.move_forward_by(abs(a - x))
-            self.turn_backward_left()
-            self.move_forward_by(3)
+            if (abs(a - x) - 6) >= 0:
+                self.move_forward_by(abs(a - x) - 6)
+            else:
+                self.move_backward_by(6 - abs(a - x))
+            self.turn_forward_right()
 
     def BR6(self, a, b, x, y):
         self.move_backward_by(abs(b - y))
