@@ -210,6 +210,8 @@ class PathPlan(object):
         # Clean up and eliminate all FB pairs
         FB_present = True
         while FB_present:
+            if len(list_of_movements) < 1:
+                break
             prev_move = list_of_movements[0]
             index = -1
             initial_len = len(list_of_movements)
