@@ -1081,7 +1081,9 @@ class PathPlan(object):
             self.turn_forward_right()
             return
 
-        if abs(a) > 15 or abs(a) < 4:
+        if (abs(a) > 15 and (self.robot.get_angle_of_rotation() == 0 or self.robot.get_angle_of_rotation() == 90)) or (
+                abs(a) < 4 and (
+                self.robot.get_angle_of_rotation() == 180 or self.robot.get_angle_of_rotation() == -90)):
             print("```Border case CR9")
             self.turn_backward_right()
             self.move_forward_by(3)
@@ -1193,7 +1195,9 @@ class PathPlan(object):
             self.turn_forward_left()
             return
 
-        if abs(x) < 4 or abs(x) > 15:
+        if (abs(a) > 15 and (self.robot.get_angle_of_rotation() == 0 or self.robot.get_angle_of_rotation() == 90)) or (
+                abs(a) < 4 and (
+                self.robot.get_angle_of_rotation() == 180 or self.robot.get_angle_of_rotation() == -90)):
             print("```Border case DR9")
             self.turn_backward_left()
             self.move_forward_by(3)
