@@ -958,12 +958,17 @@ class PathPlan(object):
             self.move_forward_by(3)
 
     def BR9(self, a, b, x, y):
-        if abs(a) > 15:
+        print(str(a) + "  " + str(self.robot.get_angle_of_rotation()))
+        if (abs(a) > 15 and (self.robot.get_angle_of_rotation() == 0 or self.robot.get_angle_of_rotation() == 90)) or (
+                abs(a) < 4 and (
+                self.robot.get_angle_of_rotation() == 180 or self.robot.get_angle_of_rotation() == -90)):
             self.move_backward_by(2)
             self.turn_forward_left()
             self.turn_backward_right()
             self.move_forward_by(4)
-        elif abs(a) < 4:
+        elif (abs(a) < 4 and (self.robot.get_angle_of_rotation() == 0 or self.robot.get_angle_of_rotation() == 90)) or (
+                abs(a) > 15 and (
+                self.robot.get_angle_of_rotation() == 180 or self.robot.get_angle_of_rotation() == -90)):
             self.move_backward_by(2)
             self.turn_forward_right()
             self.turn_backward_left()
