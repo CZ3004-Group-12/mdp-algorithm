@@ -958,7 +958,6 @@ class PathPlan(object):
             self.move_forward_by(3)
 
     def BR9(self, a, b, x, y):
-        print(str(a) + "  " + str(self.robot.get_angle_of_rotation()))
         if (abs(a) > 15 and (self.robot.get_angle_of_rotation() == 0 or self.robot.get_angle_of_rotation() == 90)) or (
                 abs(a) < 4 and (
                 self.robot.get_angle_of_rotation() == 180 or self.robot.get_angle_of_rotation() == -90)):
@@ -1081,9 +1080,9 @@ class PathPlan(object):
             self.turn_forward_right()
             return
 
-        if (abs(a) > 15 and (self.robot.get_angle_of_rotation() == 0 or self.robot.get_angle_of_rotation() == 90)) or (
+        if (abs(a) > 15 and (self.robot.get_angle_of_rotation() == 0 or self.robot.get_angle_of_rotation() == -90)) or (
                 abs(a) < 4 and (
-                self.robot.get_angle_of_rotation() == 180 or self.robot.get_angle_of_rotation() == -90)):
+                self.robot.get_angle_of_rotation() == 180 or self.robot.get_angle_of_rotation() == 90)):
             print("```Border case CR9")
             self.turn_backward_right()
             self.move_forward_by(3)
@@ -1189,15 +1188,14 @@ class PathPlan(object):
 
     def DR9(self, a, b, x, y):
 
-        print("x: " + str(abs(x)))
         if self.IS_ON_PATH:
             self.move_backward_by(3)
             self.turn_forward_left()
             return
 
-        if (abs(a) > 15 and (self.robot.get_angle_of_rotation() == 0 or self.robot.get_angle_of_rotation() == 90)) or (
+        if (abs(a) > 15 and (self.robot.get_angle_of_rotation() == 0 or self.robot.get_angle_of_rotation() == -90)) or (
                 abs(a) < 4 and (
-                self.robot.get_angle_of_rotation() == 180 or self.robot.get_angle_of_rotation() == -90)):
+                self.robot.get_angle_of_rotation() == 180 or self.robot.get_angle_of_rotation() == 90)):
             print("```Border case DR9")
             self.turn_backward_left()
             self.move_forward_by(3)
