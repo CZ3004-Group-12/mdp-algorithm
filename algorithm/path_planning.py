@@ -1315,9 +1315,9 @@ class PathPlan(object):
             self.simulator.comms.send("No more movements.")
 
     def send_to_rpi_recalculated(self, arglist):
-        robot_x=arglist[0]
-        robot_y=arglist[1]
-        robot_dir=arglist[2]
+        robot_x = int(arglist[0])
+        robot_y = int(arglist[1])
+        robot_dir = int(arglist[2])
         if self.obstacle_list_rpi:
             obstacle_key = self.obstacle_list_rpi.pop(0)
             print("Remaining obstacles: ", self.obstacle_list_rpi)
