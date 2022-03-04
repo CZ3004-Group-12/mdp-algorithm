@@ -252,9 +252,12 @@ class Simulator:
         self.astar = AStar(self.grid, self.car.grid_x, self.car.grid_y)
         fastest_route = self.astar.get_astar_route()
         logging.info("Astar route: " + str(fastest_route))
+        optimized_fastest_route = self.grid.get_optimized_target_locations(fastest_route)
+        self.car.optimized_target_locations = optimized_fastest_route[1:]
+        logging.info("Optimized Astar route: " + str(optimized_fastest_route))
 
         # Path finding
-        self.path_planner = PathPlan(self, self.grid, self.car, fastest_route)
+        self.path_planner = PathPlan(self, self.grid, self.car, optimized_fastest_route)
         self.path_planner.start_robot()
 
         if constants.RPI_CONNECTED:

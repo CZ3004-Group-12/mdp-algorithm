@@ -54,10 +54,11 @@ class Robot(object):
                                     self.pixel_pos[1] - (0.5 * self.screen_height),
                                     self.screen_width, self.screen_height)
 
-        # TODO update the car speed
         self.speed = 10
         self.velocity = Vector2(0.0, 0.0)
         self.steering = 0.0
+
+        self.optimized_target_locations = None
 
     def get_pixel_pos(self):
         return self.pixel_pos
@@ -431,7 +432,7 @@ class Robot(object):
 
     # TODO: for now, it is strictly right in front of the image, 4 grids away (counting from the centre of car)
     def check_if_target_reached(self, final_pixel_pos, final_angle):
-        target_locations = self.grid.get_target_locations()
+        target_locations = self.optimized_target_locations
         for target_loc in target_locations:
             target_grid_x = target_loc[0]
             target_grid_y = target_loc[1]
