@@ -1075,10 +1075,6 @@ class PathPlan(object):
             self.robot.move_forward_steer_left()
 
     def CR9(self, a, b, x, y):
-        if self.IS_ON_PATH:
-            self.move_backward_by(3)
-            self.turn_forward_right()
-            return
 
         if (abs(a) > 15 and (self.robot.get_angle_of_rotation() == 0 or self.robot.get_angle_of_rotation() == -90)) or (
                 abs(a) < 4 and (
@@ -1187,11 +1183,6 @@ class PathPlan(object):
             self.turn_forward_left()
 
     def DR9(self, a, b, x, y):
-
-        if self.IS_ON_PATH:
-            self.move_backward_by(3)
-            self.turn_forward_left()
-            return
 
         if (abs(a) > 15 and (self.robot.get_angle_of_rotation() == 0 or self.robot.get_angle_of_rotation() == -90)) or (
                 abs(a) < 4 and (
