@@ -20,7 +20,7 @@ class AStar:
         self.recorded_movements = []
 
     def get_displacement(self, pos1, pos2):
-        return (abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1]))**2
+        return (abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])) ** 2
 
     def min(self, num1, num2):
         if num1 < num2:
@@ -38,23 +38,26 @@ class AStar:
         if min(abs(target_direction[2] - robot_direction[2]), abs(robot_direction[2] - target_direction[2])) == 0:
             if robot_direction[2] == 0:
                 if target_direction[1] < robot_direction[1]:
-                    return 6
+                    return 8
             elif robot_direction[2] == 90:
                 if target_direction[0] > robot_direction[0]:
-                    return 6
+                    return 8
             elif robot_direction[2] == 180:
                 if target_direction[1] > robot_direction[1]:
-                    return 6
+                    return 8
             elif robot_direction[2] == -90:
                 if target_direction[0] < robot_direction[0]:
-                    return 6
-            return 0
+                    return 8
+            if robot_direction[0] == target_direction[0]:
+                return 0
+            return 4
 
         # TODO: refine further
         elif min(abs(target_direction[2] - robot_direction[2]), abs(robot_direction[2] - target_direction[2])) == 90:
             return 2
+
         elif min(abs(target_direction[2] - robot_direction[2]), abs(robot_direction[2] - target_direction[2])) == 180:
-            return 4
+            return 6
         return 0
 
     def cost_by_obstacle(self, x1, y1, x2, y2):
@@ -65,13 +68,13 @@ class AStar:
             obstacle_x, obstacle_y = obstacle_id.get_xcoord(), obstacle_id.get_ycoord()
             if small_x - 2 <= obstacle_x <= big_x + 2 and small_y - 2 <= obstacle_y <= big_y + 2:
                 cost += 3
-        return cost**2
+        return cost ** 2
 
     def get_astar_route(self):
         # weight for difference in direction
         weight_turn = 0.5
         weight_obstacle = 0
-        weight_displacement=3
+        weight_displacement = 3
         all_target_unordered = self.grid.get_target_locations()
         all_target_ordered = []
         all_target_ordered.append(
@@ -82,8 +85,9 @@ class AStar:
             temp = len(all_target_ordered) - 1
 
             # cost based on displacement
-            init_displacement = weight_displacement*self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
-                                                      [all_target_unordered[0][0], all_target_unordered[0][1]])
+            init_displacement = weight_displacement * self.get_displacement(
+                [all_target_ordered[temp][0], all_target_ordered[temp][1]],
+                [all_target_unordered[0][0], all_target_unordered[0][1]])
             # cost based on the difference in the direction of the target and the robot
             init_cost_turn = weight_turn * self.direction_diff_to_weight(all_target_unordered[0],
                                                                          all_target_ordered[temp])
@@ -95,8 +99,9 @@ class AStar:
             smallest = init_displacement + init_cost_turn + init_cost_obstacle
             for i in range(len(all_target_unordered)):
                 # cost based on displacement
-                displacement = weight_displacement*self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
-                                                     [all_target_unordered[i][0], all_target_unordered[i][1]])
+                displacement = weight_displacement * self.get_displacement(
+                    [all_target_ordered[temp][0], all_target_ordered[temp][1]],
+                    [all_target_unordered[i][0], all_target_unordered[i][1]])
                 # cost based on the difference in the direction of the target and the robot
                 cost_turn = weight_turn * self.direction_diff_to_weight(all_target_unordered[i],
                                                                         all_target_ordered[temp])
