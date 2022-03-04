@@ -1338,6 +1338,8 @@ class PathPlan(object):
             self.robot_y = self.robot.get_grid_pos()[1]
             self.robot_direction = self.robot.get_angle_of_rotation()
 
+            self.IS_ON_PATH = True
+
             # if no obstacle exceptions, can use hardcoded shortest path
             if self.check_movement_possible(self.target_x, self.target_y, self.robot_x, self.robot_y,
                                             self.robot_direction, self.target_direction):
@@ -1373,7 +1375,6 @@ class PathPlan(object):
                     self.robot.redraw_car()
 
                     movements = self.translate_path_to_movements(path)
-                    self.IS_ON_PATH = True
                     for move in movements:
                         self.do_move(move)
 
@@ -1382,7 +1383,6 @@ class PathPlan(object):
                     self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot.grid_x,
                                                               self.robot.grid_y,
                                                               self.robot.angle, self.target_direction)
-                    self.IS_ON_PATH = False
 
             x, y = self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1]
             if self.target_x == x and self.target_y == y:
@@ -1394,6 +1394,7 @@ class PathPlan(object):
             self.all_movements_dict[obstacle_key] = self.get_movements_string()
             self.all_robot_pos_dict[obstacle_key] = self.get_robot_pos_string()
             # Reset
+            self.IS_ON_PATH = False
             self.reset_collection_of_movements()
             self.reset_robot_pos_list()
 
