@@ -20,7 +20,7 @@ class AStar:
         self.recorded_movements = []
 
     def get_displacement(self, pos1, pos2):
-        return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
+        return (abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1]))**2
 
     def min(self, num1, num2):
         if num1 < num2:
@@ -68,7 +68,8 @@ class AStar:
     def get_astar_route(self):
         # weight for difference in direction
         weight_turn = 0.5
-        weight_obstacle = 3
+        weight_obstacle = 0
+        weight_displacement=3
         all_target_unordered = self.grid.get_target_locations()
         all_target_ordered = []
         all_target_ordered.append(
@@ -79,7 +80,7 @@ class AStar:
             temp = len(all_target_ordered) - 1
 
             # cost based on displacement
-            init_displacement = 3*self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
+            init_displacement = weight_displacement*self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
                                                       [all_target_unordered[0][0], all_target_unordered[0][1]])
             # cost based on the difference in the direction of the target and the robot
             init_cost_turn = weight_turn * self.direction_diff_to_weight(all_target_unordered[0],
@@ -92,7 +93,7 @@ class AStar:
             smallest = init_displacement + init_cost_turn + init_cost_obstacle
             for i in range(len(all_target_unordered)):
                 # cost based on displacement
-                displacement = self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
+                displacement = weight_displacement*self.get_displacement([all_target_ordered[temp][0], all_target_ordered[temp][1]],
                                                      [all_target_unordered[i][0], all_target_unordered[i][1]])
                 # cost based on the difference in the direction of the target and the robot
                 cost_turn = weight_turn * self.direction_diff_to_weight(all_target_unordered[i],
