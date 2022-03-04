@@ -19,6 +19,7 @@ class Grid(object):
         self.block_size = block_size
         self.cells = [[0 for x in range(grid_column)] for y in range(grid_row)]
         self.cells_virtual = [[0 for x in range(grid_column)] for y in range(grid_row)]
+        self.optimized_target_locations = None
 
         # NOTE!! row and columns start from the top right, but coordinates have to start from the bottom left
         # x-coord = column; y-coord = 19-row
@@ -72,6 +73,52 @@ class Grid(object):
             target_locations.append(target_loc)
 
         return target_locations
+
+    def get_optimized_target_locations(self, fastest_path):
+        optimized_fastest_path = fastest_path
+        i = 1
+        previous_target = fastest_path[0]
+        # If there are no obstacles
+        if len(optimized_fastest_path) <= 1:
+            return optimized_fastest_path
+        for target in fastest_path[1:]:
+            target_x = target[0]
+            target_y = target[1]
+            target_direction = target[2]
+            obstacle_cell = target[3]
+
+            # Get the 2 other neighbour potential target cells
+            if target_direction == constants.NORTH:
+                neighbour_left = (target_x - 1, target_y, target_direction, obstacle_cell)
+                neighbour_right = (target_x + 1, target_y, target_direction, obstacle_cell)
+            elif target_direction == constants.SOUTH:
+                neighbour_left = (target_x + 1, target_y, target_direction, obstacle_cell)
+                neighbour_right = (target_x - 1, target_y, target_direction, obstacle_cell)
+            elif target_direction == constants.EAST:
+                neighbour_left = (target_x, target_y + 1, target_direction, obstacle_cell)
+                neighbour_right = (target_x, target_y - 1, target_direction, obstacle_cell)
+            elif target_direction == constants.WEST:
+                neighbour_left = (target_x, target_y - 1, target_direction, obstacle_cell)
+                neighbour_right = (target_x, target_y + 1, target_direction, obstacle_cell)
+
+            # Calculate manhattan dists
+            left_dist = abs(previous_target[0] - neighbour_left[0]) + abs(previous_target[1] - neighbour_left[1])
+            right_dist = abs(previous_target[0] - neighbour_right[0]) + abs(previous_target[1] - neighbour_right[1])
+            centre_dist = abs(previous_target[0] - target_x) + abs(previous_target[1] - target_y)
+            if centre_dist <= left_dist and centre_dist <= right_dist:
+                new_optimized_target = target
+            elif left_dist < centre_dist and left_dist < right_dist:
+                new_optimized_target = neighbour_left
+            elif right_dist < centre_dist and right_dist < left_dist:
+                new_optimized_target = neighbour_right
+            else:
+                new_optimized_target = target
+
+            # Change the optimized target
+            optimized_fastest_path[i] = new_optimized_target
+            previous_target = new_optimized_target
+            i += 1
+        return optimized_fastest_path
 
     def create_obstacle(self, arglist):
         grid_x, grid_y, dir = arglist[0], arglist[1], arglist[2]
