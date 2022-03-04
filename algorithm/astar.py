@@ -49,6 +49,8 @@ class AStar:
                 if target_direction[0] < robot_direction[0]:
                     return 6
             return 0
+
+        # TODO: refine further
         elif min(abs(target_direction[2] - robot_direction[2]), abs(robot_direction[2] - target_direction[2])) == 90:
             return 2
         elif min(abs(target_direction[2] - robot_direction[2]), abs(robot_direction[2] - target_direction[2])) == 180:
