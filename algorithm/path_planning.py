@@ -1314,6 +1314,88 @@ class PathPlan(object):
         else:
             self.simulator.comms.send("No more movements.")
 
+    def send_to_rpi_recalculated(self, robot_x, robot_y, robot_dir):
+        if self.obstacle_list_rpi:
+            obstacle_key = self.obstacle_list_rpi.pop(0)
+            print("Remaining obstacles: ", self.obstacle_list_rpi)
+            # Set robot position
+            self.robot.grid_x = robot_x
+            self.robot.grid_y = robot_y
+            self.robot.angle = robot_dir
+            self.robot.redraw_car()
+            # Set target position
+            i = 0 - len(self.obstacle_list_rpi) - 1
+            target = self.car.optimized_target_locations[i:][0]
+
+            # Replan path for this particular obstacle with new robot position
+            self.target = target
+            self.target_x = target[0]
+            self.target_y = target[1]
+            self.target_direction = target[2]
+            self.obstacle_cell = target[3]
+
+            self.robot_x = self.robot.get_grid_pos()[0]
+            self.robot_y = self.robot.get_grid_pos()[1]
+            self.robot_direction = self.robot.get_angle_of_rotation()
+
+            # if no obstacle exceptions, can use hardcoded shortest path
+            if self.check_movement_possible(self.target_x, self.target_y, self.robot_x, self.robot_y,
+                                            self.robot_direction, self.target_direction):
+                # Target Coordinates: (a, b); Robot Coordinates: (x, y)
+                self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot_x, self.robot_y,
+                                                          self.robot_direction, self.target_direction)
+
+            # else, plan a path using astar search on virtual grid
+            else:
+                # x-coord = column; y-coord = 19-row
+                start = [19 - self.robot.grid_y, self.robot.grid_x, self.robot.angle]
+                end = [19 - self.target_y,
+                       self.target_x,
+                       self.target_direction]  # ending position
+                cost = 10  # cost per movement
+                maze = self.grid.cells_virtual
+                search_result = search(maze, cost, start, end)
+
+                if search_result is None:
+                    # Force run hardcoded path
+                    print("Search result: ", search_result, " ; FORCING hardcoded path...")
+                    self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot_x, self.robot_y,
+                                                              self.robot_direction, self.target_direction)
+                else:
+                    # Execute gray route
+                    draw_path, path = search_result[0], search_result[1]
+
+                    for r in range(20):
+                        for c in range(20):
+                            if draw_path[r][c] >= 5:
+                                self.grid.cells[r][c].set_path_status(draw_path[r][c])
+                    # Colour rough route gray
+                    self.robot.redraw_car()
+
+                    movements = self.translate_path_to_movements(path)
+                    self.IS_ON_PATH = True
+                    for move in movements:
+                        self.do_move(move)
+                    self.IS_ON_PATH = False
+
+                    # Last step is to rotate on the spot
+                    print("LAST STEP")
+                    self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot.grid_x,
+                                                              self.robot.grid_y,
+                                                              self.robot.angle, self.target_direction)
+
+            # Change all movements dict and all robot pos dict for obstacle key replanned
+            self.all_movements_dict[obstacle_key] = self.get_movements_string()
+            self.all_robot_pos_dict[obstacle_key] = self.get_robot_pos_string()
+            # Reset
+            self.reset_collection_of_movements()
+            self.reset_robot_pos_list()
+
+            self.simulator.comms.send(self.all_movements_dict[obstacle_key])
+            self.simulator.comms.send(self.all_robot_pos_dict[obstacle_key])
+        else:
+            self.simulator.comms.send("No more movements.")
+
     def check_movement_possible(self, a, b, x, y, robot_direction, target_direction):
         constants.IS_CHECKING = True
         area = None

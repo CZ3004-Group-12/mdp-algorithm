@@ -184,12 +184,19 @@ class Simulator:
 
                 elif source == "RPI":
                     print("Received command from RPI")
-                    # E.g. ROBOT/NEXT
-                    message_split = message.split("/", 1)
+                    # E.g. ROBOT/NEXT/3,3,90 or ROBOT/NEXT/NIL
+                    message_split = message.split("/")
                     command = message_split[0]
                     params = message_split[1]
-                    if command == "ROBOT" and params == "NEXT":
+                    new_robot_pos = message_split[2]
+                    if command == "ROBOT" and params == "NEXT" and new_robot_pos == "NIL":
                         self.callback_queue.put(self.path_planner.send_to_rpi)
+                    else:
+                        new_robot_pos_split = new_robot_pos.split(",")
+                        robot_x = new_robot_pos_split[0]
+                        robot_y = new_robot_pos_split[1]
+                        robot_dir = new_robot_pos_split[2]
+                        self.callback_queue.put([self.path_planner.send_to_rpi_recalculated, [robot_x, robot_y, robot_dir]])
 
             except IndexError:
                 self.comms.send("Invalid command: " + txt)
