@@ -1328,7 +1328,7 @@ class PathPlan(object):
             self.robot.redraw_car()
             # Set target position
             i = 0 - len(self.obstacle_list_rpi) - 1
-            target = self.car.optimized_target_locations[i:][0]
+            target = self.robot.optimized_target_locations[i:][0]
 
             # Replan path for this particular obstacle with new robot position
             self.target = target
