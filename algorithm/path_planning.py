@@ -1318,6 +1318,12 @@ class PathPlan(object):
         robot_x = int(arglist[0])
         robot_y = int(arglist[1])
         robot_dir = int(arglist[2])
+
+        # Reset and move backwards by 2 steps first
+        self.reset_collection_of_movements()
+        self.reset_robot_pos_list()
+        self.move_backward_by(2)
+
         if self.obstacle_list_rpi:
             obstacle_key = self.obstacle_list_rpi.pop(0)
             print("Remaining obstacles: ", self.obstacle_list_rpi)
@@ -1379,13 +1385,19 @@ class PathPlan(object):
                     self.IS_ON_PATH = True
                     for move in movements:
                         self.do_move(move)
-                    self.IS_ON_PATH = False
 
                     # Last step is to rotate on the spot
                     print("LAST STEP")
                     self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot.grid_x,
                                                               self.robot.grid_y,
                                                               self.robot.angle, self.target_direction)
+                    self.IS_ON_PATH = False
+
+            x, y = self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1]
+            if self.target_x == x and self.target_y == y:
+                print(self.get_movements_string())
+                print(self.get_current_obstacle_id())
+                print(self.get_robot_pos_string())
 
             # Change all movements dict and all robot pos dict for obstacle key replanned
             self.all_movements_dict[obstacle_key] = self.get_movements_string()
