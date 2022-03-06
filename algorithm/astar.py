@@ -20,7 +20,7 @@ class AStar:
         self.recorded_movements = []
 
     def get_displacement(self, pos1, pos2):
-        return (abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])) ** 2
+        return math.sqrt((abs(pos1[0] - pos2[0])**2 + abs(pos1[1] - pos2[1])**2))
 
     def min(self, num1, num2):
         if num1 < num2:
