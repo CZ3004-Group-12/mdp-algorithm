@@ -1250,70 +1250,70 @@ class PathPlan(object):
         self.collection_of_robot_pos = []
 
     def get_collection_of_movements_string(self):
-        list_of_movements = self.collection_of_movements
-
-        # Clean up and eliminate all FB pairs
-        FB_present = True
-        while FB_present:
-            if len(list_of_movements) < 1:
-                break
-            prev_move = list_of_movements[0]
-            index = -1
-            initial_len = len(list_of_movements)
-            for move in list_of_movements:
-                index += 1
-                if (prev_move == "F" and move == "B") or (prev_move == "B" and move == "F"):
-                    list_of_movements.pop(index)
-                    list_of_movements.pop(index - 1)
-                    break
-                prev_move = move
-
-            if len(list_of_movements) == initial_len:
-                FB_present = False
-
-        # CLean up and eliminate all TURN pairs
-        TURNS_present = True
-        while TURNS_present:
-            if len(list_of_movements) < 1:
-                break
-            prev_move = list_of_movements[0]
-            index = -1
-            initial_len = len(list_of_movements)
-            for move in list_of_movements:
-                index += 1
-                if (prev_move == "FR" and move == "BR") or (prev_move == "BR" and move == "FR"):
-                    list_of_movements.pop(index)
-                    list_of_movements.pop(index - 1)
-                    break
-                elif (prev_move == "FL" and move == "BL") or (prev_move == "BL" and move == "FL"):
-                    list_of_movements.pop(index)
-                    list_of_movements.pop(index - 1)
-                    break
-                prev_move = move
-
-            if len(list_of_movements) == initial_len:
-                TURNS_present = False
-
-            # Clean up and eliminate all FB pairs again
-            FB_present = True
-            while FB_present:
-                if len(list_of_movements) < 1:
-                    break
-                prev_move = list_of_movements[0]
-                index = -1
-                initial_len = len(list_of_movements)
-                for move in list_of_movements:
-                    index += 1
-                    if (prev_move == "F" and move == "B") or (prev_move == "B" and move == "F"):
-                        list_of_movements.pop(index)
-                        list_of_movements.pop(index - 1)
-                        break
-                    prev_move = move
-
-                if len(list_of_movements) == initial_len:
-                    FB_present = False
-
-        self.collection_of_movements = list_of_movements
+        # list_of_movements = self.collection_of_movements
+        #
+        # # Clean up and eliminate all FB pairs
+        # FB_present = True
+        # while FB_present:
+        #     if len(list_of_movements) < 1:
+        #         break
+        #     prev_move = list_of_movements[0]
+        #     index = -1
+        #     initial_len = len(list_of_movements)
+        #     for move in list_of_movements:
+        #         index += 1
+        #         if (prev_move == "F" and move == "B") or (prev_move == "B" and move == "F"):
+        #             list_of_movements.pop(index)
+        #             list_of_movements.pop(index - 1)
+        #             break
+        #         prev_move = move
+        #
+        #     if len(list_of_movements) == initial_len:
+        #         FB_present = False
+        #
+        # # CLean up and eliminate all TURN pairs
+        # TURNS_present = True
+        # while TURNS_present:
+        #     if len(list_of_movements) < 1:
+        #         break
+        #     prev_move = list_of_movements[0]
+        #     index = -1
+        #     initial_len = len(list_of_movements)
+        #     for move in list_of_movements:
+        #         index += 1
+        #         if (prev_move == "FR" and move == "BR") or (prev_move == "BR" and move == "FR"):
+        #             list_of_movements.pop(index)
+        #             list_of_movements.pop(index - 1)
+        #             break
+        #         elif (prev_move == "FL" and move == "BL") or (prev_move == "BL" and move == "FL"):
+        #             list_of_movements.pop(index)
+        #             list_of_movements.pop(index - 1)
+        #             break
+        #         prev_move = move
+        #
+        #     if len(list_of_movements) == initial_len:
+        #         TURNS_present = False
+        #
+        #     # Clean up and eliminate all FB pairs again
+        #     FB_present = True
+        #     while FB_present:
+        #         if len(list_of_movements) < 1:
+        #             break
+        #         prev_move = list_of_movements[0]
+        #         index = -1
+        #         initial_len = len(list_of_movements)
+        #         for move in list_of_movements:
+        #             index += 1
+        #             if (prev_move == "F" and move == "B") or (prev_move == "B" and move == "F"):
+        #                 list_of_movements.pop(index)
+        #                 list_of_movements.pop(index - 1)
+        #                 break
+        #             prev_move = move
+        #
+        #         if len(list_of_movements) == initial_len:
+        #             FB_present = False
+        #
+        # self.collection_of_movements = list_of_movements
         return ','.join([str(movement) for movement in self.collection_of_movements])
 
     def get_movements_string(self):
@@ -1456,16 +1456,14 @@ class PathPlan(object):
                                                               self.robot.angle, self.target_direction)
 
             x, y = self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1]
-
-            movement_string = self.get_movements_string()
-            print(movement_string)
-            print(self.get_current_obstacle_id())
-            robot_string = self.get_robot_pos_string()
-            print(robot_string)
+            if self.target_x == x and self.target_y == y:
+                print(self.get_movements_string())
+                print(self.get_current_obstacle_id())
+                print(self.get_robot_pos_string())
 
             # Change all movements dict and all robot pos dict for obstacle key replanned
-            self.all_movements_dict[obstacle_key] = movement_string
-            self.all_robot_pos_dict[obstacle_key] = robot_string
+            self.all_movements_dict[obstacle_key] = self.get_movements_string()
+            self.all_robot_pos_dict[obstacle_key] = self.get_robot_pos_string()
             # Reset
             self.IS_ON_PATH = False
             self.reset_collection_of_movements()
