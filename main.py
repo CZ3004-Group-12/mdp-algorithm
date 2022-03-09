@@ -9,11 +9,16 @@ logging.basicConfig(level=logging.INFO)
 
 
 def main():
-    print(argv)
-    if len(argv) == 2 and str(argv[1]) == "hl":
-        constants.HEADLESS = True
-    else:
-        constants.HEADLESS = False
+    constants.HEADLESS = False
+    constants.CENTER_ON_OBS = False
+    if len(argv) != 1:
+        for arg in argv:
+            if (arg == "hl"):
+                constants.HEADLESS = True
+                print("Running in headless mode")
+            elif (arg == "cen"):
+                constants.CENTER_ON_OBS = True
+                print("Pathing will center on obstacle")
     x = Simulator()
     
 

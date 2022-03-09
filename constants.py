@@ -44,3 +44,6 @@ RPI_CONNECTED = False
 # Headless execution
 HEADLESS = False
 
+# Pathing center on obstacle
+CENTER_ON_OBS = False
+

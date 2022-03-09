@@ -105,14 +105,17 @@ class Grid(object):
             left_dist = abs(previous_target[0] - neighbour_left[0]) + abs(previous_target[1] - neighbour_left[1])
             right_dist = abs(previous_target[0] - neighbour_right[0]) + abs(previous_target[1] - neighbour_right[1])
             centre_dist = abs(previous_target[0] - target_x) + abs(previous_target[1] - target_y)
-            if centre_dist <= left_dist and centre_dist <= right_dist:
+            if constants.CENTER_ON_OBS:
                 new_optimized_target = target
-            elif left_dist < centre_dist and left_dist < right_dist:
-                new_optimized_target = neighbour_left
-            elif right_dist < centre_dist and right_dist < left_dist:
-                new_optimized_target = neighbour_right
             else:
-                new_optimized_target = target
+                if centre_dist <= left_dist and centre_dist <= right_dist:
+                    new_optimized_target = target
+                elif left_dist < centre_dist and left_dist < right_dist:
+                    new_optimized_target = neighbour_left
+                elif right_dist < centre_dist and right_dist < left_dist:
+                    new_optimized_target = neighbour_right
+                else:
+                    new_optimized_target = target
 
             # Change the optimized target
             optimized_fastest_path[i] = new_optimized_target
