@@ -1409,7 +1409,7 @@ class PathPlan(object):
             self.robot_y = self.robot.get_grid_pos()[1]
             self.robot_direction = self.robot.get_angle_of_rotation()
 
-            self.IS_ON_PATH = True
+            
 
             # if no obstacle exceptions, can use hardcoded shortest path
             if self.check_movement_possible(self.target_x, self.target_y, self.robot_x, self.robot_y,
@@ -1438,6 +1438,8 @@ class PathPlan(object):
                     # Execute gray route
                     draw_path, path = search_result[0], search_result[1]
 
+
+                    self.IS_ON_PATH = True
                     for r in range(20):
                         for c in range(20):
                             if draw_path[r][c] >= 5:
@@ -1445,10 +1447,12 @@ class PathPlan(object):
                     # Colour rough route gray
                     self.robot.redraw_car()
 
+                    self.IS_ON_PATH = True
                     movements = self.translate_path_to_movements(path)
                     for move in movements:
                         self.do_move(move)
 
+                    self.IS_ON_PATH = True
                     # Last step is to rotate on the spot
                     print("LAST STEP")
                     self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot.grid_x,
@@ -1460,6 +1464,7 @@ class PathPlan(object):
                 print(self.get_movements_string())
                 print(self.get_current_obstacle_id())
                 print(self.get_robot_pos_string())
+                print("test")
 
             # Change all movements dict and all robot pos dict for obstacle key replanned
             self.all_movements_dict[obstacle_key] = self.get_movements_string()
