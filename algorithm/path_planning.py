@@ -1352,7 +1352,7 @@ class PathPlan(object):
             # Move car 2 steps backwards for next move
             self.reset_collection_of_movements()
             self.reset_robot_pos_list()
-            self.move_backward_by(2)
+            #self.move_backward_by(2)
 
             return True
         print(self.get_movements_string())
@@ -1374,10 +1374,10 @@ class PathPlan(object):
         robot_y = int(arglist[1])
         robot_dir = int(arglist[2])
 
-        # Reset and move backwards by 2 steps first
+        # Reset collection first
         self.reset_collection_of_movements()
         self.reset_robot_pos_list()
-        self.move_backward_by(2)
+        # self.move_backward_by(2)
 
         if self.obstacle_list_rpi:
             obstacle_key = self.obstacle_list_rpi.pop(0)
