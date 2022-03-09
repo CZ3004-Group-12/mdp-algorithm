@@ -43,7 +43,14 @@ class PathPlan(object):
         # route = self.brute_force_possible_path()
         # self.fastest_route = route
 
+        count_of_obs = 0
+
         while len(self.fastest_route) != 0:
+            count_of_obs += 1
+            if count_of_obs == 2:
+                if constants.RPI_CONNECTED:
+                    self.send_to_rpi()
+
             target = self.fastest_route.pop(0)
             print("Current Target: ", target)
 
