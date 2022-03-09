@@ -1300,8 +1300,8 @@ class PathPlan(object):
         if self.obstacle_list_rpi:
             obstacle_key = self.obstacle_list_rpi.pop(0)
             print("Remaining obstacles: ", self.obstacle_list_rpi)
-            self.simulator.comms.send(self.all_movements_dict[obstacle_key])
             self.simulator.comms.send(self.all_robot_pos_dict[obstacle_key])
+            self.simulator.comms.send(self.all_movements_dict[obstacle_key])
         else:
             self.simulator.comms.send("No more movements.")
 
@@ -1398,8 +1398,8 @@ class PathPlan(object):
             self.reset_collection_of_movements()
             self.reset_robot_pos_list()
 
-            self.simulator.comms.send(self.all_movements_dict[obstacle_key])
             self.simulator.comms.send(self.all_robot_pos_dict[obstacle_key])
+            self.simulator.comms.send(self.all_movements_dict[obstacle_key])
         else:
             self.simulator.comms.send("No more movements.")
 
