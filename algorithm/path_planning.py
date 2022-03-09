@@ -1456,14 +1456,16 @@ class PathPlan(object):
                                                               self.robot.angle, self.target_direction)
 
             x, y = self.robot.get_grid_pos()[0], self.robot.get_grid_pos()[1]
-            if self.target_x == x and self.target_y == y:
-                print(self.get_movements_string())
-                print(self.get_current_obstacle_id())
-                print(self.get_robot_pos_string())
+
+            movement_string = self.get_movements_string()
+            print(movement_string)
+            print(self.get_current_obstacle_id())
+            robot_string = self.get_robot_pos_string()
+            print(robot_string)
 
             # Change all movements dict and all robot pos dict for obstacle key replanned
-            self.all_movements_dict[obstacle_key] = self.get_movements_string()
-            self.all_robot_pos_dict[obstacle_key] = self.get_robot_pos_string()
+            self.all_movements_dict[obstacle_key] = movement_string
+            self.all_robot_pos_dict[obstacle_key] = robot_string
             # Reset
             self.IS_ON_PATH = False
             self.reset_collection_of_movements()
