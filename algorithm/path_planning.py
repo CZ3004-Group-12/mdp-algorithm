@@ -1287,6 +1287,25 @@ class PathPlan(object):
             if len(list_of_movements) == initial_len:
                 TURNS_present = False
 
+            # Clean up and eliminate all FB pairs again
+            FB_present = True
+            while FB_present:
+                if len(list_of_movements) < 1:
+                    break
+                prev_move = list_of_movements[0]
+                index = -1
+                initial_len = len(list_of_movements)
+                for move in list_of_movements:
+                    index += 1
+                    if (prev_move == "F" and move == "B") or (prev_move == "B" and move == "F"):
+                        list_of_movements.pop(index)
+                        list_of_movements.pop(index - 1)
+                        break
+                    prev_move = move
+
+                if len(list_of_movements) == initial_len:
+                    FB_present = False
+
         self.collection_of_movements = list_of_movements
         return ','.join([str(movement) for movement in self.collection_of_movements])
 
