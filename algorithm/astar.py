@@ -50,10 +50,32 @@ class AStar:
                     return 8
             if robot_direction[0] == target_direction[0]:
                 return 0
-            return 4
+            return 2
 
         # TODO: refine further
         elif min(abs(target_direction[2] - robot_direction[2]), abs(robot_direction[2] - target_direction[2])) == 90:
+            if robot_direction[2] == 0:
+                if target_direction[0] > robot_direction[0] and target_direction[2]==90:
+                    return 8
+                elif target_direction[0] < robot_direction[0] and target_direction[2]==-90:
+                    return 8
+            elif robot_direction[2] == 90:
+                if target_direction[1] < robot_direction[1] and target_direction[2] == 0:
+                    return 8
+                elif target_direction[1] > robot_direction[1] and target_direction[2] == 180:
+                    return 8
+            elif robot_direction[2] == 180:
+                if target_direction[0] > robot_direction[0] and target_direction[2] == -90:
+                    return 8
+                elif target_direction[0] < robot_direction[0] and target_direction[2] == 90:
+                    return 8
+            elif robot_direction[2] == -90:
+                if target_direction[1] < robot_direction[1] and target_direction[2] == 180:
+                    return 8
+                elif target_direction[1] > robot_direction[1] and target_direction[2] == 0:
+                    return 8
+            if robot_direction[0] == target_direction[0]:
+                return 0
             return 4
 
         elif min(abs(target_direction[2] - robot_direction[2]), abs(robot_direction[2] - target_direction[2])) == 180:
@@ -98,6 +120,9 @@ class AStar:
                                                                          all_target_ordered[temp][1])
             smallest = init_displacement + init_cost_turn + init_cost_obstacle
             for i in range(len(all_target_unordered)):
+                if len(all_target_ordered) == 1:
+                    if (all_target_unordered[i][1]<6):
+                        continue
                 # cost based on displacement
                 displacement = weight_displacement * self.get_displacement(
                     [all_target_ordered[temp][0], all_target_ordered[temp][1]],
