@@ -1618,7 +1618,7 @@ class PathPlan(object):
                     self.AR1(a, b, x, y)
                 elif a < x and b == y:
                     area = "AR2"
-                    self.AR3(a, b, x, y)
+                    self.AR2(a, b, x, y)
                 elif a == x and b > y:
                     area = "AR3"
                     self.AR3(a, b, x, y)
