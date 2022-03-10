@@ -1002,6 +1002,11 @@ class PathPlan(object):
         pass
 
     def CR3(self, a, b, x, y):
+        if (x<=4 and abs(b-y)>=3):
+            self.move_backward_by(3)
+            self.turn_forward_right()
+            self.move_forward_by(abs(b-y)-3)
+            return
         a, b, x, y = self.preprocess_coords(a, b, x, y)
         self.CR6(a, b, x, y)
         pass
@@ -1117,6 +1122,11 @@ class PathPlan(object):
         self.move_forward_by(abs(b - y) + 3)
 
     def DR3(self, a, b, x, y):
+        if (x<4 or x>15) and abs(b-y)>=3:
+            self.move_backward_by(3)
+            self.turn_forward_left()
+            self.move_forward_by(abs(b-y)-3)
+            return
         a, b, x, y = self.preprocess_coords(a, b, x, y)
         self.DR7(a, b, x, y)
 
