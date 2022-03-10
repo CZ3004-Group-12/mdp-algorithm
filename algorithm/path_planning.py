@@ -130,10 +130,10 @@ class PathPlan(object):
             self.turn_forward_right()
         elif move == "FL":
             self.turn_forward_left()
-        # elif move == "BR":
-        #     self.turn_backward_right()
-        # elif move == "BL":
-        #     self.turn_backward_left()
+        elif move == "BR":
+            self.turn_backward_right()
+        elif move == "BL":
+            self.turn_backward_left()
 
     def translate_path_to_movements(self, path):
         no_of_steps = len(path)
@@ -154,16 +154,32 @@ class PathPlan(object):
         prev_dir = grid_path[0][2]
         prev_x = grid_path[0][0]
         prev_y = grid_path[0][1]
+        prev_grid = [prev_x, prev_y]
+        prev_prev_grid = prev_grid
+
+        move = [[0, 1],  # go up
+                [1, 0],  # go right
+                [0, -1],  # go down
+                [-1, 0]]  # go left
 
         print(grid_path)
 
+        count = 0
         for step in grid_path[1:]:
             curr_dir = step[2]
+            curr_grid = [step[0], step[1]]
+            diff_grid = [prev_grid[0] - prev_prev_grid[0], prev_grid[1] - prev_prev_grid[1]]
             if prev_dir == constants.NORTH:
                 if curr_dir == constants.EAST:
-                    self.forward_r(list_of_movements)
+                    if diff_grid == move[2]:
+                        self.backward_l(list_of_movements)
+                    else:
+                        self.forward_r(list_of_movements)
                 elif curr_dir == constants.WEST:
-                    self.forward_l(list_of_movements)
+                    if diff_grid == move[2]:
+                        self.backward_r(list_of_movements)
+                    else:
+                        self.forward_l(list_of_movements)
                 elif curr_dir == constants.SOUTH:
                     self.uturn(list_of_movements, curr_dir)
                 elif curr_dir == prev_dir:
@@ -173,9 +189,15 @@ class PathPlan(object):
                         list_of_movements.append("F")
             elif prev_dir == constants.SOUTH:
                 if curr_dir == constants.WEST:
-                    self.forward_r(list_of_movements)
+                    if diff_grid == move[0]:
+                        self.backward_l(list_of_movements)
+                    else:
+                        self.forward_r(list_of_movements)
                 elif curr_dir == constants.EAST:
-                    self.forward_l(list_of_movements)
+                    if diff_grid == move[0]:
+                        self.backward_r(list_of_movements)
+                    else:
+                        self.forward_l(list_of_movements)
                 elif curr_dir == constants.NORTH:
                     self.uturn(list_of_movements, curr_dir)
                 elif curr_dir == prev_dir:
@@ -185,9 +207,15 @@ class PathPlan(object):
                         list_of_movements.append("F")
             elif prev_dir == constants.EAST:
                 if curr_dir == constants.SOUTH:
-                    self.forward_r(list_of_movements)
+                    if diff_grid == move[3]:
+                        self.backward_l(list_of_movements)
+                    else:
+                        self.forward_r(list_of_movements)
                 elif curr_dir == constants.NORTH:
-                    self.forward_l(list_of_movements)
+                    if diff_grid == move[3]:
+                        self.backward_r(list_of_movements)
+                    else:
+                        self.forward_l(list_of_movements)
                 elif curr_dir == constants.WEST:
                     self.uturn(list_of_movements, curr_dir)
                 elif curr_dir == prev_dir:
@@ -197,9 +225,15 @@ class PathPlan(object):
                         list_of_movements.append("F")
             elif prev_dir == constants.WEST:
                 if curr_dir == constants.NORTH:
-                    self.forward_r(list_of_movements)
+                    if diff_grid == move[1]:
+                        self.backward_l(list_of_movements)
+                    else:
+                        self.forward_r(list_of_movements)
                 elif curr_dir == constants.SOUTH:
-                    self.forward_l(list_of_movements)
+                    if diff_grid == move[1]:
+                        self.backward_r(list_of_movements)
+                    else:
+                        self.forward_l(list_of_movements)
                 elif curr_dir == constants.EAST:
                     self.uturn(list_of_movements, curr_dir)
                 elif curr_dir == prev_dir:
@@ -208,9 +242,13 @@ class PathPlan(object):
                     else:
                         list_of_movements.append("F")
 
+            prev_prev_grid = prev_grid
             prev_dir = curr_dir
             prev_x = step[0]
             prev_y = step[1]
+            prev_grid = curr_grid
+
+            count += 1
 
         print(list_of_movements)
 
@@ -259,6 +297,22 @@ class PathPlan(object):
                                                   self.robot.grid_y,
                                                   self.robot.angle, curr_dir)
         self.IS_ON_PATH = False
+        list_of_movements.append("F")
+
+    def backward_l(self, list_of_movements):
+        list_of_movements.append("F")
+        list_of_movements.append("F")
+        list_of_movements.append("F")
+        list_of_movements.append("BL")
+        list_of_movements.append("F")
+        list_of_movements.append("F")
+
+    def backward_r(self, list_of_movements):
+        list_of_movements.append("F")
+        list_of_movements.append("F")
+        list_of_movements.append("F")
+        list_of_movements.append("BR")
+        list_of_movements.append("F")
         list_of_movements.append("F")
 
     def transpose_orientation(self, target_x, target_y, target_direction, robot_x, robot_y):
@@ -1270,51 +1324,51 @@ class PathPlan(object):
 
             if len(list_of_movements) == initial_len:
                 FB_present = False
-        #
-        # # CLean up and eliminate all TURN pairs
-        # TURNS_present = True
-        # while TURNS_present:
-        #     if len(list_of_movements) < 1:
-        #         break
-        #     prev_move = list_of_movements[0]
-        #     index = -1
-        #     initial_len = len(list_of_movements)
-        #     for move in list_of_movements:
-        #         index += 1
-        #         if (prev_move == "FR" and move == "BR") or (prev_move == "BR" and move == "FR"):
-        #             list_of_movements.pop(index)
-        #             list_of_movements.pop(index - 1)
-        #             break
-        #         elif (prev_move == "FL" and move == "BL") or (prev_move == "BL" and move == "FL"):
-        #             list_of_movements.pop(index)
-        #             list_of_movements.pop(index - 1)
-        #             break
-        #         prev_move = move
-        #
-        #     if len(list_of_movements) == initial_len:
-        #         TURNS_present = False
-        #
-        # # Clean up and eliminate all FB pairs again
-        # FB_present = True
-        # while FB_present:
-        #     if len(list_of_movements) < 1:
-        #         break
-        #     prev_move = list_of_movements[0]
-        #     index = -1
-        #     initial_len = len(list_of_movements)
-        #     for move in list_of_movements:
-        #         index += 1
-        #         if (prev_move == "F" and move == "B") or (prev_move == "B" and move == "F"):
-        #             list_of_movements.pop(index)
-        #             list_of_movements.pop(index - 1)
-        #             break
-        #         prev_move = move
-        #
-        #     if len(list_of_movements) == initial_len:
-        #         FB_present = False
-        #
-        # self.collection_of_movements = list_of_movements
-        return ','.join([str(movement) for movement in list_of_movements])
+
+        # CLean up and eliminate all TURN pairs
+        TURNS_present = True
+        while TURNS_present:
+            if len(list_of_movements) < 1:
+                break
+            prev_move = list_of_movements[0]
+            index = -1
+            initial_len = len(list_of_movements)
+            for move in list_of_movements:
+                index += 1
+                if (prev_move == "FR" and move == "BR") or (prev_move == "BR" and move == "FR"):
+                    list_of_movements.pop(index)
+                    list_of_movements.pop(index - 1)
+                    break
+                elif (prev_move == "FL" and move == "BL") or (prev_move == "BL" and move == "FL"):
+                    list_of_movements.pop(index)
+                    list_of_movements.pop(index - 1)
+                    break
+                prev_move = move
+
+            if len(list_of_movements) == initial_len:
+                TURNS_present = False
+
+        # Clean up and eliminate all FB pairs again
+        FB_present = True
+        while FB_present:
+            if len(list_of_movements) < 1:
+                break
+            prev_move = list_of_movements[0]
+            index = -1
+            initial_len = len(list_of_movements)
+            for move in list_of_movements:
+                index += 1
+                if (prev_move == "F" and move == "B") or (prev_move == "B" and move == "F"):
+                    list_of_movements.pop(index)
+                    list_of_movements.pop(index - 1)
+                    break
+                prev_move = move
+
+            if len(list_of_movements) == initial_len:
+                FB_present = False
+
+        self.collection_of_movements = list_of_movements
+        return ','.join([str(movement) for movement in self.collection_of_movements])
 
     def get_movements_string(self):
         movement_list = ["MOVEMENTS", self.obstacle_cell.get_obstacle().get_obstacle_id(),

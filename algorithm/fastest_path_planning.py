@@ -201,11 +201,19 @@ def search(maze, cost, start, end):
                 if [child.position[0] - child.parent.position[0],
                     child.position[1] - child.parent.position[1]] == move[1]:
                     tempCost *= 3
-                    child.position[2] = constants.EAST
+                    if child.parent.parent and [child.parent.position[0] - child.parent.parent.position[0],
+                    child.parent.position[1] - child.parent.parent.position[1]] == move[2]:  # if prev movement was backwards, this is a backward turn
+                        child.position[2] = constants.WEST
+                    else:
+                        child.position[2] = constants.EAST
                 elif [child.position[0] - child.parent.position[0],
                       child.position[1] - child.parent.position[1]] == move[3]:
                     tempCost *= 3
-                    child.position[2] = constants.WEST
+                    if child.parent.parent and [child.parent.position[0] - child.parent.parent.position[0],
+                    child.parent.position[1] - child.parent.parent.position[1]] == move[2]:
+                        child.position[2] = constants.EAST
+                    else:
+                        child.position[2] = constants.WEST
                 # Backward movement
                 elif [child.position[0] - child.parent.position[0],
                       child.position[1] - child.parent.position[1]] == move[2]:
@@ -214,11 +222,19 @@ def search(maze, cost, start, end):
                 if [child.position[0] - child.parent.position[0],
                     child.position[1] - child.parent.position[1]] == move[1]:
                     tempCost *= 3
-                    child.position[2] = constants.EAST
+                    if child.parent.parent and [child.parent.position[0] - child.parent.parent.position[0],
+                    child.parent.position[1] - child.parent.parent.position[1]] == move[0]:
+                        child.position[2] = constants.WEST
+                    else:
+                        child.position[2] = constants.EAST
                 elif [child.position[0] - child.parent.position[0],
                       child.position[1] - child.parent.position[1]] == move[3]:
                     tempCost *= 3
-                    child.position[2] = constants.WEST
+                    if child.parent.parent and [child.parent.position[0] - child.parent.parent.position[0],
+                    child.parent.position[1] - child.parent.parent.position[1]] == move[0]:
+                        child.position[2] = constants.EAST
+                    else:
+                        child.position[2] = constants.WEST
                 # Backward movement
                 elif [child.position[0] - child.parent.position[0],
                       child.position[1] - child.parent.position[1]] == move[0]:
@@ -228,11 +244,19 @@ def search(maze, cost, start, end):
                 if [child.position[0] - child.parent.position[0],
                     child.position[1] - child.parent.position[1]] == move[0]:
                     tempCost *= 3
-                    child.position[2] = constants.NORTH
+                    if child.parent.parent and [child.parent.position[0] - child.parent.parent.position[0],
+                    child.parent.position[1] - child.parent.parent.position[1]] == move[3]:
+                        child.position[2] = constants.SOUTH
+                    else:
+                        child.position[2] = constants.NORTH
                 elif [child.position[0] - child.parent.position[0],
                       child.position[1] - child.parent.position[1]] == move[2]:
                     tempCost *= 3
-                    child.position[2] = constants.SOUTH
+                    if child.parent.parent and [child.parent.position[0] - child.parent.parent.position[0],
+                    child.parent.position[1] - child.parent.parent.position[1]] == move[3]:
+                        child.position[2] = constants.NORTH
+                    else:
+                        child.position[2] = constants.SOUTH
                 # Backward movement
                 elif [child.position[0] - child.parent.position[0],
                       child.position[1] - child.parent.position[1]] == move[3]:
@@ -241,11 +265,20 @@ def search(maze, cost, start, end):
                 if [child.position[0] - child.parent.position[0],
                     child.position[1] - child.parent.position[1]] == move[0]:
                     tempCost *= 3
-                    child.position[2] = constants.NORTH
+                    if child.parent.parent and [child.parent.position[0] - child.parent.parent.position[0],
+                    child.parent.position[1] - child.parent.parent.position[1]] == move[1]:
+                        child.position[2] = constants.SOUTH
+                    else:
+                        child.position[2] = constants.NORTH
                 elif [child.position[0] - child.parent.position[0],
                       child.position[1] - child.parent.position[1]] == move[2]:
                     tempCost *= 3
-                    child.position[2] = constants.SOUTH
+                    if child.parent.parent and [child.parent.position[0] - child.parent.parent.position[0],
+                    child.parent.position[1] - child.parent.parent.position[1]] == move[1]:
+                        child.position[2] = constants.NORTH
+                    else:
+                        child.position[2] = constants.SOUTH
+                # Backward movement
                 elif [child.position[0] - child.parent.position[0],
                       child.position[1] - child.parent.position[1]] == move[1]:
                     child.position[2] = constants.WEST
