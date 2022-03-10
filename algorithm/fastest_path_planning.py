@@ -135,7 +135,7 @@ def search(maze, cost, start, end):
         visited_list.append(current_node)
 
         # test if goal is reached or not, if yes then return the path
-        if current_node.position[0] == end_node.position[0] and current_node.position[1] == end_node.position[1]:
+        if current_node.position[0] == end_node.position[0] and current_node.position[1] == end_node.position[1] and current_node.position[2] == end_node.position[2]:
             return return_path(current_node, maze)
 
         # Generate children from all adjacent squares
@@ -200,39 +200,39 @@ def search(maze, cost, start, end):
             if child.parent.position[2] in [constants.NORTH]:
                 if [child.position[0] - child.parent.position[0],
                     child.position[1] - child.parent.position[1]] == move[1]:
-                    tempCost *= 2
+                    tempCost *= 3
                     child.position[2] = constants.EAST
                 elif [child.position[0] - child.parent.position[0],
                       child.position[1] - child.parent.position[1]] == move[3]:
-                    tempCost *= 2
+                    tempCost *= 3
                     child.position[2] = constants.WEST
             elif child.parent.position[2] in [constants.SOUTH]:
                 if [child.position[0] - child.parent.position[0],
                     child.position[1] - child.parent.position[1]] == move[1]:
-                    tempCost *= 2
+                    tempCost *= 3
                     child.position[2] = constants.EAST
                 elif [child.position[0] - child.parent.position[0],
                       child.position[1] - child.parent.position[1]] == move[3]:
-                    tempCost *= 2
+                    tempCost *= 3
                     child.position[2] = constants.WEST
             # Robot facing East or West and making Left/Right turns
             elif child.parent.position[2] in [constants.EAST]:
                 if [child.position[0] - child.parent.position[0],
                     child.position[1] - child.parent.position[1]] == move[0]:
-                    tempCost *= 2
+                    tempCost *= 3
                     child.position[2] = constants.NORTH
                 elif [child.position[0] - child.parent.position[0],
                       child.position[1] - child.parent.position[1]] == move[2]:
-                    tempCost *= 2
+                    tempCost *= 3
                     child.position[2] = constants.SOUTH
             elif child.parent.position[2] in [constants.WEST]:
                 if [child.position[0] - child.parent.position[0],
                     child.position[1] - child.parent.position[1]] == move[0]:
-                    tempCost *= 2
+                    tempCost *= 3
                     child.position[2] = constants.NORTH
                 elif [child.position[0] - child.parent.position[0],
                       child.position[1] - child.parent.position[1]] == move[2]:
-                    tempCost *= 2
+                    tempCost *= 3
                     child.position[2] = constants.SOUTH
 
             # Create the f, g, and h values
