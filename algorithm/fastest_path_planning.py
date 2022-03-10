@@ -206,6 +206,10 @@ def search(maze, cost, start, end):
                       child.position[1] - child.parent.position[1]] == move[3]:
                     tempCost *= 3
                     child.position[2] = constants.WEST
+                # Backward movement
+                elif [child.position[0] - child.parent.position[0],
+                      child.position[1] - child.parent.position[1]] == move[2]:
+                    child.position[2] = constants.NORTH
             elif child.parent.position[2] in [constants.SOUTH]:
                 if [child.position[0] - child.parent.position[0],
                     child.position[1] - child.parent.position[1]] == move[1]:
@@ -215,6 +219,10 @@ def search(maze, cost, start, end):
                       child.position[1] - child.parent.position[1]] == move[3]:
                     tempCost *= 3
                     child.position[2] = constants.WEST
+                # Backward movement
+                elif [child.position[0] - child.parent.position[0],
+                      child.position[1] - child.parent.position[1]] == move[0]:
+                    child.position[2] = constants.SOUTH
             # Robot facing East or West and making Left/Right turns
             elif child.parent.position[2] in [constants.EAST]:
                 if [child.position[0] - child.parent.position[0],
@@ -225,6 +233,10 @@ def search(maze, cost, start, end):
                       child.position[1] - child.parent.position[1]] == move[2]:
                     tempCost *= 3
                     child.position[2] = constants.SOUTH
+                # Backward movement
+                elif [child.position[0] - child.parent.position[0],
+                      child.position[1] - child.parent.position[1]] == move[3]:
+                    child.position[2] = constants.EAST
             elif child.parent.position[2] in [constants.WEST]:
                 if [child.position[0] - child.parent.position[0],
                     child.position[1] - child.parent.position[1]] == move[0]:
@@ -234,6 +246,9 @@ def search(maze, cost, start, end):
                       child.position[1] - child.parent.position[1]] == move[2]:
                     tempCost *= 3
                     child.position[2] = constants.SOUTH
+                elif [child.position[0] - child.parent.position[0],
+                      child.position[1] - child.parent.position[1]] == move[1]:
+                    child.position[2] = constants.WEST
 
             # Create the f, g, and h values
             child.g = current_node.g + tempCost
