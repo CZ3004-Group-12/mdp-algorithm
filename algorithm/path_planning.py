@@ -34,6 +34,7 @@ class PathPlan(object):
         self.EXCEPTION_COUNT = 0
         self.REPEATED_LAST_TARGET = 0
         self.IS_ON_PATH = False
+        self.skipped_obstacles = []
 
     def start_robot(self):
         # Remove robot starting position from fastest_route
@@ -64,6 +65,76 @@ class PathPlan(object):
             # else:
             #     # Reset Exception Count
             #     self.EXCEPTION_COUNT = 0
+
+            self.target = target
+            self.target_x = target[0]
+            self.target_y = target[1]
+            self.target_direction = target[2]
+            self.obstacle_cell = target[3]
+
+            self.robot_x = self.robot.get_grid_pos()[0]
+            self.robot_y = self.robot.get_grid_pos()[1]
+            self.robot_direction = self.robot.get_angle_of_rotation()
+
+            # if no obstacle exceptions, can use hardcoded shortest path
+            if self.check_movement_possible(self.target_x, self.target_y, self.robot_x, self.robot_y,
+                                            self.robot_direction, self.target_direction):
+                # Target Coordinates: (a, b); Robot Coordinates: (x, y)
+                self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot_x, self.robot_y,
+                                                          self.robot_direction, self.target_direction)
+
+            # else, plan a path using astar search on virtual grid
+            else:
+                # x-coord = column; y-coord = 19-row
+                start = [19 - self.robot.grid_y, self.robot.grid_x, self.robot.angle]
+                end = [19 - self.target_y,
+                       self.target_x,
+                       self.target_direction]  # ending position
+                cost = 10  # cost per movement
+                maze = self.grid.cells_virtual
+                search_result = search(maze, cost, start, end)
+
+                if search_result is None:
+                    # Skip this obstacle first
+                    print("Search result: ", search_result, " ; Skipping obstacle...")
+                    self.skipped_obstacles.append(target)
+                    # Force run hardcoded path
+                    # print("Search result: ", search_result, " ; FORCING hardcoded path...")
+                    # self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot_x, self.robot_y,
+                    #                                           self.robot_direction, self.target_direction)
+                else:
+                    # Execute gray route
+                    draw_path, path = search_result[0], search_result[1]
+
+                    for r in range(20):
+                        for c in range(20):
+                            if draw_path[r][c] >= 5:
+                                self.grid.cells[r][c].set_path_status(draw_path[r][c])
+                    # Colour rough route gray
+                    self.robot.redraw_car()
+
+                    movements = self.translate_path_to_movements(path)
+                    self.IS_ON_PATH = True
+                    for move in movements:
+                        self.do_move(move)
+                    self.IS_ON_PATH = False
+
+                    # Last step is to rotate on the spot
+                    print("LAST STEP")
+                    self.plan_trip_by_robot_target_directions(self.target_x, self.target_y, self.robot.grid_x,
+                                                              self.robot.grid_y,
+                                                              self.robot.angle, self.target_direction)
+        self.restart_robot()
+
+    def restart_robot(self):
+        if len(self.skipped_obstacles) == 0:
+            print("No skipped obstacles to run")
+            return
+
+        while len(self.skipped_obstacles) != 0:
+
+            target = self.skipped_obstacles.pop(0)
+            print("Current Target: ", target)
 
             self.target = target
             self.target_x = target[0]
