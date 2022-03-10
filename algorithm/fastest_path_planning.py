@@ -135,7 +135,7 @@ def search(maze, cost, start, end):
         visited_list.append(current_node)
 
         # test if goal is reached or not, if yes then return the path
-        if current_node.position[0] == end_node.position[0] and current_node.position[1] == end_node.position[1]:
+        if current_node.position[0] == end_node.position[0] and current_node.position[1] == end_node.position[1] and current_node.position[2] == end_node.position[2]:
             return return_path(current_node, maze)
 
         # Generate children from all adjacent squares
