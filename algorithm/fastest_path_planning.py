@@ -133,9 +133,21 @@ def search(maze, cost, start, end):
         # Pop current node out off yet_to_visit list, add to visited list
         yet_to_visit_list.pop(current_index)
         visited_list.append(current_node)
-
+        ENDS = False
         # test if goal is reached or not, if yes then return the path
-        if current_node.position[0] == end_node.position[0] and current_node.position[1] == end_node.position[1] and current_node.position[2] == end_node.position[2]:
+        if end_node.position[0] > 15 or end_node.position[0] < 4:
+            ENDS = True
+            if (current_node.position[0] == end_node.position[0]) and (
+                    current_node.position[1] - 4 == end_node.position[1] or current_node.position[1] + 4 ==
+                    end_node.position[1]):
+                return return_path(current_node, maze)
+        elif end_node.position[1] < 4 or end_node.position[1] > 15:
+            ENDS = True
+            if (current_node.position[0] - 4 == end_node.position[0] or current_node.position[0] + 4 ==
+                end_node.position[0]) and (current_node.position[1] == end_node.position[1]):
+                return return_path(current_node, maze)
+        elif current_node.position[0] == end_node.position[0] and current_node.position[1] == end_node.position[
+            1] and ENDS != True:
             return return_path(current_node, maze)
 
         # Generate children from all adjacent squares
