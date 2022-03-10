@@ -1250,26 +1250,26 @@ class PathPlan(object):
         self.collection_of_robot_pos = []
 
     def get_collection_of_movements_string(self):
-        # list_of_movements = self.collection_of_movements
-        #
-        # # Clean up and eliminate all FB pairs
-        # FB_present = True
-        # while FB_present:
-        #     if len(list_of_movements) < 1:
-        #         break
-        #     prev_move = list_of_movements[0]
-        #     index = -1
-        #     initial_len = len(list_of_movements)
-        #     for move in list_of_movements:
-        #         index += 1
-        #         if (prev_move == "F" and move == "B") or (prev_move == "B" and move == "F"):
-        #             list_of_movements.pop(index)
-        #             list_of_movements.pop(index - 1)
-        #             break
-        #         prev_move = move
-        #
-        #     if len(list_of_movements) == initial_len:
-        #         FB_present = False
+        list_of_movements = self.collection_of_movements
+
+        # Clean up and eliminate all FB pairs
+        FB_present = True
+        while FB_present:
+            if len(list_of_movements) < 1:
+                break
+            prev_move = list_of_movements[0]
+            index = -1
+            initial_len = len(list_of_movements)
+            for move in list_of_movements:
+                index += 1
+                if (prev_move == "F" and move == "B") or (prev_move == "B" and move == "F"):
+                    list_of_movements.pop(index)
+                    list_of_movements.pop(index - 1)
+                    break
+                prev_move = move
+
+            if len(list_of_movements) == initial_len:
+                FB_present = False
         #
         # # CLean up and eliminate all TURN pairs
         # TURNS_present = True
@@ -1314,7 +1314,7 @@ class PathPlan(object):
         #         FB_present = False
         #
         # self.collection_of_movements = list_of_movements
-        return ','.join([str(movement) for movement in self.collection_of_movements])
+        return ','.join([str(movement) for movement in list_of_movements])
 
     def get_movements_string(self):
         movement_list = ["MOVEMENTS", self.obstacle_cell.get_obstacle().get_obstacle_id(),
