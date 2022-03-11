@@ -54,7 +54,7 @@ class AStar:
 
         # TODO: refine further
         elif min(abs(target_direction[2] - robot_direction[2]), abs(robot_direction[2] - target_direction[2])) == 90:
-            return 4
+            return 2
 
         elif min(abs(target_direction[2] - robot_direction[2]), abs(robot_direction[2] - target_direction[2])) == 180:
             return 6
@@ -72,7 +72,7 @@ class AStar:
 
     def get_astar_route(self):
         # weight for difference in direction
-        weight_turn = 2
+        weight_turn = 1
         weight_obstacle = 0
         weight_displacement = 3
         all_target_unordered = self.grid.get_target_locations()
